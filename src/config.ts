@@ -6,10 +6,13 @@ import {
   Figma,
   CheckSquare,
   Mic,
-  Briefcase,
   Layers,
   Package,
+  PlayCircle,
+  Star,
+  Tool,
 } from "react-feather";
+import { ReplayLogo } from "./components/App/ReplayLogo";
 
 const config = {
   app: {
@@ -46,19 +49,19 @@ const config = {
       title: "Projects",
       items: [
         {
-          icon: Package,
+          icon: ReplayLogo,
           title: "Replay.io",
           href: "https://replay.io",
         },
         {
-          icon: CheckSquare,
+          icon: Tool,
           title: "Firefox DevTools",
-          href: "https://www.designsystemchecklist.com",
+          href: "https://firefox-dev.tools/",
         },
         {
-          icon: Mic,
+          icon: Star,
           title: "Backbone Mariotte",
-          href: "https://reshaped.so/blog",
+          href: "https://marionettejs.com/",
         },
         // {
         //   icon: Briefcase,
