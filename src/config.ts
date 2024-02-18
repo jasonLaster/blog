@@ -13,16 +13,16 @@ import {
 
 const config = {
   app: {
-    title: "Reshaped",
-    subtitle: "Blog starter kit",
-    thumbnailUrl: "/img/logo.svg",
+    title: "Jason Laster",
+    // subtitle: "JS Time traveler",
+    // thumbnailUrl: "/img/logo.svg",
   },
   meta: {
     url: "https://reshaped-blog-starter.vercel.app",
-    title: "Reshaped",
+    title: "Jason Laster",
     description: "Blog starter built on top of Next.js and Reshaped",
     twitter: {
-      username: "blvdmitry",
+      username: "jasonlaster11",
     },
   },
   menu: [
@@ -47,24 +47,24 @@ const config = {
       items: [
         {
           icon: Package,
-          title: "Reshaped",
-          href: "https://reshaped.so",
+          title: "Replay.io",
+          href: "https://replay.io",
         },
         {
           icon: CheckSquare,
-          title: "Design System Checklist",
+          title: "Firefox DevTools",
           href: "https://www.designsystemchecklist.com",
         },
         {
           icon: Mic,
-          title: "Design System Interviews",
+          title: "Backbone Mariotte",
           href: "https://reshaped.so/blog",
         },
-        {
-          icon: Briefcase,
-          title: "Formaat Design",
-          href: "https://formaat.design",
-        },
+        // {
+        //   icon: Briefcase,
+        //   title: "Formaat Design",
+        //   href: "https://formaat.design",
+        // },
       ],
     },
     {
@@ -73,17 +73,17 @@ const config = {
         {
           icon: Twitter,
           title: "Twitter",
-          href: "https://twitter.com/blvdmitry",
+          href: "https://twitter.com/jasonlaster11",
         },
         {
           icon: GitHub,
           title: "GitHub",
-          href: "https://github.com/formaat-design",
+          href: "https://github.com/jason-laster",
         },
         {
           icon: Figma,
-          title: "Figma",
-          href: "https://www.figma.com/@reshaped",
+          title: "Linkedin",
+          href: "https://linkedin.com/in/jason-laster-6657167",
         },
       ],
     },
