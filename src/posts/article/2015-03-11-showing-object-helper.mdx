@@ -1,0 +1,106 @@
+---
+layout: post
+title:  "Showing the Source Object Helper"
+date:   2015-03-11
+categories: js devtools
+---
+
+
+The Object Helper is a popup that shows a summary of an object in scope. It's cool because it's overlaying dynamic data on top of static code.
+
+It's an opportunity for your computer to tell you what's going on. It's one of many small ways we can help you understand what's going on.
+
+<img src="http://f.cl.ly/items/3y181i063I1Q0j0l1L3m/Image%202015-03-11%20at%2010.58.10%20PM.png" width="338px" />
+
+---
+
+### How is it set up?
+
+The object helper is setup and managed by the Javascript source frame. This is probably not a surprise, the source frame object seems to manage the text editor and a ton of other big associated pieces (compiler, breakpoints, shortcuts,...).
+
+The popover helper gets the text editor element and callbacks for the:
+
++ anchor (probably where the popover should be positioned)
++ resolving the object
++ on hiding the popover
+
+```js
+WebInspector.JavaScriptSourceFrame = function(scriptsPanel, uiSourceCode)
+{
+    this._scriptsPanel = scriptsPanel;
+    this._breakpointManager = WebInspector.breakpointManager;
+    this._uiSourceCode = uiSourceCode;
+    this._compiler = new WebInspector.JavaScriptCompiler(this);
+
+    WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
+
+    this._popoverHelper = new WebInspector.ObjectPopoverHelper(
+        this.textEditor.element,
+        this._getPopoverAnchor.bind(this),
+        this._resolveObjectForPopover.bind(this),
+        this._onHidePopover.bind(this),
+        true
+    );
+
+    this._registerShortcuts();
+}
+```
+
+### How is the popup shown
+
+The source frame has a `mouseOver` handler, which calls `showPopover`, which is bound to the `objectPopoverHelper`.
+
+`showPopover` is responsible for showing popover elements when there is data. Notice all of these callbacks that are hanging around, ready to be called when the time is right.
+
+
+```js
+function showPopover(element, popover) {
+    function didGetFunctionProperties(funcObject, popoverContentElement, anchorElement, properties, internalProperties){}
+
+    function didGetFunctionDetails(popoverContentElement, anchorElement, response){}
+
+    function didGetGeneratorObjectDetails(popoverContentElement, anchorElement, response){}
+
+    function didQueryObject(result, wasThrown, anchorOverride){}
+
+    _resolveObjectForPopover(element, didQueryObject.bind(this), this._popoverObjectGroup);
+},
+```
+
+Here's `didQueryObject` which is simplified to show the presentation concerns. We're just showing an object w/ the title and tree element.
+
+```js
+function didQueryObject() {
+  var popoverContentElement = createElement("div");
+  this._titleElement = popoverContentElement.createChild("div", "monospace");
+  this._titleElementtextContent = this._formattedObjectDescription(result);
+
+  var section = new WebInspector.ObjectPropertiesSection(result);
+  popoverContentElement.appendChild(section.element);
+
+  var popoverWidth = 300;
+  var popoverHeight = 250;
+  popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
+}
+```
+
+`_resolveObjectForPopover` is the function that's going to go and get the data for the hovered element.
+The cool thing to note here is that we actually find some text that we'll evaluate: `evaluationText`.
+
+In the example above, we're hovering over "app". This means that the inspector will ask the call frame to evaluate the expression "app" in the appropriate call frame context. We're basically building an IDE, right?!?
+
+```js
+function _resolveObjectForPopover(anchorBox, showCallback, objectGroupName) {
+   var target = WebInspector.context.flavor(WebInspector.Target);
+   var lineNumber = anchorBox.highlight.lineNumber;
+   var startHighlight = anchorBox.highlight.startColumn;
+   var endHighlight = anchorBox.highlight.endColumn;
+   var line = this.textEditor.line(lineNumber);
+
+   var evaluationText = line.substring(startHighlight, endHighlight + 1);
+   var selectedCallFrame = target.debuggerModel.selectedCallFrame();
+   selectedCallFrame.evaluate(evaluationText, objectGroupName, false, true, false, false, showObjectPopover.bind(this));
+
+   function showObjectPopover(result, wasThrown){}
+}
+```

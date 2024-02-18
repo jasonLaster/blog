@@ -37,11 +37,6 @@ const LayoutSubmenu = (props: Props) => {
                   <Hidden hide={{ s: false, l: true }}>
                     <LayoutMenuModal />
                   </Hidden>
-                  <View.Item grow>
-                    <Text variant="body-3" weight="bold">
-                      {title}
-                    </Text>
-                  </View.Item>
                 </View>
 
                 <View gap={1}>

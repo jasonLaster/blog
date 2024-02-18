@@ -1,0 +1,131 @@
+---
+layout: post
+title:  "DevTools Workflow - Move Fast and Do Stuff"
+date:   2016-03-22
+categories: DevTools JS
+---
+
+I'm starting my second week on the Firefox DevTools team and
+one of the most interesting things I'm working on is my own process.
+
+The biggest bottleneck is the combination of compiling firefox and using feature branches.
+I like to have a couple feature branches so that I can asynchronously get feedback on
+bugs, run tests, and generally multitask. This can be a pain when compiling can take awhile.
+
+### Always be building
+
+A full Firefox build takes upwards of ten minutes. That's a productivity nightmare.
+An incremental build takes around a minute, which is significantly better.
+
+In total, there's a list of steps that are often repeated:
+
+1. build firefox `./mach build (faster)`
+2. run firefox `./mach run`
+3. go to a page to debug
+4. open the correct toolbox tool
+5. open the browser toolbox or web console
+6. start debugging
+
+This process can quickly begin to feel repetitive, but there are
+some easy steps you can take to automate them away.
+
+#### Firefox AutoRun
+
+`@bgrins` wrote a great bash function `ffrun` which will build and run Firefox in a loop.
+The script automates steps 1 and 2. What I like about `ffrun` is that building and running the browser
+begins to feel like running tests in the background, it's always there and upto-date.
+
+
+Notes:
+
++ You should add `ffrun` to your path and run `chmod +x`.
++ You can edit ffrun to add `--jsconsole` to launch the webconsole
++ You can edit ffrun to add `--jsdebugger` to launch the browser toolbox. There's currently a regression where breakpoints won't catch in the toolbox with this option.
++ You *should* use your profile so that the new browser has your favorite debugging settings.
+
+
+
+```zsh
+# Start firefox in a loop, allowing you to quit and have it auto rebuild devtools and restart.
+
+if [ -f mach ];
+then
+  echo "mach exists.  Starting loop."
+  trap "exit" SIGHUP SIGINT SIGTERM
+  while true
+    do
+     ./mach build faster
+    #./mach run --devtools --jsconsole -P dev
+    #./mach run --devtools --jsdebugger -P dev
+    ./mach run --devtools -P dev
+  done
+else
+  echo "mach does not exist in current directory.  Bailing out."
+fi
+```
+
+#### Further Improvements:
+
+`ffrun` gets us most of the way there, but there are still a couple of manual steps in the process.
+Here are a couple of other tricks that will help:
+
++ **Always have a default page.** You can set your current page to the default page in general preferences. I'm trying to use `@bgrin`'s [demos](https://github.com/bgrins/devtools-demos) project as a baseline for good test cases.
++ **Don't show the connection nag** The connection nag is the popup that prompts you to accept the browser toolbox's remote connection. You can suppress this nag by going to `about:config` and setting `devtools.debugger.prompt-connection` to false.
++ **Suppress the restore page** This is the page that shows up when Firefox quit unexpectedly. It shows a list of open tabs, which is nice when you're browsing but not great when you're debugging and want to *automatically* go to the default page. Fortunately this page can be suppressed by going to `about:config` and setting `browser.sessionstore.resume_from_crash` to false.
+
+
+### Balls in the air: Multitaksing with Feature Branches
+
+One of the biggest pain points with having a time intensive build step is managing multiple branches.
+The problem is that often two branches are different enough to force full browser build, which is a great way to lose your focus.
+
+`@lclark` found a great solution with git work trees. Work trees are an esoteric feature of git that lets you mount a
+feature branch in a directory. This makes `cd path/to/feature-a` synonymous with `git checkout feature-a`.
+The big win here is that we can now mount multiple features to different directories.
+So, if I'm working on two features A and B I'll have the two folders `worktrees/feature-a` and `worktrees/feature-b`.
+Then, when I want to work on A, I'll cd into the folder, run the tests, build the firefox, no big deal.
+If I want to jump to feature B, I can cd there as well.
+Jumping between branches no longer means re-building firefox from scratch.
+
+I wrote two quick functions (`branch-work`, `branch-work-rm`) for creating and removing worktrees.
+
+```zsh
+alias bw="branch-work"
+function branch-work() {
+  DIR=~/src/mozilla/worktrees/$1
+
+  # create worktree directory if it doesn't exist
+  if [ ! -d $DIR ]; then
+    git worktree add -b $1 $DIR origin/fx-team
+  fi
+
+  cd ~/src/mozilla/worktrees/$1
+}
+```
+
+```zsh
+alias bwrm="branch-work-rm"
+function branch-work-rm() {
+  DIR=~/src/mozilla/worktrees/$1
+
+  # remove worktree directory if it exists
+  if [ -d $DIR ]; then
+    git bd $1;
+    rm $DIR;
+  fi
+}
+```
+
+When I run `branch-work foo` three things happen:
+1. a new directory `worktrees/foo`,
+2. a new branch `foo`
+3. a new worktree `foo`
+
+When I run `branch-work foo` a second time, it just navigates to `worktrees/foo`
+
+When I run `branch-work-rm foo` it removes the `foo` worktree and branch.
+
+### Conclusion
+
+There are definitely productivity costs associated with developing and debugging the browser,
+but I've found that if you're creative about your process that a lot of these pains can be mitigated.

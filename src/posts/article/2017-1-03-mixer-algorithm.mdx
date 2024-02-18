@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "Team Mixers"
+date:   2017-1-3
+categories: DevTools JS
+---
+
+This morning I sat down to send out our teams first batch of mixer emails inspired by Etsy's [mixer](https://codeascraft.com/2015/09/15/assisted-serendipity/) program.
+
+I quickly realized that it wouldn't be that easy to pair everyone over the course of 15 weeks so I went to Sketch to see if I could design a mixer algorithm.
+
+The design is based off my initial idea of using a round robin approach, but with the insight that when you round robin,
+at best half of the people will talk. After each successful round robin, the groups are divided in two. This allows everyone to
+speak to each other without the fear of pairing the same two people again.
+
+Please let me know if I missed something.
+
+#### Strategy
+
+[Sketch file](https://drive.google.com/open?id=0B1bSIiYDdD84VExnN3pibmE3VmM)
+
+![](https://cloud.githubusercontent.com/assets/254562/21610847/509dd882-d198-11e6-9263-5bae3b0c67c0.jpg)

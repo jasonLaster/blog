@@ -1,0 +1,83 @@
+---
+layout: post
+title:  "A webpack plugin story"
+date:   2016-12-05
+categories: DevTools webpack JS
+---
+
+We on the [Debugger](http://github.com/devtools-html/debugger.html) team started working on a brand new React / Redux debugger with webpack in March. We’ve setup  webpack Dev Server and Hot Module Reloading. And we have to say, it rocks!
+
+Every month or so, something comes up though and it takes a day or so to figure out. Afterwards, I always come away feeling like I’ve leveled up my webpack game. This is how I learned about *externals*, *aliasses*, and *tappable* after all.
+
+This is one such story about how we got burned by duplicated modules and hot reloading, but lived to tell the tale.
+
+### Problem Statement
+
+Last month we refactored our debugger app so that other tools like the console and inspector could share our architecture. We did this by moving common modules into their own packages with [lerna](http://lernajs.io).
+
+We didn’t notice at the time that our webpack bundle duplicated several modules. For instance, both the [Debugger](http://github.com/devtools-html/debugger.html) and the [Toolbox ](https://github.com/devtools-html/debugger.html/tree/master/packages/devtools-local-toolbox) required [devtools-client-adapters](https://github.com/devtools-html/debugger.html/tree/master/packages/devtools-client-adapters).  This became a problem last week when,we expected that  the client adapter module state could be shared.
+
+In the abstract, we had a problem where module A depended on module B , module C depended on module B, and module A and C both had different  Bs!
+
+### Enter Single Module Plugin
+
+We added [single-module-plugin](https://github.com/smikhalevski/single-module-instance-webpack-plugin) to our toolchain this week and at first we thought it had solved our problem.  The way SMP works, when module C requires B, webpack asks SMP if B has been seen before and if so uses it. In practice, the second B is still bundled, but it’s never used. It’s in the bundle, but no one talks to it, and it’s lonely and sad, but that’s not our problem.
+
+The problem with this approach is when hot module reloading  running! When webpack builds the bundle, HMR pretty obnoxiously inserts [some code](https://github.com/smikhalevski/single-module-instance-webpack-plugin/pull/2#issue-192939689) at the top and bottom of every module it makes hot.  This code confuses SMP, such that when webpack asks SMP if it’s seen module B before, its response is nope. When module A and C get different module Bs, then the state in module B is **not shared**!
+
+### The fix
+
+We fixed SMP by teaching it to ignore HMR. Previously, when webpack asked SMP if it’d seen module B before SMP would loop through all of the known modules and compare each module’s text with B’s text. Our trick, was to teach SMP to remove the code HMR added at the top and bottom of the hot modules.
+
+Our first solution looked like this:
+
+```js
+function sanitizeText(text) {
+  return text.replace(/^.* REACT HOT LOADER.*$/g, "")
+}
+```
+
+Our second solution looked like this:
+
+```js
+function sanitizeText(text) {
+  return text.split("\n")
+			.filter(l => l.includes("REACT HOT LOADER"))
+			.join("\n")
+}
+```
+
+Our final solution looked like this:
+
+```js
+function sanitizeString(text) {
+   var length = text.length;
+   if (length < 400) return text;
+   var firstReactHotLoader = text.substr(0,200).indexOf("REACT HOT LOADER");
+   if (firstReactHotLoader == -1) return text;
+
+   var lastReactHotLoader = text.substr(length - 800, 100).lastIndexOf("REACT HOT LOADER");
+   if (lastReactHotLoader == -1) return text;
+   lastReactHotLoader += length - 800;
+
+   var firstNewLine = text.indexOf("\n", firstReactHotLoader);
+   return text.substr(firstNewLine, lastReactHotLoader - firstNewLine);
+
+}
+```
+
+All three solutions, worked but the first solution bumped our application bootstrap time from 800ms to 16 seconds. Our second solution, which avoided regular expressions because everyone knows regexs are slow, bumped bootstrap time up to 76 seconds because perf is hard.
+
+Our final solution, took advantage of two insights.
+1. HMR would *only* inject code in the first and last line, so it was our job to sometimes strip those lines.
+2. We *need* to be seriously lazy. Like bail as soon as you can lazy.
+
+This solution weighed in at 1.3 seconds and we called it a day. We could probably have added caching and done more, but whatevs.
+
+### What’s next?
+
+Well we hope that webpack 2 and tree shaking will fix the real problem, which is two module Bs. Also, equally importantly I hope to continue playing with webpack internals and plugins. The more I learn about the compiler, the more impressed I am with how it works.
+
+Please ping me with your crazy webpack bugs! Also feel free to ping me if you’d like to pair on a webpack bug / feature!
+
+`@jasonlaster11`

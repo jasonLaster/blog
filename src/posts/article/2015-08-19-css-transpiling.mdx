@@ -1,0 +1,69 @@
+---
+layout: post
+title:  "CSS Transpiling - Lets create the future together"
+date:   2015-08-19
+categories: css js
+---
+
+It looks like CSS transpiling is here and that's a very good thing for CSS.
+
+Transpiling will let the community try out new official spec features and
+experiment with other crazy ideas.
+
+The [PostCSS](https://github.com/postcss/postcss) project looks like the most
+popular css transpiler.
+There are already [+500](https://www.npmjs.com/search?q=postcss-&pa) plugins in NPM.
+
+postcss-loader, postcss-helpers, postcss-opacity, postcss-color, postcss-importanter, postcss-mixins, postcss-circle, postcss-inherit, postcss-calc, postcss-focus, postcss-rows, postcss-urlrewrite, postcss-hide, postcss-functions, postcss-position, postcss-epub, postcss-csssimpl, postcss-constant
+
+Some projects have started using PostCSS plugins to create a unified set
+of features. Other projects are using it to design their preferred semantics,
+like local css scopes.
+
+I'd like to see how frameworks like SASS and LESS adapt to CSS transpiling. I'd also like to see what the intermediate CSS representation is.
+Is there an AST that can be passed around? Is it just text?
+
+#### Examples
+
+There tons of examples of transpiling CSS, but here's a small sample:
+
+_Automagical responsive typography_
+
+```css
+.foo {
+  font-size: responsive;
+}
+```
+
+_Native clearfix_
+
+```css
+.foo {
+  clear: fix;
+}
+```
+
+_Input pseudo-elements_
+
+```css
+input[type="range"]::track {
+  height: 2px;
+}
+```
+
+### CSS Modules (Project)
+
+A *CSS Module* is a CSS file in which all class names and animation names are scoped locally by default.
+
+CSS Modules compile to a low-level interchange format called ICSS or [Interoperable CSS](https://github.com/css-modules/icss), but are written like normal CSS files:
+
++ [CSS Modules](http://glenmaddern.com/articles/css-modules)
++ [CSS Modules core](https://github.com/css-modules/css-modules-loader-core)
++ [CSS Modules docs repo](https://github.com/css-modules/css-modules)
+
+### Rucksack (Project)
+
+Rucksack makes CSS development less painful, with the features and shortcuts it should have come with out of the box.
+
++ [Rucksack docs](http://simplaio.github.io/rucksack/)
++ [Rucksack repo](https://github.com/simplaio/rucksack)

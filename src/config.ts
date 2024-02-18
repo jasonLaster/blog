@@ -3,14 +3,9 @@ import {
   Feather,
   Twitter,
   GitHub,
-  Figma,
-  CheckSquare,
-  Mic,
-  Layers,
-  Package,
-  PlayCircle,
   Star,
   Tool,
+  Linkedin,
 } from "react-feather";
 import { ReplayLogo } from "./components/App/ReplayLogo";
 
@@ -39,11 +34,6 @@ const config = {
       title: "Writing",
       href: "/article",
     },
-    {
-      icon: Layers,
-      title: "Stack",
-      href: "/stack",
-    },
 
     {
       title: "Projects",
@@ -63,11 +53,6 @@ const config = {
           title: "Backbone Mariotte",
           href: "https://marionettejs.com/",
         },
-        // {
-        //   icon: Briefcase,
-        //   title: "Formaat Design",
-        //   href: "https://formaat.design",
-        // },
       ],
     },
     {
@@ -84,7 +69,7 @@ const config = {
           href: "https://github.com/jason-laster",
         },
         {
-          icon: Figma,
+          icon: Linkedin,
           title: "Linkedin",
           href: "https://linkedin.com/in/jason-laster-6657167",
         },

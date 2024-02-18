@@ -9,9 +9,14 @@ const getArticleData = (filePath: string) => {
   const file = fs.readFileSync(filePath, "utf-8");
   const { data } = matter(file);
 
+  const datePattern = /\d{4}-\d{1,2}-\d{2}/;
+  const match = filePath.match(datePattern);
+  const date = match ? match[0] : undefined;
+
   return {
+    fileName: filePath,
     title: data.title,
-    created: data.created,
+    created: data.created || date,
   } as Pick<SubmenuItem, "title" | "created">;
 };
 
@@ -81,6 +86,16 @@ export const getArticlesList = () => {
       (a, b) => (+b.created || 0) - (+a.created || 0),
     );
   });
+
+  Object.keys(availableSubmenuPages).forEach((key: string) => {
+    availableSubmenuPages[key] = availableSubmenuPages[key]?.map((page) => {
+      const created = new Date(page.created)
+      return {...page, created,}
+    }).sort(
+      (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+    );
+  });
+
 
   return availableSubmenuPages;
 };

@@ -1,0 +1,84 @@
+---
+layout: post
+title:  "Implementing Debounce"
+date:   2015-03-17
+categories: js
+---
+
+#### Debounce
+
+Debounce is a function that shows up way more often than you'd think.
+
+When you debounce a function, you schedule that function to be called at a later time,
+unless the debounced function is called before that point, if it is the function call
+is delayed again.
+
+In practice, debouncing is useful if you want to call a function after the user as stopped interacting with it. Take autocomplete for example, you might want to start searching 100ms after the user stops typing, so every time he types you call the debounced function to further delay it's invokation.
+
+----
+
+#### Base Case
+The starting off point for me when thinking about debounce is to have `debounce`
+just call `setTimeout`. This doesn't get us too far functionality wise, but it sets us up
+to think about the nuts and bolts of the problem.
+
+
+```js
+startTime = Date.now();
+
+function yolo() {
+  console.log("yolo", Date.now() - startTime);
+}
+
+function debounce(func, time) {
+  setTimeout(func, time);  
+}
+
+debounce(yolo, 25);
+```
+
+##### Deficiencies:
++ debounce can not be called multiple times
++ calling the debounced function does not delay it's invocation
+
+---
+
+#### A closer approximation
+
+When we update `debounce` we make sure that it returns a function that will delay the invocation.
+We do this by having the returned function reset a timeout. We also add a `later` function, which
+will does a check to see if the function has been called already. If so, it stops and doesn't do anything else.
+
+```js
+// https://coderpad.io/WFQNQMW4
+
+
+startTime = Date.now();
+
+function yolo() {
+  console.log("yolo", Date.now() - startTime);
+}
+
+
+function debounce(func, time) {
+  var timeout;
+  var ran = false;
+
+  // called when the time is up
+  function later() {
+    if (!ran) func();
+    ran = true;
+  }
+
+  // resets the timeout
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(later, time);
+  }
+}
+
+dy = debounce(yolo, 25);   // schedule yolo for 25 ms, returns a debounced function
+setTimeout(dy, 10);        // delays the invocation
+setTimeout(dy, 15);        // delays the invocation again
+setTimeout(dy, 50);        // does nothing because the function has been called already
+```
