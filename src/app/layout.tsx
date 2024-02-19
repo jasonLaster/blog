@@ -6,6 +6,8 @@ import LayoutSubmenu from "../components/LayoutSubmenu";
 import LayoutContent from "../components/LayoutContent";
 import { getArticlesList } from "../utilities/articles.server";
 import config from "../config";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   metadataBase: new URL(config.meta.url),
@@ -93,6 +95,8 @@ export default function RootLayout({
 
             <LayoutContent availableRoutes={availableRoutes}>
               {children}
+              <Analytics />
+              <SpeedInsights />
             </LayoutContent>
           </View>
         </App>
