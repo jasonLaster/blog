@@ -66,7 +66,7 @@ const config = {
         {
           icon: GitHub,
           title: "GitHub",
-          href: "https://github.com/jason-laster",
+          href: "https://github.com/jasonlaster",
         },
         {
           icon: Linkedin,
