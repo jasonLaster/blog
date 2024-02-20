@@ -22,7 +22,7 @@
     "reshaped-blog": "bin/cli.mjs"
   },
   "scripts": {
-    "dev": "nvm use 18; next dev",
+    "dev": "next dev",
     "build": "next build",
     "build:themes": "reshaped theming --output ./src/themes",
     "start": "next start",
