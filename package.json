@@ -1,7 +1,7 @@
 {
-  "name": "@reshaped/blog",
+  "name": "blog",
   "version": "0.3.1",
-  "description": "Personal blog starter kit built on top of Next.js and Reshaped",
+  "description": "Personal website",
   "license": "MIT",
   "keywords": [
     "react",
@@ -12,11 +12,11 @@
     "static site generator"
   ],
   "bugs": {
-    "url": "https://github.com/formaat-design/reshaped-blog-starter/issues"
+    "url": "https://github.com/jasonlaster/blog/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/formaat-design/reshaped-blog-starter.git"
+    "url": "git+https://github.com/jasonlaster/blog.git"
   },
   "bin": {
     "reshaped-blog": "bin/cli.mjs"

@@ -16,9 +16,9 @@ const config = {
     // thumbnailUrl: "/img/logo.svg",
   },
   meta: {
-    url: "https://reshaped-blog-starter.vercel.app",
+    url: "https://jasonlaster.com",
     title: "Jason Laster",
-    description: "Blog starter built on top of Next.js and Reshaped",
+    description: "Jason Laster's personal website",
     twitter: {
       username: "jasonlaster11",
     },
