@@ -8,8 +8,10 @@ import ArticleCode from "../../components/ArticleCode";
 import ArticleBio from "../../components/ArticleBio";
 import Article from "../../components/Article";
 import s from "./MdxContent.module.css";
+import { Tweet } from 'react-tweet'
 
 const components: MDXComponents = {
+  Tweet,
   Bio: ArticleBio,
   strong: ({ children }) => {
     return (

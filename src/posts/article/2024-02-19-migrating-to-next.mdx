@@ -1,0 +1,22 @@
+---
+title: "Migrating my blog to NextJS"
+categories: blog
+---
+
+
+In 2014, I published a simple Jekyll site to a [github page](https://jasonlaster.github.io/) so that I'd have a place to share some of the things that I was learning about how Browser DevTools worked. It's kind of fun to go back and look at the early posts about how the Firefox Debugger pauses and how Function Object Preview Popups are shown.
+
+None of this content has gone viral and if we're being honest, it was mostly an outlet for me to think through how I'd teach others some of these concepts. Fast forward to today, and I'm still rocking a Jekyll site hosted on Github Pages in 2014. Worst part, while I'd managed to share 4-8 learnings a year up to 2018, when I started Replay, life got too busy and I stopped sharing.
+
+But honestly, I miss having an outlet where it was easy to share what I was learning and these days I'm learning more than I've ever learned before. In fact one can argue that if i'm not learning, i'm not doing my job right. So I'm excited to bring my site to the the 21st century. Adopting NextJS was an obvious choice. Building it on top of Dmitry Belyaev open-sourced starter template inspired by Brian Lovin's personal site was also an obvious choice.
+
+<Tweet id="1758498848203268455" />
+
+But... like all software projects, it was not without learnings. So I'll share a
+couple of them here in the hope that it'll help other folks make the move.
+
+
+* **Dropping the examples directory** When Dmitry published the reshaped-starter-pack it included an examples repo that uses his published NPM package. I found it easier to edit the repo itself so that I could make other changes as well. It's still pretty easy to cherry pick his commits and I have the ability to make any other changes that I want as well.
+* **Sorting articles by date** One of the first issues I notice was in the way that article dates were managed. The starter pack assumed dates were in the front matter, but all of my articles had them in the filename which helps with sorting files as well. The articles were also sorted in ascending order, but i wanted the most recent first. Fortunately, because I forked the repo, this was an easy change.
+* **Migrating code blocks and images** The biggest change I had to make to the original articles was assigning languages to the code blocks and moving from GithHub pages' image CDN to locally hosted images. This was mostly manual labor, so not a big deal.
+* **Embedding a Tweet** I wanted to include the original tweet that kicked this off, but to do this I needed to figure out how to include the Tweet component in the MDX. This was mostly on me not understanding how MDX works, but it turned out that I could simply import the Tweet component into the MDXContent component's list of known components.
