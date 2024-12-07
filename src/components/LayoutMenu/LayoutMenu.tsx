@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type ReactNode, useContext } from "react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -18,6 +18,7 @@ import {
 } from "reshaped";
 import { ArrowUpRight, Sun, Moon } from "react-feather";
 import config from "../../config";
+import { MenuVisibilityContext } from "../../context/MenuVisibilityContext";
 
 const Item = (
   props: {
@@ -70,6 +71,7 @@ const Section = (props: { title?: string; children: ReactNode }) => {
 const LayoutMenu = () => {
   const { colorMode, setColorMode } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { isMenuVisible } = useContext(MenuVisibilityContext);
 
   const handleModeClick = () => {
     const nextColorMode = colorMode === "dark" ? "light" : "dark";
@@ -83,53 +85,55 @@ const LayoutMenu = () => {
   }, []);
 
   return (
-    <ScrollArea scrollbarDisplay="hover">
-      <View
-        padding={{ s: 6, l: 6 }}
-        paddingBlock={{ s: 6, l: 3 }}
-        gap={1}
-        grow
-        overflow="auto"
-      >
-        <View paddingBottom={5} direction="row" gap={2} align="center">
-          <View.Item grow>
-            <Text variant="body-3" weight="bold">
-              {config.app.title}
-            </Text>
-          </View.Item>
+    <Hidden hide={!isMenuVisible}>
+      <ScrollArea scrollbarDisplay="hover">
+        <View
+          padding={{ s: 6, l: 6 }}
+          paddingBlock={{ s: 6, l: 3 }}
+          gap={1}
+          grow
+          overflow="auto"
+        >
+          <View paddingBottom={5} direction="row" gap={2} align="center">
+            <View.Item grow>
+              <Text variant="body-3" weight="bold">
+                {config.app.title}
+              </Text>
+            </View.Item>
 
-          <Hidden visibility hide={!mounted}>
-            <Button.Aligner side={["end", "top", "bottom"]}>
-              <Button
-                icon={colorMode === "dark" ? Sun : Moon}
-                variant="ghost"
-                onClick={handleModeClick}
-              />
-            </Button.Aligner>
-          </Hidden>
-        </View>
+            <Hidden visibility hide={!mounted}>
+              <Button.Aligner side={["end", "top", "bottom"]}>
+                <Button
+                  icon={colorMode === "dark" ? Sun : Moon}
+                  variant="ghost"
+                  onClick={handleModeClick}
+                />
+              </Button.Aligner>
+            </Hidden>
+          </View>
 
-        {config.menu.map((item) => {
-          if ("items" in item) {
+          {config.menu.map((item) => {
+            if ("items" in item) {
+              return (
+                <Section title={item.title} key={item.title}>
+                  {item.items?.map((link) => (
+                    <Item href={link.href} icon={link.icon} key={link.title}>
+                      {link.title}
+                    </Item>
+                  ))}
+                </Section>
+              );
+            }
+
             return (
-              <Section title={item.title} key={item.title}>
-                {item.items?.map((link) => (
-                  <Item href={link.href} icon={link.icon} key={link.title}>
-                    {link.title}
-                  </Item>
-                ))}
-              </Section>
+              <Item href={item.href} icon={item.icon} key={item.title}>
+                {item.title}
+              </Item>
             );
-          }
-
-          return (
-            <Item href={item.href} icon={item.icon} key={item.title}>
-              {item.title}
-            </Item>
-          );
-        })}
-      </View>
-    </ScrollArea>
+          })}
+        </View>
+      </ScrollArea>
+    </Hidden>
   );
 };
 

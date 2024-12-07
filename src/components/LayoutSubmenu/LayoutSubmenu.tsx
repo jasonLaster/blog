@@ -1,29 +1,28 @@
 "use client";
 
-import { View, Text, ScrollArea, Hidden } from "reshaped";
+import { useContext } from "react";
+import { MenuVisibilityContext } from "../../context/MenuVisibilityContext";
+import { View, Text, ScrollArea, Hidden, } from "reshaped";
 import LayoutMenuModal from "../../components/LayoutMenuModal";
 import ArticleItem from "../../components/ArticleItem";
 import useArticleNavigation from "../../hooks/useArticleNavigation";
 import type { Props } from "./LayoutSubmenu.types";
 
-const LayoutSubmenu = (props: Props) => {
-  const { availableRoutes } = props;
+const LayoutSubmenu = ({ availableRoutes }: Props) => {
   const { title, isArticle, routeItems } =
     useArticleNavigation(availableRoutes);
+  const { isMenuVisible } = useContext(MenuVisibilityContext);
 
   if (!routeItems || routeItems.length <= 1) return null;
 
+  const hideProps = {
+    s: isArticle || !isMenuVisible,
+    l: !isMenuVisible,
+  };
+
   return (
     <>
-      <Hidden
-        hide={{
-          /**
-           * Hide on small viewports if we're on the article route
-           */
-          s: isArticle,
-          l: false,
-        }}
-      >
+      <Hidden hide={hideProps}>
         {(className) => (
           <View
             width={{ s: "100%", l: "320px", xl: "384px" }}

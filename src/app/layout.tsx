@@ -1,13 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { View, Hidden } from "reshaped";
 import App from "../components/App";
-import LayoutMenu from "../components/LayoutMenu";
-import LayoutSubmenu from "../components/LayoutSubmenu";
-import LayoutContent from "../components/LayoutContent";
 import { getArticlesList } from "../utilities/articles.server";
 import config from "../config";
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import LayoutWrapper from "../components/LayoutWrapper/LayoutWrapper";
+import LayoutContentWrapper from "../components/LayoutContentWrapper/LayoutContentWrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL(config.meta.url),
@@ -70,36 +68,15 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <App>
-          <View
-            direction="row"
-            divided
-            height="100dvh"
-            align="stretch"
-            overflow="hidden"
-          >
-            <Hidden hide={{ s: true, l: false }}>
-              {(className) => (
-                <View
-                  width={{ s: "240px", xl: "287px" }}
-                  height="100%"
-                  backgroundColor="elevation-base"
-                  className={className}
-                >
-                  <LayoutMenu />
-                </View>
-              )}
-            </Hidden>
-
-            <LayoutSubmenu availableRoutes={availableRoutes} />
-
-            <LayoutContent availableRoutes={availableRoutes}>
+        <LayoutWrapper availableRoutes={availableRoutes}>
+          <App>
+            <LayoutContentWrapper availableRoutes={availableRoutes}>
               {children}
               <Analytics />
               <SpeedInsights />
-            </LayoutContent>
-          </View>
-        </App>
+            </LayoutContentWrapper>
+          </App>
+        </LayoutWrapper>
       </body>
     </html>
   );
