@@ -9,6 +9,10 @@ const getArticleData = (filePath: string) => {
   const file = fs.readFileSync(filePath, "utf-8");
   const { data } = matter(file);
 
+  if (process.env.NODE_ENV !== 'development' && data.draft) {
+    return null;
+  }
+
   const datePattern = /\d{4}-\d{1,2}-\d{2}/;
   const match = filePath.match(datePattern);
   const date = match ? match[0] : undefined;

@@ -37,3 +37,10 @@ export type Config = {
   };
   menu: Menu;
 };
+
+export interface Article {
+  title: string;
+  date: string;
+  slug: string;
+  draft?: boolean;
+}
