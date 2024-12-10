@@ -11,12 +11,11 @@ import {
   Icon,
   ScrollArea,
   Button,
-  useTheme,
   useIsomorphicLayoutEffect,
   type MenuItemProps,
   Hidden,
 } from "reshaped";
-import { ArrowUpRight, Sun, Moon } from "react-feather";
+import { ArrowUpRight } from "react-feather";
 import config from "../../config";
 import { MenuVisibilityContext } from "../../context/MenuVisibilityContext";
 
@@ -69,16 +68,8 @@ const Section = (props: { title?: string; children: ReactNode }) => {
 };
 
 const LayoutMenu = () => {
-  const { colorMode, setColorMode } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { isMenuVisible } = useContext(MenuVisibilityContext);
-
-  const handleModeClick = () => {
-    const nextColorMode = colorMode === "dark" ? "light" : "dark";
-
-    localStorage.setItem("__rs-color-mode", nextColorMode);
-    setColorMode(nextColorMode);
-  };
 
   useIsomorphicLayoutEffect(() => {
     setMounted(true);
@@ -100,16 +91,6 @@ const LayoutMenu = () => {
                 {config.app.title}
               </Text>
             </View.Item>
-
-            <Hidden visibility hide={!mounted}>
-              <Button.Aligner side={["end", "top", "bottom"]}>
-                <Button
-                  icon={colorMode === "dark" ? Sun : Moon}
-                  variant="ghost"
-                  onClick={handleModeClick}
-                />
-              </Button.Aligner>
-            </Hidden>
           </View>
 
           {config.menu.map((item) => {

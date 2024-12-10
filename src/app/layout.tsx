@@ -50,33 +50,35 @@ export default function RootLayout({
   const availableRoutes = getArticlesList();
 
   return (
-    <html lang="en" data-rs-theme="blog" suppressHydrationWarning>
+    <html lang="en" data-rs-theme="blog" data-rs-color-mode="light" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
-							const matcher = window.matchMedia("(prefers-color-scheme: dark)"); 
-							const systemColorMode = matcher.matches ? "dark" : "light";
-							const storedColorMode = localStorage.getItem("__rs-color-mode"); 
-
-							document.documentElement.setAttribute("data-rs-color-mode", storedColorMode || systemColorMode);
-							matcher.addEventListener("change", () => { 
-							 	document.body.setAttribute("data-rs-color-mode", systemColorMode);
-							});
-					`,
+              (function() {
+                try {
+                  const storedMode = localStorage.getItem("__rs-color-mode");
+                  if (storedMode) {
+                    document.documentElement.dataset.rsColorMode = storedMode;
+                  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    document.documentElement.dataset.rsColorMode = "dark";
+                  }
+                } catch (e) {}
+              })();
+            `,
           }}
         />
       </head>
       <body>
-        <LayoutWrapper availableRoutes={availableRoutes}>
-          <App>
+        <App initialColorMode="light">
+          <LayoutWrapper availableRoutes={availableRoutes}>
             <LayoutContentWrapper availableRoutes={availableRoutes}>
               {children}
               <Analytics />
               <SpeedInsights />
             </LayoutContentWrapper>
-          </App>
-        </LayoutWrapper>
+          </LayoutWrapper>
+        </App>
       </body>
     </html>
   );
