@@ -1,39 +1,50 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { MenuVisibilityContext } from "../../context/MenuVisibilityContext";
 import { View, Text, ScrollArea, Hidden } from "reshaped";
 import LayoutMenuModal from "../../components/LayoutMenuModal";
 import ArticleItem from "../../components/ArticleItem";
 import useArticleNavigation from "../../hooks/useArticleNavigation";
-import type { Props } from "./LayoutSubmenu.types";
+import type { SubmenuItemsMap } from "../../types";
+
+interface Props {
+  availableRoutes: SubmenuItemsMap;
+}
 
 const LayoutSubmenu = ({ availableRoutes }: Props) => {
+  console.debug('[LayoutSubmenu] Rendering with routes:', availableRoutes);
+  
+  useEffect(() => {
+    console.debug('[LayoutSubmenu] Component mounted');
+    return () => {
+      console.debug('[LayoutSubmenu] Component unmounted');
+    };
+  }, []);
+
   const { title, isArticle, routeItems } = useArticleNavigation(availableRoutes);
   const { isMenuVisible } = useContext(MenuVisibilityContext);
 
-  if (!routeItems || routeItems.length <= 1) return null;
-
-  const hideProps = {
-    s: isArticle || !isMenuVisible,
-    l: !isMenuVisible,
-  };
+  if (!routeItems || routeItems.length <= 1) {
+    console.debug('[LayoutSubmenu] No route items to display');
+    return null;
+  }
 
   return (
     <>
-      <Hidden hide={hideProps}>
+      <Hidden hide={{ s: isArticle || !isMenuVisible, l: !isMenuVisible }}>
         {(className) => (
           <View
-            width={{ s: "100%", l: "320px", xl: "384px" }}
+            width={{ s: "100%", l: "240px", xl: "280px" }}
             height="100vh"
             backgroundColor="elevation-base"
             className={className}
             position="sticky"
-            top={0}
+            attributes={{ style: { top: 0 } }}
           >
             <ScrollArea
               scrollbarDisplay="hover"
-              style={{ height: "100%" }}
+              attributes={{ style: { height: "100%" } }}
             >
               <View padding={{ s: 4, l: 6 }} paddingBlock={3} gap={6}>
                 <View direction="row" gap={4} align="center">
