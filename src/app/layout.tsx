@@ -55,13 +55,23 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              // Global feature flag for theme toggle functionality
+              window.__ENABLE_THEME_TOGGLE__ = false;
+              
               (function() {
                 try {
-                  const storedMode = localStorage.getItem("__rs-color-mode");
-                  if (storedMode) {
-                    document.documentElement.dataset.rsColorMode = storedMode;
-                  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
                     document.documentElement.dataset.rsColorMode = "dark";
+                  } else {
+                    document.documentElement.dataset.rsColorMode = "light";
+                  }
+                  
+                  // Only remove stored preference if theme toggle is disabled
+                  if (!window.__ENABLE_THEME_TOGGLE__) {
+                    localStorage.removeItem("__rs-color-mode");
+                  } else if (localStorage.getItem("__rs-color-mode")) {
+                    // If theme toggle is enabled and user has a preference, use it
+                    document.documentElement.dataset.rsColorMode = localStorage.getItem("__rs-color-mode");
                   }
                 } catch (e) {}
               })();

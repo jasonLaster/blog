@@ -1,13 +1,12 @@
 "use client";
 
-import { ReactNode, useContext, useEffect } from "react";
+import { ReactNode, useContext, useState, useEffect } from "react";
 import { MenuVisibilityProvider, MenuVisibilityContext } from "../../context/MenuVisibilityContext";
 import MenuToggleButton from "../MenuToggleButton/MenuToggleButton";
 import { View, Button, useIsomorphicLayoutEffect } from "reshaped";
 import useArticleNavigation from "../../hooks/useArticleNavigation";
 import type { SubmenuItemsMap } from "../../types";
 import { Sun, Moon } from "react-feather";
-import { useState } from "react";
 import { ThemeContext } from "../App/App";
 
 interface Props {
@@ -25,7 +24,6 @@ const ThemeToggleButton = () => {
 
   const handleModeClick = () => {
     const nextColorMode = colorMode === "dark" ? "light" : "dark";
-    localStorage.setItem("__rs-color-mode", nextColorMode);
     setColorMode(nextColorMode);
     document.documentElement.setAttribute("data-rs-color-mode", nextColorMode);
   };
@@ -45,6 +43,13 @@ const ThemeToggleButton = () => {
 const ButtonGroup = ({ availableRoutes }: Props) => {
   const { isArticle } = useArticleNavigation(availableRoutes);
   const [mounted, setMounted] = useState(false);
+  const [isThemeToggleEnabled, setIsThemeToggleEnabled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsThemeToggleEnabled(!!window.__ENABLE_THEME_TOGGLE__);
+    }
+  }, []);
 
   useIsomorphicLayoutEffect(() => {
     setMounted(true);
@@ -61,7 +66,7 @@ const ButtonGroup = ({ availableRoutes }: Props) => {
       gap={2}
     >
       <MenuToggleButton />
-      <ThemeToggleButton />
+      {isThemeToggleEnabled && <ThemeToggleButton />}
     </View>
   );
 };
