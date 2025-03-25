@@ -1,0 +1,134 @@
+import Image from 'next/image';
+import JumpToDef from './jump-to-def.png';
+
+export const metadata = {
+  "title": "Chrome DevTools - Diving into the Source Frames",
+  "description": "Blog post about Chrome DevTools - Diving into the Source Frames",
+  "date": "2015-03-19",
+  "categories": [
+    "Firefox"
+  ]
+};
+
+#### Javascript Editor
+The javascript editor in devtools parlance is refereed to as a Source Frame. There are two source frames in devtools, the javascript editor and css editor.
+
++ [JavascriptSourceFrame](https://github.com/jasonLaster/blink-devtools-docs/blob/master/source/JavascriptSourceFrame.md)
++ [Source Frame](https://github.com/jasonLaster/blink-devtools-docs/blob/master/source_frame/SourceFrame.md)
+
+The javascript editor not surprisingly has a custom logic for communicating with the console and handling breakpoints.
+
+The main source frame, is more concerned with showing content, searching, jumping to lines.
+
+The editor is in many ways a glorified wrapper in that a lot of the actual work is handled by the text editor (codemirror). For example, when the editor wants to jump to a nother search result it tells the editor to highlight the result.
+
+```js
+jumpToSearchResult: function(index) {
+    this._currentSearchResultIndex = (index + this._searchResults.length) % this._searchResults.length;
+    this._currentSearchMatchChangedCallback(this._currentSearchResultIndex);
+
+    var result = this._searchResults[this._currentSearchResultIndex]
+    this._textEditor.highlightSearchResults(this._searchRegex, result);
+}
+```
+
+#### Shortcuts
+
+All of the shortcuts are defined in an object `WebInspector.ShortcutsScreen.SourcesPanelShortcuts`. Here's a dump of them for fun:
+
++ SelectNextOccurrence
++ SoftUndo
++ GotoMatchingBracket
++ ToggleAutocompletion
++ IncreaseCSSUnitByOne
++ DecreaseCSSUnitByOne
++ IncreaseCSSUnitByTen
++ DecreaseCSSUnitByTen
++ EvaluateSelectionInConsole
++ AddSelectionToWatch
++ GoToMember
++ GoToLine
++ ToggleBreakpoint
++ NextCallFrame
++ PrevCallFrame
++ ToggleComment
++ JumpToPreviousLocation
++ JumpToNextLocation
++ CloseEditorTab
++ Save
++ SaveAll
+
+
+#### How do the function links work?
+
+The function link in the object popover is a little know trick for jumping to a function definition.
+
+<Image src={JumpToDef} alt="Diving into the source frames" />
+
+Not surprisingly, the link is setup inside the `ObjectHelper`
+
+When you hover over a function `showObjectPopover` is called. That then kicks off a `_queryObject` fetch. Then, if the result is a function, the result is re-fetched for its properties `result.getOwnProperties` and shown `didGetFunctionProperties`.
+
+The formatting for the popover is done in `didGetFunctionDetails`
+
+```js
+function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
+    var container = createElementWithClass("div", "object-popover-container");
+
+    var title = container.createChild("div", "function-popover-title source-code");
+    var functionName = title.createChild("span", "function-name").textContent = response.functionName;
+
+    var link = this._lazyLinkifier().linkifyRawLocation(response.location, response.sourceURL, "function-location-link");
+    title.appendChild(link);
+
+    container.appendChild(popoverContentElement);
+    popover.showForAnchor(container, anchorElement);
+}
+```
+
+I think it's pretty cool that the popover is shown with `showForAnchor` w/ the anchor element being passed in.
+
+#### Linkifier
+
+The `ObjectHelper` sets up a basic [Linkifier](https://github.com/jasonLaster/blink-devtools-docs/blob/master/bindings/Linkifier.md) for jumping to function definitions.
+
+
+```js
+WebInspector.Linkifier = function(formatter) {
+    this._formatter = formatter || new WebInspector.Linkifier.DefaultFormatter(WebInspector.Linkifier.MaxLengthForDisplayedURLs);
+    this._liveLocationsByTarget = new Map();
+    WebInspector.targetManager.observeTargets(this);
+}
+```
+
+When building a link, it uses the standard `Linkifier` instance method `linkifyRawLocation`.
+
+```js
+linkifyRawLocation: function(rawLocation, fallbackUrl, classes) {
+    return this.linkifyScriptLocation(
+      rawLocation.target(),
+      rawLocation.scriptId,
+      fallbackUrl,
+      rawLocation.lineNumber,
+      rawLocation.columnNumber,
+      classes // these will be the <a> classses
+    );
+}
+
+
+linkifyScriptLocation: function(target, scriptId, sourceURL, lineNumber, columnNumber, classes) {
+    var fallbackAnchor = WebInspector.linkifyResourceAsNode(sourceURL, lineNumber, classes);
+    var rawLocation = scriptId ?
+      target.debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber || 0) :
+      target.debuggerModel.createRawLocationByURL(sourceURL, lineNumber, columnNumber || 0);
+
+    var anchor = this._createAnchor(classes);
+    var liveLocation = WebInspector.debuggerWorkspaceBinding.createLiveLocation(
+      rawLocation, this._updateAnchor.bind(this, anchor));
+
+    this._liveLocationsByTarget.get(rawLocation.target()).set(anchor, liveLocation);
+
+    anchor[WebInspector.Linkifier._fallbackAnchorSymbol] = fallbackAnchor;
+    return anchor;
+},
+```

@@ -4,8 +4,39 @@ import Link from 'next/link';
 import { FaXTwitter, FaGithub } from 'react-icons/fa6';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-
+import { Metadata } from 'next';
 const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://jasonlaster.com'),
+  alternates: {
+    canonical: '/'
+  },
+  title: {
+    default: 'Jason Laster',
+    template: '%s | Jason Laster',
+  },
+  description: "Jason Laster",
+  openGraph: {
+    title: 'Jason Laster',
+    description: 'Jason Laster',
+    siteName: 'Jason Laster',
+    locale: 'en_US',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+}
+
 
 function Header() {
   return (            

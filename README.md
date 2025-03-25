@@ -20,10 +20,10 @@ This site draws inspiration from:
 Replace old blog
 - [x] Get the post title and metadata 
 - [x] Add analytics, perf 
-- [] metadata (title, favico)
+- [x] metadata (title, favico)
  
 Nice to haves
-- [] sitemap
+- [x] sitemap
 - [] sluggify headrs
 - [] Add theme picker
 - [] dynamic og

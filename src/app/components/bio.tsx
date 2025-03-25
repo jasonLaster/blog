@@ -13,10 +13,10 @@ export function Bio({ title, items, className }: { title: string, items: { title
             <div className="flex flex-row justify-between my-1">
               <div className="flex justify-between grow">
                 <a href={item.href}>{item.title}</a>
-                <hr role="separator" className="border-t border-neutral-300 my-2 flex-grow self-center mx-4" />
+                <hr role="separator" className="border-t border-neutral-300 dark:border-neutral-700 my-2 flex-grow self-center mx-4" />
                 <span>{item.label}</span>
               </div>
-              <div className="flex justify-end shrink tabular-nums text-neutral-600 self-center text-sm w-16">
+              <div className="flex justify-end shrink tabular-nums text-neutral-600 dark:text-neutral-400 self-center text-sm w-16">
                 <span>{item.date}</span>
               </div>
             </div>
