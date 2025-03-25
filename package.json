@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"next dev --turbopack\" \"bun run watch-posts\"",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "posts": "bun run scripts/posts.ts",
-    "watch-posts": "nodemon -e mdx -w src/app/posts --ignore src/app/posts/posts.json -x \"bun run scripts/posts.ts\""
+    "lint": "next lint"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
