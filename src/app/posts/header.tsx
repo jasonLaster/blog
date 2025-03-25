@@ -1,8 +1,10 @@
 "use client";
 
-import { useSelectedLayoutSegments } from "next/navigation";
-import posts from "./posts.json";
+import { usePathname } from "next/navigation";
+// import posts from "./posts.json";
 import type { Post } from "../types";
+
+type PostWithoutContent = Omit<Post, "content">;
 
 function timeAgo(date: string | Date): string {
   // Simple fallback implementation
@@ -26,13 +28,10 @@ function timeAgo(date: string | Date): string {
   return "just now";
 }
 
-export default function Header() {
-  const segments = useSelectedLayoutSegments();
-  const post =
-    (posts as Post[]).find((p) => p.slug === segments[segments.length - 1]) ||
-    null;
-
-  const isIndex = !segments[segments.length - 1];
+export default function Header({ posts }: { posts: PostWithoutContent[] }) {
+  const pathname = usePathname();
+  const post = posts.find((p) => pathname.endsWith(p.slug)) || null;
+  const isIndex = !pathname.endsWith("/");
 
   if (isIndex) {
     return <div className="flex flex-col gap-2 mb-8"></div>;
