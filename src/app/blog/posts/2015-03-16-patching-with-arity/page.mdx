@@ -1,0 +1,71 @@
+export const metadata = {
+  "title": "Monkey Patching with Arity",
+  "description": "Blog post about Monkey Patching with Arity",
+  "date": "2015-03-16",
+  "categories": [
+    "JS"
+  ],
+  "alternates": {
+    "canonical": "/blog/posts/03-16-patching-with-arity"
+  }
+};
+
+Monkey patching in javascript involves several building blocks `apply`, `call`, `arguments`, `function.length`.
+
+#### Base Case
+
+Lets say we want to monkey patch `func` with `monkeyFunc` so that
+whenever we call `monkeyFunc` `func` is called with the same arguments.
+
+This is actually pretty easy. `monkey` returns a new function that acts as a closure, which keeps a reference to the original context and function. Then whenever the new function is called, the context and function is invoked w/ new arguments.
+
+```js
+function func(a, b, c) {
+  console.log(arguments)
+}
+
+function monkey(f) {
+  return function () {
+    var context = this;
+    f.apply(context, arguments);
+  }
+}
+
+var monkeyFunc = monkey(func);
+console.log(monkeyFunc(1,2,3)); // [1,2,3]
+console.log(monkeyFunc(1,2)); // [1,2]
+```
+
+#### Dynamic Arity
+
+There's one problem with `monkey`. If you notice, `func` has an arity of three (it accepts three parameters) while `monkey` returns a function with an arity of 0. Put another way, `func.length` is 3 and (function() {}).length is 0.
+
+Does this matter, in most cases arity is not important because `monkeyFunc(1,23,  )` will still call `func(1,2,3)`. However, many libraries will check the arity of internal functions to make their magical APIs sing.
+
+So, when we monkey patch a function we want the patched function to have the same arity as the original function. In javascript this is hard because func.length cannot be overriden so we'll have to write some black magic of our own.
+
+
+```js
+function func(a, b, c) {
+  console.log(arguments)
+}
+
+function monkey(f) {
+  window.f1 = f;
+  window.c1 = this;
+  var argString = _.times(f.length, function(i) {return 'a'+ i}).join(",")
+  var funcString = 'return f1.apply(c1, arguments)';
+  return new Function(argString, funcString);
+}
+
+var monkeyFunc = monkey(func);
+console.log(func.length, monkeyFunc.length); // 3, 3
+```
+
+The new `monkey` is not much longer, but it's now a whole lot more complicated. Lets start unpacking starting at the last line and going up.
+
+`new Function(ars, func)` is the Function constructor function, which is a mouth full. It takes two parameters, an argument string and function body. An example call would look like `new function('a,b', 'console.log(a,b)')`. Here we create a new function (`function(a,b){ console.log(a,b) }`).
+
+The function constructor is really useful because it lets us create a new function with an arbitrary number of arguments (read `monkeyFunc.length == func.length`). This is exactly what we do above with `argString`. When you squint real hard at it, you'll see if the original function has three parameters, `argString` will equal `a1,a2,a3`.
+
+The second parameter to the function constructor is the function body. In theory, we'd want to use the same function body as the original function (`f.apply(context, arguments)`) but this fails because the function constructor does not preseve closures. Side note: `window.eval` does not preseve closures as well. Because the closure is not preserved we have to move on to our second hack and save the function (f1) and context (c1) to the window so that they're around when our patched function is called. If you want to ever productionize this magic I recommend keeping an ID or count for your patched functions so that `f1` would look like `window.monkeys[id] = {function: f, context: context}`.

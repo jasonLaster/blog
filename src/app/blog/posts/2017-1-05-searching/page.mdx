@@ -1,0 +1,82 @@
+export const metadata = {
+  "title": "Search Boxes",
+  "description": "Blog post about Search Boxes",
+  "date": "2017-1-5",
+  "categories": [
+    "Firefox"
+  ],
+  "alternates": {
+    "canonical": "/blog/posts/1-05-searching"
+  }
+};
+
+Working on a Debugger presents new challenges everyday.
+Some of them are expected and exciting like formatting JS promises.
+Others surprise you and are in hindsight totally obvious.
+
+Search selections are one of those challenges that in hindsight are totally obvious,
+but the story is anything but.
+
+Back in August, we started working on a new editor search bar with the help of the
+great [@Helenvholmes][helen]. The feature called for a search matches count and
+search match outlines.
+
+The matches would also have a selected match, which would iterate
+as the user typed `<enter>` or shift `<enter>`.
+The designs called for the selected match to be highlighted in garish yellow!
+
+I worked on a simple [first version][search-bar-pr] that showed the match count and selected match in light grey.
+I didn't have time to style the match yellow I guess...
+
+![](https://camo.githubusercontent.com/f733ee5a71b6801b79d1a77af610cabd0ac7f387/687474703a2f2f672e7265636f726469742e636f2f6a68563474324e586f392e676966)
+
+I filed an issue in October for [outlining matches][initial-issue].
+[@Bomsy][bomsy] grabbed the issue and had a [crazy patch][crazy-patch] in November.
+I say crazy because it had bonkers [regexs][regexs] and used a streaming CodeMirror [tokenizer][tokenizer].
+
+![](https://cloud.githubusercontent.com/assets/792924/19970644/8be03c94-a1d4-11e6-9666-54a18b4967db.gif)
+
+At this point, we thought we were done, but there were two bugs that we had not considered.
+The first bug was that while this tokenizer worked nicely for one token searches i.e. `this`, it
+got confused by multiple searches. It did something like this:
+
+> Look, I found lots of things!
+
+![](https://cloud.githubusercontent.com/assets/792924/20667007/0479fbc0-b55f-11e6-826f-262315a101f8.gif)
+
+[@Zacquary][zacquary] found that the multiple matches were caused by a CodeMirror `opaque` property.
+
+![](https://cloud.githubusercontent.com/assets/792924/20667022/201fe3f8-b55f-11e6-826d-cfe933396230.gif)
+
+Unfortunately, fixing the multiple search outlines meant losing the syntax highlighting for the matches. The reason for that is that CodeMirror
+applies the syntax highlighting to each token and now that we're outlining an entire match the tokens no longer got their syntax token classes!
+
+[@Bomsy][bomsy] fixed this by making our [token highlighter][craziest-search-pr] even crazier.
+We actually borrowed some tips from Chrome's [highlighter][chrome-highlighter].
+
+Here is the working highlighter!
+
+![](https://cloud.githubusercontent.com/assets/792924/21665674/5d55e4f4-d2e5-11e6-939b-d1bf246f8617.gif)
+
+
+We use software all the time that it we often take the small UI details for granted.
+I like this feature because it is something that
+I have enjoyed in almost every editor I've used, but never
+really considered until working on it.
+
+Thank You [@Helenvholmes][helen], [@Bomsy][bomsy], [@Zacquary][zacquary].
+
+
+
+[helen]:https://twitter.com/helenvholmes
+[bomsy]:https://twitter.com/b4bomsy
+[zacquary]:https://twitter.com/XerxesQados
+
+[first-version]:https://cloud.githubusercontent.com/assets/792924/19970644/8be03c94-a1d4-11e6-9666-54a18b4967db.gif
+[initial-issue]:https://github.com/devtools-html/debugger.html/issues/800
+[regexs]:https://github.com/devtools-html/debugger.html/pull/1091/files#diff-07b24b68ce54caf69f63e7e862e83530R49
+[tokenizer]:https://github.com/devtools-html/debugger.html/pull/1091/files#diff-07b24b68ce54caf69f63e7e862e83530R61
+[crazy-patch]:https://github.com/devtools-html/debugger.html/pull/1091
+[search-bar-pr]:https://github.com/devtools-html/debugger.html/pull/888
+[craziest-search-pr]:https://github.com/devtools-html/debugger.html/pull/1629/files#diff-abca53ac6238f59adcb10ccae64f2911R61
+[chrome-highlighter]:https://github.com/ChromeDevTools/devtools-frontend/blob/d8b14aea25a93cb6bbceb6aaaf45765c107d1fd9/front_end/source_frame/SourcesTextEditor.js#L727-L876
