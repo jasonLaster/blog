@@ -1,0 +1,185 @@
+export const metadata = {
+  "title": "How to start hacking on SpiderMonkey",
+  "description": "Blog post about How to start hacking on SpiderMonkey",
+  "date": "2016-12-18",
+  "categories": [
+    "Firefox"
+  ],
+  "alternates": {
+    "canonical": "/blog/posts/12-18-JS-FTW"
+  }
+};
+
+This post is a collection of notes on how to get started hacking on SpiderMonkey, I mean holy shit, did I just change JS!?!!
+
+### Gotta get the code
+
+Mozilla Central is officially hosted in a public mercurial repo, but it's easier to get the git mirror on github
+
+```bash
+git clone https://github.com/mozilla/gecko-dev.git
+```
+
+### Directories
+
+The key directory is `js/src`, but you'll quickly make an `out` directory and build JS into it.
+
+`js/src/vm` has some crazy cool files in it like `interpreter.cpp` (i wonder what that does)?!?!
+
+#### Getting started
+
+```shell
+cd js/src
+mkdir out
+cd out
+
+../configure # configure directory
+make -j8 -s  # build your very own JS
+```
+
+### Write some code
+
+I started working on adding watch points to the debugger. Here is some code for adding the debugger api:
+
+```diff
+diff --git a/js/src/jit-test/tests/debug/watchProperty-01.js b/js/src/jit-test/tests/debug/watchProperty-01.js
+new file mode 100644
+index 0000000..76df4c0
+--- /dev/null
++++ b/js/src/jit-test/tests/debug/watchProperty-01.js
+@@ -0,0 +1,23 @@
++// In a debuggee with live objects, findObjects finds those objects.
++
++var g = newGlobal();
++
++let defObject = v => g.eval(`this.${v} = { toString: () => "[object ${v}]" }`);
++defObject("a");
++// defObject("b");
++// defObject("c");
++
++var dbg = new Debugger();
++
++var gw = dbg.addDebuggee(g);
++
++var aw = gw.makeDebuggeeValue(g.a);
++aw.watchProperty(1);
++
++// var bw = gw.makeDebuggeeValue(g.b);
++// var cw = gw.makeDebuggeeValue(g.c);
++
++// assertEq(dbg.findObjects().indexOf(aw) != -1, true);
++// assertEq(dbg.findObjects().indexOf(bw) != -1, true);
++// assertEq(dbg.findObjects().indexOf(cw) != -1, true);
++assertEq(1,1)
+diff --git a/js/src/vm/Debugger.cpp b/js/src/vm/Debugger.cpp
+index 67d42d8..c0f14e8 100644
+--- a/js/src/vm/Debugger.cpp
++++ b/js/src/vm/Debugger.cpp
+@@ -6433,6 +6433,7 @@ static bool
+ DebuggerScript_setBreakpoint(JSContext* cx, unsigned argc, Value* vp)
+ {
+     THIS_DEBUGSCRIPT_SCRIPT(cx, argc, vp, "setBreakpoint", args, obj, script);
++    printf(">>> hello\n");
+     if (!args.requireAtLeast(cx, "Debugger.Script.setBreakpoint", 2))
+         return false;
+     Debugger* dbg = Debugger::fromChildJSObject(obj);
+@@ -9251,6 +9252,21 @@ DebuggerObject::makeDebuggeeValueMethod(JSContext* cx, unsigned argc, Value* vp)
+     return DebuggerObject::makeDebuggeeValue(cx, object, args[0], args.rval());
+ }
+
++
++/* static */ bool
++DebuggerObject::watchPropertyMethod(JSContext* cx, unsigned argc, Value* vp)
++{
++    THIS_DEBUGOBJECT(cx, argc, vp, "watchProperty", args, object);
++    // if (!args.requireAtLeast(cx, "Debugger.Object.prototype.makeDebuggeeValue", 1))
++    //     return false;
++
++    printf("HI!\n");
++    return true;
++    //
++    // return DebuggerObject::makeDebuggeeValue(cx, object, args[0], args.rval());
++}
++
++
+ /* static */ bool
+ DebuggerObject::unsafeDereferenceMethod(JSContext* cx, unsigned argc, Value* vp)
+ {
+@@ -9338,6 +9354,7 @@ const JSFunctionSpec DebuggerObject::methods_[] = {
+     JS_FN("executeInGlobal", DebuggerObject::executeInGlobalMethod, 1, 0),
+     JS_FN("executeInGlobalWithBindings", DebuggerObject::executeInGlobalWithBindingsMethod, 2, 0),
+     JS_FN("makeDebuggeeValue", DebuggerObject::makeDebuggeeValueMethod, 1, 0),
++    JS_FN("watchProperty", DebuggerObject::watchPropertyMethod, 1, 0),
+     JS_FN("unsafeDereference", DebuggerObject::unsafeDereferenceMethod, 0, 0),
+     JS_FN("unwrap", DebuggerObject::unwrapMethod, 0, 0),
+     JS_FS_END
+diff --git a/js/src/vm/Debugger.h b/js/src/vm/Debugger.h
+index 0fd5997..d334c62 100644
+--- a/js/src/vm/Debugger.h
++++ b/js/src/vm/Debugger.h
+@@ -1230,6 +1230,7 @@ class DebuggerObject : public NativeObject
+                                   HandleNativeObject debugger);
+
+     // Properties
++    // (interesting)
+     static MOZ_MUST_USE bool getClassName(JSContext* cx, HandleDebuggerObject object,
+                                           MutableHandleString result);
+     static MOZ_MUST_USE bool getGlobal(JSContext* cx, HandleDebuggerObject object,
+@@ -1409,6 +1410,7 @@ class DebuggerObject : public NativeObject
+     static MOZ_MUST_USE bool executeInGlobalMethod(JSContext* cx, unsigned argc, Value* vp);
+     static MOZ_MUST_USE bool executeInGlobalWithBindingsMethod(JSContext* cx, unsigned argc, Value* vp);
+     static MOZ_MUST_USE bool makeDebuggeeValueMethod(JSContext* cx, unsigned argc, Value* vp);
++    static MOZ_MUST_USE bool watchPropertyMethod(JSContext* cx, unsigned argc, Value* vp);
+     static MOZ_MUST_USE bool unsafeDereferenceMethod(JSContext* cx, unsigned argc, Value* vp);
+     static MOZ_MUST_USE bool unwrapMethod(JSContext* cx, unsigned argc, Value* vp);
+     static MOZ_MUST_USE bool getErrorReport(JSContext* cx, HandleObject maybeError,
+```
+
+### Run our very own JS
+
+You can run your JS, from the JS shell
+
+```bash
+dist/bin/js
+```
+
+The shell has lots of cool functions that are worth exploring, like looking at your bytecode
+
+Every time you make a change, you'll make a new build
+
+```bash
+make -j8 -s
+```
+
+also, don't forget your semicolons! You might be making JS, but you're writing CPP, oh god.
+
+
+### Running the tests
+
+Here's how you run the tests from the `out` directory
+
+```bash
+python ../jit-test dist/bin/js debug/breakpoint-05.js
+```
+
+output
+
+```bash
+[1|0|0|0] 100% ==========================================================>|   0.0s
+PASSED ALL
+```
+
+### GDB the tests
+
+```bash
+gdb --args /Users/jlaster/src/mozilla/gecko/js/src/obj/dist/bin/js -f /Users/jlaster/src/mozilla/gecko/js/src/jit-test/lib/prologue.js --js-cache /Users/jlaster/src/mozilla/gecko/js/sr*   8322 c/jit-test/.js-cache -e "const platform='darwin'; const libdir='/Users/jlaster/src/mozilla/gecko/js/src/jit-test/lib/'; const scriptdir='/Users/jlaster/src/mozilla/gecko/js/src/jit-test/tests*   8322 /debug/'" -f /Users/jlaster/src/mozilla/gecko/js/src/jit-test/tests/debug/watchProperty-01.js
+```
+
+
+### Good resources
+
+Here are some good resource I found on spider monkey. I haven't done much with them
+
+* [JavaScript:New to SpiderMonkey - MozillaWiki](https://wiki.mozilla.org/JavaScript:New_to_SpiderMonkey)
+* [SpiderMonkey - Mozilla | MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey)
+* [JavaScript:New to SpiderMonkey - MozillaWiki](https://wiki.mozilla.org/JavaScript:New_to_SpiderMonkey)
