@@ -13,14 +13,14 @@ export function PostsList({ posts }: { posts: Post[] }) {
   );
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-700">
+    <div className="border-t border-zinc-100 dark:border-zinc-800">
       {filteredPosts.map((post) => (
         <Link
           key={post.slug}
           className="flex flex-col"
           href={`/posts/${post.slug}`}
         >
-          <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2 border-b border-gray-200 dark:border-gray-700 py-2 hover:bg-gray-50 dark:hover:bg-gray-800">
+          <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2 border-b border-zinc-200 dark:border-zinc-800 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800">
             <p className="text-neutral-400 dark:text-neutral-400 w-[65px] tabular-nums text-sm self-center pl-1">
               {formatDate(post.metadata.publishedAt, false)}
             </p>

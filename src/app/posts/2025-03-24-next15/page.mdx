@@ -230,4 +230,21 @@ Cursor found all of the posts and eagerly went to work updating each of them. A 
 
 
 
-- 
+### Supporting theme toggling
+
+One of my primary frustrations with the old site was that the wrong theme would often flash in from the server side render.
+
+The new site lifts Guillermo's terrific `ThemeToggle` button and theme-effect which includes several nice details.
+
+* The theme toggle button is a tri-state where the third mode is system.
+* The theme ties into Tailwind via it's darkMode `class` mode.
+* There's a `themeEffect` function which is run synchronously at page load even before the stylesheet has loaded and React has mounted.
+* `themeEffect` will read the pref from localStorage and pause transitions while the theme is being applied.
+
+With that said, I shoud confess that even though i was lifting the implementation, it was still pretty difficult to setup because the latest version's of NextJS use Tailwind v4 and Guillermo's site uses v3. After quite a bit of debugging, I learned that in V4 `tailwind.config.js` is not read by default and needs to be registered via a `config` command. There are also some other slight differences like the tailwind utilities are replaced with a single import.
+
+```css 
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+```
+
