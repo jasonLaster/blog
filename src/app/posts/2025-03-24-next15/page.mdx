@@ -1,8 +1,12 @@
+import BlogPost from "./blog-post.png";
+import Image from "next/image";
+import LandingPage from "./landing-page.png";
+
 export const metadata = {
   title: "Migrating to Next.js 15",
   description: "Blog post about migrating to Next.js 15",
   date: "2025-03-24",
-  draft: true,
+  // draft: true,
   categories: ["JS"],
 };
 
@@ -22,8 +26,6 @@ There was also the added benefit of being able to borrow ideas from [Lee Robinso
 
 ### Here are some of the lessons
 
-
-
 ### Adding a post header
 
 On the surface, Guillermo and Lee have similar setups. They both use `@next/mdx` which makes it really easy to add `mdx` pages.
@@ -41,8 +43,6 @@ const withMDX = createMDX({});
 export default withMDX(nextConfig);
 ```
 
-
-
 Because Lee just shows the post's title, he's able to include in the markdown and move on. Because, Guillermo includes the date the post was published and view count, he needs to fetch the data separately.
 
 At the most simple level, he does what you'd expect and fetches the post details and page count from an API endpoint which queries redis on page load. Because this is async and would cause a page flash, he also keeps a static list of posts which he uses during the server render and static build phase.
@@ -53,12 +53,14 @@ This is fine, and it may just by my OCD speaking, but I find having to keep the 
 "concurrently \"next dev --turbopack\" \"bun run watch-posts\"",`
 ```
 
-
-
 The work around, is to have the post's `layout` component fetch the posts and pass them down to the Header component.
 
 ```tsx
-export default async function BlogLayout({ children}: {children: React.ReactNode}) {
+export default async function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const posts = await getBlogPosts();
   return (
     <div>
@@ -69,61 +71,51 @@ export default async function BlogLayout({ children}: {children: React.ReactNode
 }
 ```
 
-
-
-This is almost exactly what you want, but it still has one disadvantage. Because we're passing all of the posts down to client, just to find the one that matches the current post's slug, we're sending far more data to the client than is needed. 
+This is almost exactly what you want, but it still has one disadvantage. Because we're passing all of the posts down to client, just to find the one that matches the current post's slug, we're sending far more data to the client than is needed.
 
 ```tsx
 export default function Header({ posts }: { posts: PostWithoutContent[] }) {
   const pathname = usePathname();
   const post = posts.find((p) => pathname.endsWith(p.slug));
-  return <h1>{post.title} (post.date)</h1>
+  return <h1>{post.title} (post.date)</h1>;
 }
 ```
 
-
-
-While this is not worse than what we were doing before with the `posts.json` file, it is unfortunate because it feels like something that should be handled in the server component and thus avoidable. 
+While this is not worse than what we were doing before with the `posts.json` file, it is unfortunate because it feels like something that should be handled in the server component and thus avoidable.
 
 The rationale is that by not including path information, the server component, is able to preserve state across navigations, which is nice, but does have this downside.
 
-
-
 ### Should metadata be Yaml or JS?
 
-MDX became popular because it lets you import your own components and Next components like `Image`  . It also lets you export constants like `metadata` which works similar to page metadata.
+MDX became popular because it lets you import your own components and Next components like `Image` . It also lets you export constants like `metadata` which works similar to page metadata.
 
 ```js
 export const metadata = {
-  title: 'Understanding AI',
-  description: 'A brief overview on neural networks and language models.',
+  title: "Understanding AI",
+  description: "A brief overview on neural networks and language models.",
   alternates: {
-    canonical: '/n/ai'
+    canonical: "/n/ai",
   },
   openGraph: {
     title: "Understanding AI",
     description: "A brief overview on neural networks and language models.",
-    images: [{ url: '/og/7-principles-of-rich-web-applications' }],
-  }
+    images: [{ url: "/og/7-principles-of-rich-web-applications" }],
+  },
 };
 ```
 
+This is a nice improvement over the classical frontmatter approach where you're including YAML at the top of the post which is how one of Vercel's [demo blogs](https://github.com/vercel/examples/tree/main/solutions/blog) handles it.
 
-
-This is a nice improvement over the classical frontmatter approach where you're including YAML at the top of the post which is how one of Vercel's [demo blogs](https://github.com/vercel/examples/tree/main/solutions/blog ) handles it.
-
-```yaml 
+```yaml
 ---
 title: Understanding AI
 description: A brief overview on neural networks and language models.
 ---
 ```
 
+The one downside is being able to easily collect the post metadata for the sitemap and posts list. The demo site collects the metadata by reading the files and parsing the YAML which is not too hard since the format is simple, but somewhat ugly.
 
-
-The one downside is being able to easily collect the post metadata for the sitemap and posts list. The  demo site collects the metadata by reading the files and parsing the YAML which is not too hard since the format is simple, but somewhat ugly.
-
-```  js
+```js
 function parseFrontmatter(fileContent: string) {
   let frontmatterRegex = /---\s*([\s\S]*?)\s*---/
   let match = frontmatterRegex.exec(fileContent)
@@ -158,73 +150,84 @@ function getMDXData(dir) {
 
 ```
 
+On the surface, this should be an advantage of the module approach because you should be able to import the metadata as if it were a module.
 
+```js
+async function importMetadata(filePath: string): Promise<Metadata> {
+  try {
+    const importPath = filePath
+      .replace(/\\/g, "/")
+      .replace(/^.*?blog\/src\//, "@/")
+      .replace(/\.mdx$/, "");
 
-On the surface, this should be an advantage of the module approach because you should be able to 
-
-
-
-
-
-```js 
-export function extractMetadata(filePath: string): Metadata {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const metadataMatch = content.match(/export const metadata = ({[\s\S]*?});/);
-
-  if (metadataMatch && metadataMatch[1]) {
-    try {
-      // Use eval in a safer way by executing in a controlled scope
-      const evalFn = new Function(`
-        try {
-          const metadata = ${metadataMatch[1]};
-          return JSON.stringify(metadata);
-        } catch (e) {
-          return '{"error": "Failed to evaluate metadata: " + e.message}';
-        }
-      `);
-
-      const jsonStr = evalFn();
-      const metadata = JSON.parse(jsonStr);
-
-      if (metadata.error) {
-        console.error(metadata.error);
-        return {
-          title: 'Error',
-          publishedAt: new Date().toISOString(),
-          summary: '',
-        };
-      }
-
-      return standardizeMetadata(metadata);
-    } catch (error) {
-      console.error(`Error processing metadata from ${filePath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      console.error(`Original metadata: ${metadataMatch[1]}`);
-      return {
-        title: 'Error',
-        publishedAt: new Date().toISOString(),
-        summary: '',
-      };
-    }
+    const { metadata } = await import(importPath);
+    return standardizeMetadata(metadata);
+  } catch (error) {
+    throw new Error(`Error importing metadata from ${filePath} ${error}`);
   }
-  return {
-    title: 'No Metadata',
-    publishedAt: new Date().toISOString(),
-    summary: '',
-  };
 }
-
 ```
 
+I think this approach should work, but I had some issues at build time and in reality who has the time to debug module reconciliation! I ended up going with an uglier version which uses a regex to pull out the metadata and then uses an eval to `JSON.stringify` and parse it.
+
+```js
+export function extractMetadata(filePath: string): Metadata {
+  const content = fs.readFileSync(filePath, "utf-8");
+  const metadataMatch = content.match(/export const metadata = ({[\s\S]*?});/);
+
+  if (!metadataMatch[1]) {
+    throw new Error(`Could not import metadata from ${filePath}`);
+  }
+
+  try {
+    // Use eval in a safer way by executing in a controlled scope
+    const evalFn = new Function(`
+      try {
+        const metadata = ${metadataMatch[1]};
+        return JSON.stringify(metadata);
+      } catch (e) {
+        return '{"error": "Failed to evaluate metadata: " + e.message}';
+      }
+    `);
+
+    const jsonStr = evalFn();
+    const metadata = JSON.parse(jsonStr);
+    return standardizeMetadata(metadata);
+  } catch (error) {
+    throw new Error(`Could not import metadata from ${filePath}`);
+  }
+}
+```
+
+This is totally silly and is probably an area where `@nextjs/mdx` could export a `getPostsMetadata` function that takes care of this for you.
+
+### Updating the Layout
+
+The previous layout was inspired by [Brian Lovin](https://brianlovin.com/)'s terrific blog and features a left sidebar and the ability to easily scroll through the posts.
+
+<div className="flex relative h-[400px]">
+  <div className="flex flex-row gap-8 translate-x-[-205px] scroll-x h-[400px]  absolute">
+    <Image
+      src={BlogPost}
+      alt="Blog Post"
+      className="h-auto border-1 border-gray-200 rounded-lg"
+    />
+    <Image
+      src={LandingPage}
+      alt="Landing Page"
+      className="h-auto border-1 border-gray-200 rounded-lg"
+    />
+  </div>
+</div>
+
+While these are nice touches, this time around I wanted to focus on simplicity and give users a zen mode reading experience without having to select reader mode.
+
+### AI played copy writer
+
+While I was migrating the posts from the old YAML frontmatter format to the new MDX metadata, I asked Cursor to help me out.
+
+Cursor found all of the posts and eagerly went to work updating each of them. A couple of hours later, I realized that in addition to updating the format of the metadata, it also played copy writer and updated many of the page titles!
 
 
 
-
-
-
-Topics
-
-- NextJS MDX support vs remote content
-- Post metadata (export vs frontmatter)
-- Page performance
-- Adopting RauchG's layout
-- AI changed the titles
+- 

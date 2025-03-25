@@ -31,7 +31,7 @@ function timeAgo(date: string | Date): string {
 export default function Header({ posts }: { posts: PostWithoutContent[] }) {
   const pathname = usePathname();
   const post = posts.find((p) => pathname.endsWith(p.slug)) || null;
-  const isIndex = !pathname.endsWith("/");
+  const isIndex = pathname.split("/").length === 2;
 
   if (isIndex) {
     return <div className="flex flex-col gap-2 mb-8"></div>;
