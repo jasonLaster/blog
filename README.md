@@ -11,9 +11,7 @@ This site draws inspiration from:
 - Vercel's demo blog which showed me how fetch pages
 - ... site which helped me convert my old Jekyll site to NextJS
 
-### To do list
-
-Replace old blog
+### Replace old blog
 
 - [x] Get the post title and metadata
 - [x] Add analytics, perf
@@ -21,18 +19,18 @@ Replace old blog
 - [x] Add static rendering
 - [x] sitemap
 - [x] Flip about and posts
+- [x] Add theme picker
+- [x] split notes and posts
+- [x] improve theme
 
-### Nice to haves
+### Fast follow
 
-- [ ] improve theme
 - [ ] simplify the narrative
 - [ ] Add a search box for posts
-- [ ] split notes and posts
-- [] sluggify headers
-- [] Add theme picker
-- [] dynamic og
-- [] change the syntax highlighting theme
-- [] remove src dir since it adds extra nesting
-- [] confirm ai did not re-write the content of the posts
+- [ ] sluggify headers
+- [ ] dynamic og
+- [ ] change the syntax highlighting theme
+- [ ] remove src dir since it adds extra nesting
+- [ ] confirm ai did not re-write the content of the posts
 
 ---
