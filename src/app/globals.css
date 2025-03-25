@@ -1,18 +1,7 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
-  --font-family-sans: 'Inter', sans-serif;
-}
-
-:root {
-  --sh-class: #7aa2f7;
-  --sh-sign: #89ddff;
-  --sh-string: #9ece6a;
-  --sh-keyword: #bb9af7;
-  --sh-comment: #565f89;
-  --sh-jsxliterals: #7aa2f7;
-  --sh-property: #73daca;
-  --sh-entity: #e0af68;
+  --font-family-sans: "Inter", sans-serif;
 }
 
 html {
@@ -32,7 +21,7 @@ h4 {
 }
 
 pre {
-  background-color: #16161e;
+  /* background-color: #16161e; */
   border-radius: 0.5rem;
   overflow-x: auto;
   padding: 1rem;
@@ -49,12 +38,26 @@ pre {
   scrollbar-width: none;
 }
 
-code {
-  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+pre code {
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
   font-size: 14px;
-  padding: 0.2em 0.4em;
-  border-radius: 0.3em;
-  background-color: var(--color-gray-100);
+  padding: 0.5em 0.1em;
+}
+pre {
+  border-radius: 0.5em;
+  background-color: var(--color-slate-800);
+}
+
+:root {
+  --sh-identifier: #3c0d82;
+  --sh-keyword: #f47067;
+  --sh-string: #00a99a;
+  --sh-class: #8d85ff;
+  --sh-property: #4e8fdf;
+  --sh-entity: #6eafad;
+  --sh-jsxliterals: #bf7db6;
+  --sh-sign: #8996a3;
+  --sh-comment: #a19595;
 }
 
 pre code {
@@ -75,12 +78,20 @@ code:not(pre code) span {
 }
 
 @media (prefers-color-scheme: dark) {
-  code {
-    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
-    font-size: 14px;
-    padding: 0.2em 0.4em;
+  pre {
     border-radius: 0.3em;
     background-color: var(--color-zinc-800);
+  }
+
+  :root {
+    --sh-class: #7aa2f7;
+    --sh-sign: #89ddff;
+    --sh-string: #9ece6a;
+    --sh-keyword: #bb9af7;
+    --sh-comment: #565f89;
+    --sh-jsxliterals: #7aa2f7;
+    --sh-property: #73daca;
+    --sh-entity: #e0af68;
   }
 
   code:not(pre code) span {
@@ -97,8 +108,8 @@ hr {
 }
 
 /* Remove Safari input shadow on mobile */
-input[type='text'],
-input[type='email'] {
+input[type="text"],
+input[type="email"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -110,4 +121,3 @@ table {
   overflow-x: auto;
   white-space: nowrap;
 }
-

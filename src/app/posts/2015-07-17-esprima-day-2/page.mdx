@@ -1,18 +1,16 @@
 export const metadata = {
-  "title": "Esprima day 2",
-  "description": "Blog post about Esprima day 2",
-  "date": "2015-07-17",
-  "categories": [
-    "JS"
-  ]
+  title: "Hacking on Esprima, the JS Parser, Day 2",
+  description: "Blog post about Esprima day 2",
+  date: "2015-07-17",
+  categories: ["OSS"],
 };
 
 Yesterday, we looked at how Esprima parses `2+2`. Today,
 we're going to go one step further and see how Esprima parses `sum`.
 
 ```js
-function sum(a,b) {
-    return a + b;
+function sum(a, b) {
+  return a + b;
 }
 ```
 
@@ -26,67 +24,67 @@ Esprima goes about the work of parsing a function.
 So lets start from the beginning.
 
 ```js
-esprima.parse("function sum(a,b) {return a + b;}")
+esprima.parse("function sum(a,b) {return a + b;}");
 ```
+
 When you parse the `sum` function you get an output like this:
 
 ```json
 {
-    "type": "Program",
-    "body": [
+  "type": "Program",
+  "body": [
+    {
+      "type": "FunctionDeclaration",
+      "id": {
+        "type": "Identifier",
+        "name": "sum"
+      },
+      "params": [
         {
-            "type": "FunctionDeclaration",
-            "id": {
-                "type": "Identifier",
-                "name": "sum"
-            },
-            "params": [
-                {
-                    "type": "Identifier",
-                    "name": "a"
-                },
-                {
-                    "type": "Identifier",
-                    "name": "b"
-                }
-            ],
-            "defaults": [],
-            "body": {
-                "type": "BlockStatement",
-                "body": [
-                    {
-                        "type": "ReturnStatement",
-                        "argument": {
-                            "type": "BinaryExpression",
-                            "operator": "+",
-                            "left": {
-                                "type": "Identifier",
-                                "name": "a"
-                            },
-                            "right": {
-                                "type": "Identifier",
-                                "name": "b"
-                            }
-                        }
-                    }
-                ]
-            },
-            "generator": false,
-            "expression": false
+          "type": "Identifier",
+          "name": "a"
+        },
+        {
+          "type": "Identifier",
+          "name": "b"
         }
-    ]
+      ],
+      "defaults": [],
+      "body": {
+        "type": "BlockStatement",
+        "body": [
+          {
+            "type": "ReturnStatement",
+            "argument": {
+              "type": "BinaryExpression",
+              "operator": "+",
+              "left": {
+                "type": "Identifier",
+                "name": "a"
+              },
+              "right": {
+                "type": "Identifier",
+                "name": "b"
+              }
+            }
+          }
+        ]
+      },
+      "generator": false,
+      "expression": false
+    }
+  ]
 }
 ```
 
-
 **Notes:**
 
-+ `FunctionDeclaration` - declarations take the form `function foo() {}`
-+ `type.name` is set to `sum`
-+ `params` are an array of identifiers `(a, b)`
-+ `body` is a `ReturnStatement` with an argument `BinaryExpression`.
+- `FunctionDeclaration` - declarations take the form `function foo() {}`
+- `type.name` is set to `sum`
+- `params` are an array of identifiers `(a, b)`
+- `body` is a `ReturnStatement` with an argument `BinaryExpression`.
 
-----
+---
 
 ##### Call Stack
 
@@ -106,11 +104,16 @@ This shows us that, the function declaration is just a `StatementItem` found by 
 function parseStatementListItem() {
   if (lookahead.type === Token.Keyword) {
     switch (lookahead.value) {
-    case 'export': return parseExportDeclaration();
-    case 'import': return parseImportDeclaration();
-    case 'let': return parseLexicalDeclaration({inFor: false});
-    case 'function': return parseFunctionDeclaration(new Node());
-    case 'class': return parseClassDeclaration();
+      case "export":
+        return parseExportDeclaration();
+      case "import":
+        return parseImportDeclaration();
+      case "let":
+        return parseLexicalDeclaration({ inFor: false });
+      case "function":
+        return parseFunctionDeclaration(new Node());
+      case "class":
+        return parseClassDeclaration();
     }
   }
 
@@ -122,28 +125,25 @@ Looking at `parseStatementListItem`,
 all it's doing is comparing the lookahead's value to different types.
 It's not surprising that it finds the function declaration.
 
-
 ### How is a function parsed?
 
 Here's a simplified version of `parseFunctionDeclaration`
 We'll look at how four things are handled: (names, params, strict mode, body).
 
-
 ```js
 function parseFunctionDeclaration(node) {
+  if (!match("(")) {
+    token = lookahead;
+    var id = parseVariableIdentifier();
+  }
 
-    if (!match('(')) {
-        token = lookahead;
-        var id = parseVariableIdentifier();
-    }
+  var params = parseParams();
 
-    var params = parseParams();
+  var previousStrict = strict;
+  var body = parseFunctionSourceElements();
+  strict = previousStrict;
 
-    var previousStrict = strict;
-    var body = parseFunctionSourceElements();
-    strict = previousStrict;
-
-    return node.finishFunctionDeclaration(id, params, body);
+  return node.finishFunctionDeclaration(id, params, body);
 }
 ```
 
@@ -155,9 +155,9 @@ but basically Esprima lexes, finds the next token and returns the node.
 
 ```js
 function parseVariableIdentifier() {
-    var token = lex();
-    if (token.type !== Token.Identifier) throwUnexpectedToken(token);
-    return node.finishIdentifier(token.value);
+  var token = lex();
+  if (token.type !== Token.Identifier) throwUnexpectedToken(token);
+  return node.finishIdentifier(token.value);
 }
 ```
 
@@ -172,16 +172,15 @@ Parse params order of operations is as follows:
 2. check for the second ')' if it finds it return early
 3. parse params
 
-
 ```js
 function parseParams() {
-    options = { params: [] };
-    expect('(');
+  options = { params: [] };
+  expect("(");
 
-    if (match(')')) return options;
-    while (parseParam(options));
+  if (match(")")) return options;
+  while (parseParam(options));
 
-    return options;
+  return options;
 }
 ```
 
@@ -190,18 +189,17 @@ You shouldn't be, parsers will always break the problem into the smallest possib
 
 **Findings:**
 
-+ Params are just variable identifiers. Remember function names? Same thing!
-+ `options` is a variable that is shared between `parseParams` and `parseParam`. Interesting choice sir...
-+ `parseParam` checks for the last paren `)`.
+- Params are just variable identifiers. Remember function names? Same thing!
+- `options` is a variable that is shared between `parseParams` and `parseParam`. Interesting choice sir...
+- `parseParam` checks for the last paren `)`.
 
 ```js
-
 function parseParam(param) {
-    token = lookahead;
-    var param = parseVariableIdentifier();
-    options.params.push(param);
+  token = lookahead;
+  var param = parseVariableIdentifier();
+  options.params.push(param);
 
-    return !match(')');
+  return !match(")");
 }
 ```
 
@@ -212,19 +210,18 @@ It then, parses the function body and resets the strict mode.
 
 ```js
 function parseFunctionDeclaration(node) {
+  if (!match("(")) {
+    token = lookahead;
+    var id = parseVariableIdentifier();
+  }
 
-    if (!match('(')) {
-        token = lookahead;
-        var id = parseVariableIdentifier();
-    }
+  var params = parseParams();
 
-    var params = parseParams();
+  var previousStrict = strict;
+  var body = parseFunctionSourceElements();
+  strict = previousStrict;
 
-    var previousStrict = strict;
-    var body = parseFunctionSourceElements();
-    strict = previousStrict;
-
-    return node.finishFunctionDeclaration(id, params, body);
+  return node.finishFunctionDeclaration(id, params, body);
 }
 ```
 
@@ -236,7 +233,6 @@ block's strict mode preference we can make sure it doesn't get clobbered.
 function() { 'use strict' }
 ```
 
-
 #### How is the function body parsed?
 
 `parseFunctionSourceElements` will do a couple things to set specific function
@@ -244,22 +240,22 @@ body fields, but the gist of it is parsing statements, which is a lot like parsi
 
 **Order of operations:**
 
-+ check for a left curly `{`
-+ start parsing statements and checking for the right curly `}`
+- check for a left curly `{`
+- start parsing statements and checking for the right curly `}`
 
 ```js
 function parseFunctionSourceElements() {
-    expect('{');
-    var body = [];
+  expect("{");
+  var body = [];
 
-    while (startIndex < length) {
-        token = lookahead;
-        if (match('}')) break;
+  while (startIndex < length) {
+    token = lookahead;
+    if (match("}")) break;
 
-        body.push(parseStatementListItem());
-    }
+    body.push(parseStatementListItem());
+  }
 
-    return node.finishBlockStatement(body);
+  return node.finishBlockStatement(body);
 }
 ```
 
@@ -269,14 +265,15 @@ In the spirit of the parser, if you're curious, I point you to yesterday's post
 on how `2+2` is parsed. If you've seen one statement parsed, you've seen them all :)
 Not really, but ya know we got to save something for tomorrow.
 
-
 ### Overview
 
 Alright, so that finishes today's journey into how `sum` is parsed.
 
- ```js
- function sum(a,b) {return a + b;}
- ```
+```js
+function sum(a, b) {
+  return a + b;
+}
+```
 
 We looked at how sum's name, params, and body were parsed. Along the way,
 we saw the importance of breaking a big problem down into small pieces and

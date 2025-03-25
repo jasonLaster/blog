@@ -1,14 +1,13 @@
-import Image from 'next/image';
-import Websockets1 from './websockets-1.png';
-import Websockets2 from './websockets-2.png';
+import Image from "next/image";
+import Websockets1 from "./websockets-1.png";
+import Websockets2 from "./websockets-2.png";
 
 export const metadata = {
-  "title": "Chrome DevTools - Filtering / Formatting Websocket frames",
-  "description": "Blog post about Getting WebSocket Frames",
-  "date": "2016-03-05",
-  "categories": [
-    "Chrome"
-  ]
+  title: "Chrome DevTools - Filtering / Formatting Websocket frames",
+  description: "Blog post about Getting WebSocket Frames",
+  date: "2016-03-05",
+  categories: ["Chrome"],
+  note: true,
 };
 
 As of today, Chrome DevTools does not have great support for seeing web socket frames. Chrome DevTools uses it's standard `DataTable` component, which supports columns with sorting. It does not support filtering, formatting objects, or adding additional columns.
@@ -21,18 +20,23 @@ In the meantime, we can do a little hacking and build a half decent substitute.
 
 #### Original
 
-<Image src={Websockets1} alt="Chrome DevTools - Filtering / Formatting Websocket frames" />
+<Image
+  src={Websockets1}
+  alt="Chrome DevTools - Filtering / Formatting Websocket frames"
+/>
 
 #### New View
 
-<Image src={Websockets2} alt="Chrome DevTools - Filtering / Formatting Websocket frames" />
-
+<Image
+  src={Websockets2}
+  alt="Chrome DevTools - Filtering / Formatting Websocket frames"
+/>
 
 What you need to do is to open a second DevTools (DT) to inspect the original. You can do this when DT is undocked and you hit cmd shift I. At this point, you can create a new snippet in the sources tab and add the code below. Or if you're feeling lazy drop the whole thing into the console.
 
 ```js
 // Get the Network Tabs
-var networkTabs  = WebInspector.panels.network._networkItemView.tabViews();
+var networkTabs = WebInspector.panels.network._networkItemView.tabViews();
 
 // Get the Websocket View from the network tabs
 var WebsocketView = networkTabs[1];
@@ -40,7 +44,7 @@ var WebsocketView = networkTabs[1];
 // get the frames from the websocket table
 var frames = WebsocketView._dataGrid._flatNodesList();
 
-var frameData = frames.map(frame => JSON.parse(frame._dataText))
+var frameData = frames.map((frame) => JSON.parse(frame._dataText));
 
 // log each frame
 
@@ -49,11 +53,11 @@ var frameData = frames.map(frame => JSON.parse(frame._dataText))
 // })
 
 // show the table
-var framesData = frameData.map(frame =>  {
-    var {id, method, params, result} = frame;
-    var params = JSON.stringify(params);
-    var result = JSON.stringify(result);
-    return {id, method,params , result}
+var framesData = frameData.map((frame) => {
+  var { id, method, params, result } = frame;
+  var params = JSON.stringify(params);
+  var result = JSON.stringify(result);
+  return { id, method, params, result };
 });
 
 console.table(framesData);

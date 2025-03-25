@@ -1,52 +1,49 @@
 export const metadata = {
-  "title": "Esprima Day 1",
-  "description": "Blog post about Esprima Day 1",
-  "date": "2015-07-16",
-  "categories": [
-    "JS"
-  ]
+  title: "Hacking on Esprima, the JS Parser, Day 1",
+  description: "Blog post about Esprima Day 1",
+  date: "2015-07-16",
+  categories: ["OSS"],
 };
 
 Esprima is a JS parser that outputs an AST.
 There are plenty of articles on parsers and ASTs.
-Today, I'm going to take a look at *how* Esprima builds the AST.
-
+Today, I'm going to take a look at _how_ Esprima builds the AST.
 
 ### What is 2+2?
 
 ```js
-2+2
+2 + 2;
 ```
 
 ```json
 {
-    "type": "Program",
-    "body": [
-        {
-            "type": "ExpressionStatement",
-            "expression": {
-                "type": "BinaryExpression",
-                "operator": "+",
-                "left": {
-                    "type": "Literal",
-                    "value": 2,
-                    "raw": "2"
-                },
-                "right": {
-                    "type": "Literal",
-                    "value": 2,
-                    "raw": "2"
-                }
-            }
+  "type": "Program",
+  "body": [
+    {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "BinaryExpression",
+        "operator": "+",
+        "left": {
+          "type": "Literal",
+          "value": 2,
+          "raw": "2"
+        },
+        "right": {
+          "type": "Literal",
+          "value": 2,
+          "raw": "2"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
+
 Lets look at two things:
 
 1. How are Binary Expressions parsed
 2. How did Esprima determine "2+2" was a binary expression?
-
 
 ### 1. How are Binary Expressions parsed?
 
@@ -54,30 +51,29 @@ Here's a simplified version of the binary expression parser.
 
 Order of operations:
 
-  1. get left value (1)
-  2. get operator (+)
-  3. get right value (2)
-  4. return a new expression node
-
+1. get left value (1)
+2. get operator (+)
+3. get right value (2)
+4. return a new expression node
 
 ```js
 function parseBinaryExpression() {
-    // get left value
-    var marker = lookahead;
-    var left = inheritCoverGrammar(parseUnaryExpression);
+  // get left value
+  var marker = lookahead;
+  var left = inheritCoverGrammar(parseUnaryExpression);
 
-    // get operator
-    var oparator = lookahead;
-    var prec = binaryPrecedence(oparator, state.allowIn);
-    oparator.prec = prec;
+  // get operator
+  var oparator = lookahead;
+  var prec = binaryPrecedence(oparator, state.allowIn);
+  oparator.prec = prec;
 
-    // get right value
-    var right = isolateCoverGrammar(parseUnaryExpression);
+  // get right value
+  var right = isolateCoverGrammar(parseUnaryExpression);
 
-    // return node
-    var node = new WrappingNode(marker)
-    node.finishBinaryExpression(operator, left, right);
-    return node;
+  // return node
+  var node = new WrappingNode(marker);
+  node.finishBinaryExpression(operator, left, right);
+  return node;
 }
 ```
 
@@ -86,9 +82,9 @@ By the way, left is actually quite simple. We're basically looking at the litera
 
 ```json
 {
-    "type": "Literal",
-    "value": 2,
-    "raw": "2"
+  "type": "Literal",
+  "value": 2,
+  "raw": "2"
 }
 ```
 
@@ -99,29 +95,28 @@ marker = lookahead;
 left = inheritCoverGrammar(parseUnaryExpression);
 ```
 
-
 The marker (lookahead) value is the token that we'll parse.
+
 ```json
 {
-    "type": 6,
-    "value": 2,
-    "lineNumber": 1,
-    "lineStart": 0,
-    "start": 0,
-    "end": 1
+  "type": 6,
+  "value": 2,
+  "lineNumber": 1,
+  "lineStart": 0,
+  "start": 0,
+  "end": 1
 }
 ```
 
 The inherit cover grammar... parse unary expression...
 business is Esprima's strategy for parsing the left value.
-We'll see in a second that, this expands out really quickly as Esprima searches for what the left value *really* is.
+We'll see in a second that, this expands out really quickly as Esprima searches for what the left value _really_ is.
 
 ```js
 inheritCoverGrammar(parseUnaryExpression);
 ```
 
 Here's Esprima's call stack as it searches for the left value's value.
-
 
 .9. **finishLiteral**  
 .8. **parsePrimaryExpression** (esprima.js:3155)  
@@ -132,8 +127,7 @@ Here's Esprima's call stack as it searches for the left value's value.
 .4. **parsePostfixExpression** (esprima.js:3398)  
 .3. **parseUnaryExpression** (esprima.js:3427)  
 .2. inheritCoverGrammar (esprima.js:2610)  
-.1. **parseBinaryExpression** (esprima.js:3547)  
-
+.1. **parseBinaryExpression** (esprima.js:3547)
 
 Here's how Esprima narrow's the search:
 
@@ -175,7 +169,6 @@ function parsePrimaryExpression() {
 }
 ```
 
-
 ### 2. How did Esprima determine "2+2" was a binary expression?
 
 Alright, so we now know a little bit about Esprima parsed the "2+2" expression.
@@ -200,7 +193,6 @@ Here's the call stack leading up to `parseBinaryExpression`
 The first three steps setup the state for parsing statements.
 Statements and expressions are two of the main guys, so that's where it gets fun.
 
-
 1. parse
 2. parseProgram
 3. parseScriptBody
@@ -213,11 +205,16 @@ otherwise parse a plain vanilla statement.
 function parseStatementListItem() {
   if (lookahead.type === Token.Keyword) {
     switch (lookahead.value) {
-    case 'export': return parseExportDeclaration();
-    case 'import': return parseImportDeclaration();
-    case 'let': return parseLexicalDeclaration({inFor: false});
-    case 'function': return parseFunctionDeclaration(new Node());
-    case 'class': return parseClassDeclaration();
+      case "export":
+        return parseExportDeclaration();
+      case "import":
+        return parseImportDeclaration();
+      case "let":
+        return parseLexicalDeclaration({ inFor: false });
+      case "function":
+        return parseFunctionDeclaration(new Node());
+      case "class":
+        return parseClassDeclaration();
     }
   }
 
@@ -240,29 +237,47 @@ so we skip the punctuation and the keywords and jump directly to `parseExpressio
 ```js
 function parseStatement() {
   if (type === Token.Punctuator) {
-      switch (lookahead.value) {
-      case ';': return parseEmptyStatement(node);
-      case '(': return parseExpressionStatement(node);
-      default: break;
-      }
+    switch (lookahead.value) {
+      case ";":
+        return parseEmptyStatement(node);
+      case "(":
+        return parseExpressionStatement(node);
+      default:
+        break;
+    }
   } else if (type === Token.Keyword) {
-      switch (lookahead.value) {
-      case 'break': return parseBreakStatement(node);
-      case 'continue': return parseContinueStatement(node);
-      case 'debugger': return parseDebuggerStatement(node);
-      case 'do': return parseDoWhileStatement(node);
-      case 'for': return parseForStatement(node);
-      case 'function': return parseFunctionDeclaration(node);
-      case 'if': return parseIfStatement(node);
-      case 'return': return parseReturnStatement(node);
-      case 'switch': return parseSwitchStatement(node);
-      case 'throw': return parseThrowStatement(node);
-      case 'try': return parseTryStatement(node);
-      case 'var': return parseVariableStatement(node);
-      case 'while': return parseWhileStatement(node);
-      case 'with': return parseWithStatement(node);
-      default: break;
-      }
+    switch (lookahead.value) {
+      case "break":
+        return parseBreakStatement(node);
+      case "continue":
+        return parseContinueStatement(node);
+      case "debugger":
+        return parseDebuggerStatement(node);
+      case "do":
+        return parseDoWhileStatement(node);
+      case "for":
+        return parseForStatement(node);
+      case "function":
+        return parseFunctionDeclaration(node);
+      case "if":
+        return parseIfStatement(node);
+      case "return":
+        return parseReturnStatement(node);
+      case "switch":
+        return parseSwitchStatement(node);
+      case "throw":
+        return parseThrowStatement(node);
+      case "try":
+        return parseTryStatement(node);
+      case "var":
+        return parseVariableStatement(node);
+      case "while":
+        return parseWhileStatement(node);
+      case "with":
+        return parseWithStatement(node);
+      default:
+        break;
+    }
   }
 
   var expr = parseExpression();
@@ -281,7 +296,7 @@ the zen of a parser. Looking at parse expression, it does two things of note:
 function parseExpressions() {
   var expressions = [];
   while (startIndex < length) {
-    if (!match(',')) break;
+    if (!match(",")) break;
     lex();
     expressions.push(isolateCoverGrammar(parseAssignmentExpression));
   }
@@ -290,14 +305,14 @@ function parseExpressions() {
 }
 
 function parseExpression() {
-  return match(',')
+  return match(",")
     ? parseExpressions()
     : isolateCoverGrammar(parseAssignmentExpression);
 }
 ```
 
 The last two steps `parseAssignmentExpression` and `parseConditionalExpression` don't
-give us too many clues as to how Esprima *knew* our expression was a binary expression.
+give us too many clues as to how Esprima _knew_ our expression was a binary expression.
 What I gather here is that, when presented with an expression, Esprima will parse it as an assignment, conditional, binary expression
 in that order. I'm not sure why that is and certainly there are exceptions to that rule,
 but here it looks like that's the case.
@@ -311,8 +326,8 @@ function parseAssignmentExpression() {
 }
 
 function parseConditionalExpression() {
-    var expr = inheritCoverGrammar(parseBinaryExpression);
-    return expr;
+  var expr = inheritCoverGrammar(parseBinaryExpression);
+  return expr;
 }
 ```
 
@@ -328,7 +343,6 @@ There are also plenty of interesting meta questions we can ask about how Esprima
 
 Ofcourse, we can also just ask esprima to parse something slightly more complicated like
 (`var a = 2+2` or `function sum(a,b) {return a + b;}`).
-
 
     NOTE: All of the credit goes to the Esprima team
     for writing readable code. Also, please forgive me

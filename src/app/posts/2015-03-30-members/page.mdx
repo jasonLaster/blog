@@ -1,13 +1,12 @@
-import Image from 'next/image';
-import FocusMembers from './focus-members.png';
+import Image from "next/image";
+import FocusMembers from "./focus-members.png";
 
 export const metadata = {
-  "title": "How does DevTools show the functions popup?",
-  "description": "Blog post about How does DevTools show the functions popup?",
-  "date": "2015-03-19",
-  "categories": [
-    "JS"
-  ]
+  title: "How does Chrome DevTools show the functions popup?",
+  description: "Blog post about How does DevTools show the functions popup?",
+  note: true,
+  date: "2015-03-19",
+  categories: ["Chrome"],
 };
 
 <Image src={FocusMembers} alt="How does DevTools show the functions popup?" />
@@ -16,7 +15,6 @@ export const metadata = {
 
 When `cmd+shift+o` or `cmd+shift+p` is pressed the callback
 `SourcesView._showOutlineDialog` is fired.
-
 
 ```js
 _showOutlineDialog: function(event) {
@@ -28,22 +26,22 @@ _showOutlineDialog: function(event) {
 the `uiSourceCode` property is interesting. It's type is `WebInspector.UiSourceCode` properties include:
 
 ```md
-+ \_project:     => WebInspector.Project
-+ \_parentPath:  => ''
-+ \_name
-+ \_originURL     => "http://localhost:3000/bundle.js"
-+ \_url           => "http://localhost:3000/bundle.js"
-+ \_contentType   => ResourceType ... basically just "Script"
-+ \_requestContentCallbacks
-+ history         => actions
-+ \_listeners
-+ \_contentLoaded
-+ \_content       => "(function e(t,n,r){fun..." basically all the text
-+ Symbol(target)  => I think it's used for resolving lookups
-+ Symbol(NetworkContentType)    => I think it's used for resolving lookups
+- \_project: => WebInspector.Project
+- \_parentPath: => ''
+- \_name
+- \_originURL => "http://localhost:3000/bundle.js"
+- \_url => "http://localhost:3000/bundle.js"
+- \_contentType => ResourceType ... basically just "Script"
+- \_requestContentCallbacks
+- history => actions
+- \_listeners
+- \_contentLoaded
+- \_content => "(function e(t,n,r){fun..." basically all the text
+- Symbol(target) => I think it's used for resolving lookups
+- Symbol(NetworkContentType) => I think it's used for resolving lookups
 ```
 
-----
+---
 
 #### JavaScriptOutlineDialog
 
@@ -52,58 +50,64 @@ The `JavaScriptOutlineDialog` is the object responsible for showing the list of 
 Of course, finding the function definitions for an arbitrary string of javascript is not easy work. This is why the dialog delegates to a web worker called `_outlineWorker`.
 
 ```js
-WebInspector.JavaScriptOutlineDialog = function(uiSourceCode, selectItemCallback) {
-    WebInspector.SelectionDialogContentProvider.call(this);
+WebInspector.JavaScriptOutlineDialog = function (
+  uiSourceCode,
+  selectItemCallback
+) {
+  WebInspector.SelectionDialogContentProvider.call(this);
 
-    this._functionItems = [];
-    this._selectItemCallback = selectItemCallback;
+  this._functionItems = [];
+  this._selectItemCallback = selectItemCallback;
 
-    this._outlineWorker = new WorkerRuntime.Worker("script_formatter_worker");
-    this._outlineWorker.onmessage = this._didBuildOutlineChunk.bind(this);
-    this._outlineWorker.postMessage({
-      method: "javaScriptOutline",
-      params: { content: uiSourceCode.workingCopy() }
-    });
-}
+  this._outlineWorker = new WorkerRuntime.Worker("script_formatter_worker");
+  this._outlineWorker.onmessage = this._didBuildOutlineChunk.bind(this);
+  this._outlineWorker.postMessage({
+    method: "javaScriptOutline",
+    params: { content: uiSourceCode.workingCopy() },
+  });
+};
 ```
 
-----
+---
 
-#### script\_formatter\_worker
+#### script_formatter_worker
 
 The worker is setup here `script_formatter_worker` and will respond to messages with a method `javaScriptOutline`. When the worker is done it'll call the dialog's `_didBuildOutlineChunk` callback.
 
 I'm not going to go into too much depth on how the worker builds the list of function identifiers, but here's a quick sneak peak. The important things to note are:
-+ it uses a javascript tokenizer
-+ it tokenizes line by line
-+ the tokenizer calls a processToken callback which looks for functions
+
+- it uses a javascript tokenizer
+- it tokenizes line by line
+- the tokenizer calls a processToken callback which looks for functions
 
 ```js
-FormatterWorker.javaScriptOutline = function(params)
-{
-    var lines = params.content.split("\n");
-    var tokenizer = FormatterWorker.createTokenizer("text/javascript");
+FormatterWorker.javaScriptOutline = function (params) {
+  var lines = params.content.split("\n");
+  var tokenizer = FormatterWorker.createTokenizer("text/javascript");
 
-    for (var i = 0; i < lines.length; ++i) {
-        var line = lines[i];
-        tokenizer(line, processToken);
+  for (var i = 0; i < lines.length; ++i) {
+    var line = lines[i];
+    tokenizer(line, processToken);
+  }
+
+  // look for either:
+  // A named function: "function f...".
+  // Anonymous function assigned to an identifier: "...f = function..."
+  // or "funcName: function...".
+  function processToken(tokenValue, tokenType, column, newColumn) {
+    if (isJavaScriptIdentifier(tokenType)) {
+      return { line: i, column: column, name: tokenValue };
+    } else if (
+      tokenType === "keyword" &&
+      tokenValue === "function" &&
+      (previousToken === "=" || previousToken === ":")
+    ) {
+      return { line: i, column: column, name: previousIdentifier };
     }
+  }
 
-    // look for either:
-    // A named function: "function f...".
-    // Anonymous function assigned to an identifier: "...f = function..."
-    // or "funcName: function...".
-    function processToken(tokenValue, tokenType, column, newColumn) {
-       if (isJavaScriptIdentifier(tokenType)) {
-            return { line: i, column: column, name: tokenValue };
-        } else if (tokenType === "keyword" && tokenValue === "function" &&
-            (previousToken === "=" || previousToken === ":")) {
-          return { line: i, column: column, name: previousIdentifier };
-        }
-    }
-
-    postMessage({ chunk: outlineChunk, isLastChunk: true });
-}
+  postMessage({ chunk: outlineChunk, isLastChunk: true });
+};
 ```
 
 ---
@@ -132,8 +136,9 @@ Chunk is used liberally here because the worker is smart enough to batch it's wo
 #### Filtering the list
 
 When the list comes back, there are three things to consider: filtering, sorting, updating the list.
-+ filtering will be done in the search field on the top
-+ scoring is a complicated algorithm, which determines which functions to show first
+
+- filtering will be done in the search field on the top
+- scoring is a complicated algorithm, which determines which functions to show first
 
 ```js
 _filterItems: function() {

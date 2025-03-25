@@ -1,40 +1,38 @@
 export const metadata = {
-  "title": "Adding Search to the Debugger",
-  "description": "Blog post about Adding Search to the Debugger",
-  "date": "2017-2-21",
-  "categories": [
-    "Firefox"
-  ]
+  title: "Adding Search to the FirefoxDebugger",
+  description: "Blog post about Adding Search to the Debugger",
+  date: "2017-2-21",
+  note: true,
+  categories: ["Firefox"],
 };
 
-Seaching in a document *cmd+f* has been a surprisingly hard feature to get right in the Debugger.
+Seaching in a document _cmd+f_ has been a surprisingly hard feature to get right in the Debugger.
 On the surface, it seems like it should be simple, but there are a lot of subtle interactions
 that make it difficult to get right. Here is a quick spec that helped me document the feature.
 
-
 #### Queries
 
-* **typing/deleting query**
-	* should search after each character, index
-	* the index and count should be correct
-	* the match should be  to right of the cursor
+- **typing/deleting query**
+  - should search after each character, index
+  - the index and count should be correct
+  - the match should be to right of the cursor
 
 #### Iterating
 
-* **(enter/shift enter |  cmd+g/cmd+shift+g)**
-	* increments and decrements by one
-	* wraps from first to last of the list and vice versa
-* **moving the cursor**
-	* updates the match and index to be to the right of the cursor
+- **(enter/shift enter | cmd+g/cmd+shift+g)**
+  - increments and decrements by one
+  - wraps from first to last of the list and vice versa
+- **moving the cursor**
+  - updates the match and index to be to the right of the cursor
 
 #### Mouse Actions
 
-* **click on document**
-	* **cmd+g** should research from that location.
-	* **cmd+f** should refocus the search bar with the current query
-	* **search bar** should search from the cursor location
-* **select text**
-	* **cmd+f** should update the query of the search bar
-	* **cmd+g** should search from that location with the current query
+- **click on document**
+  - **cmd+g** should research from that location.
+  - **cmd+f** should refocus the search bar with the current query
+  - **search bar** should search from the cursor location
+- **select text**
+  - **cmd+f** should update the query of the search bar
+  - **cmd+g** should search from that location with the current query
 
 ![](https://cloud.githubusercontent.com/assets/254562/23221293/b2a0ece6-f8f2-11e6-9d12-ef3604534ffc.gif)

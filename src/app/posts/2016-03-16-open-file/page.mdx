@@ -1,13 +1,12 @@
-import Image from 'next/image';
-import ShowFile from './show-file.jpg';
+import Image from "next/image";
+import ShowFile from "./show-file.jpg";
 
 export const metadata = {
-  "title": "Firefox DevTools - Showing a File",
-  "description": "Blog post about Firefox DevTools - Showing a File",
-  "date": "2016-03-16",
-  "categories": [
-    "Firefox"
-  ]
+  title: "Firefox DevTools - Showing a File",
+  description: "Blog post about Firefox DevTools - Showing a File",
+  date: "2016-03-16",
+  note: true,
+  categories: ["Firefox"],
 };
 
 ## How are sources shown in the debugger?
@@ -21,7 +20,7 @@ for showing a source's file. In the case of Firefox, it's a CodeMirror editor.
 Chrome DevTools and many other popular tools use CodeMirror. The Sources component is in the left sidebar and shows a
 file list or tree of all the sources.
 
-----
+---
 
 ### The Beginning: Setting up the Sources Component
 
@@ -30,7 +29,7 @@ The Sources component is a widget that's setup and managed by the `SourcesView`.
 ```js
 this.widget = new SideMenuWidget(document.getElementById("sources"), {
   contextMenu: document.getElementById("debuggerSourcesContextMenu"),
-  showArrows: true
+  showArrows: true,
 });
 ```
 
@@ -42,7 +41,6 @@ this.widget.addEventListener("select", this._onSourceSelect, false);
 ```
 
 ### The Click: What happens when I select a source?
-
 
 When a source is selected in the sidebar pane the `_onSourceSelect` handler is called
 with a `sourceItem` parameter. The debugger follows Redux patterns, so our handler
@@ -103,28 +101,32 @@ The `DebuggerView` handles both events ("source-selected" and "source-text-loade
 They're setup in this `onReducerEvents`.
 
 ```js
-onReducerEvents(this.controller, {
-  "source-text-loaded": this.renderSourceText,
-  "source-selected": this.renderSourceText
-}, this);
+onReducerEvents(
+  this.controller,
+  {
+    "source-text-loaded": this.renderSourceText,
+    "source-selected": this.renderSourceText,
+  },
+  this
+);
 ```
 
 If you're wondering what the DebuggerView is responsible for, the answer is a lot.
 Here is a list of components that are initialized when the DebuggerView starts up.
 
 ```js
-Panes
-Editor
-Toolbar
-Options
-Filtering
-StackFrames
-Workers
-Sources
-WatchExpressions
-EventListeners
-GlobalSearch
-VariablesView
+Panes;
+Editor;
+Toolbar;
+Options;
+Filtering;
+StackFrames;
+Workers;
+Sources;
+WatchExpressions;
+EventListeners;
+GlobalSearch;
+VariablesView;
 ```
 
 #### Render Time: How are sources shown?
@@ -137,17 +139,16 @@ callback `renderSourceText`, which boils down to four different scenarios for th
 3. something went wrong
 4. it's fine, and we should show it
 
-
 ```js
-function renderSourceText (source, textInfo) {
+function renderSourceText(source, textInfo) {
   if (source.isBlackBoxed) {
     this.showBlackBoxMessage();
   } else if (textInfo.isLoading) {
     this.showLoadingMessage();
   } else if (textInfo.error) {
-    this.showErrorMessage(textInfo.error)
+    this.showErrorMessage(textInfo.error);
   } else {
-    this.showSourceFile(source, textInfo)
+    this.showSourceFile(source, textInfo);
   }
 }
 ```
@@ -155,12 +156,11 @@ function renderSourceText (source, textInfo) {
 In all four cases, we have some text that is ready to be shown in the editor.
 We show it by first creating a CodeMirror document for the source if one doesn't exist, and then setting the text in the document. If we already have a document for the source, we assume it's uptodate and show the document.
 
-
 #### Overview
 
 We've traced the codepath from clicking on a source in the sources sidebar to the
 text showing up in the editor. What have we learned:
 
-1) There's one click handler that kicks everything off with a Redux Action
-2) There's a Redux reducer that handles fetching the source and showing the source
-3) The DebuggerView renders the text into the editor. It also does a hundred other things :)
+1. There's one click handler that kicks everything off with a Redux Action
+2. There's a Redux reducer that handles fetching the source and showing the source
+3. The DebuggerView renders the text into the editor. It also does a hundred other things :)

@@ -1,5 +1,105 @@
-import { BlogPosts } from './components/posts'
+import { Bio } from './components/bio'
+
+I'm a software developer and co-founder of [Replay.io](http://replay.io/). In college, I studied Math and Computer Science with a focus on understanding complex systems like the Wikipedia contributor community.
+
+Following college, I attended the **[Recurse Center](https://www.recurse.com/)**, a retreat for software developers, with the goal of understanding the tools I used every day. While there, I contributed to [Pry](https://github.com/pry/pry) and [BPython](https://bpython-interpreter.org/) and fell in love with REPLs that help you understand your software.
+
+After Recurse, I joined **Etsy’s Seller Experience** team where I helped migrate the Listings Manager to a client-side application. During this time, I became a core contributor to Marionette and built their first Chrome DevTools extension. 
+
+While working on the extension, I discovered that **Chrome DevTools** was written in JS, made a minor contribution, and made it my mission to encourage devs to contribute to the tools they use every day.
+
+In 2016, I joined the **Firefox DevTools** team, where I helped transition the Firefox Debugger frontend to React and expanded source map support to original scopes, values, and expressions. My proudest achievement was helping 400 people make their first contribution to the Firefox Debugger. 
+
+In 2018, I met Brian Hackett, who had been working on **WebReplay**, an R&D initiative to bring time travel debugging to Firefox. In 2019, we landed an experimental version in Firefox Nightly (on my birthday 🎂). The project was later discontinued in 2020, leading to the birth of [Replay.io](http://replay.io/).
+
+**[Replay.io's](http://replay.io/)** mission is to make software understandable. Replay is the first collaborative DevTools where anyone can inspect the application if they were there at the time. And we're beginning to introduce features in DevTools and the Dashboard that are only possible with the ability to replay and inspect the running application.
 
 
-<BlogPosts />
+<Bio
+  className="mt-12"
+  title="Work"
+  items={[
+    {
+      title: "Replay.io",
+      href: "https://replay.io",
+      label: "CEO, Co-Founder",
+      date: "2020",
+    },
+    {
+      title: "Mozilla",
+      href: "https://figma.com",
+      label: "Firefox DevTools Tech Lead",
+      date: "2016",
+    },
+    {
+      title: "Etsy",
+      href: "https://etsy.com",
+      label: "Senior Front-end Engineer",
+      date: "2012",
+    },
+    {
+      title: "Recurse Center",
+      href: "https://recurse.com",
+      label: "Attendee",
+      date: "2012",
+    },
+  ]}
+/>
 
+
+
+<Bio
+  className="mt-8"
+  title="Podcasts"
+  items={[
+    {
+      title: "Does Replay fix all debugging issues?",
+      href: "https://www.youtube.com/watch?v=r9lTvCzsSoc",
+      label: "This DOT Media",
+      date: "2023",
+    },
+    {
+      title: "Going forward and backwards with time travel",
+      href: "https://www.youtube.com/watch?v=_j0krlX632Q",
+      label: "devtools-fm",
+      date: "2021",
+    },
+  ]}
+/>
+
+
+<Bio
+  className="mt-8"
+  title="Talks"
+  items={[
+    {
+      title: "Stop Triaging Your Test Suite.",
+      href: "https://portal.gitnation.org/contents/stop-triaging-your-test-suite",
+      label: "TestJS",
+      date: "2023",
+    },
+    {
+      title: "Time travel debugging: A step-by-step guide.",
+      href: "https://www.youtube.com/watch?v=rDq1AN1kSn4",
+      label: "JS Conf EU",
+      date: "2019",
+    },
+    {
+      title: "Enter Inspector Inception: how browser developer tools work",
+      href: "https://www.youtube.com/watch?v=O_xViL2TGrU",
+      label: "YGLF",
+      date: "2017",
+    },
+    {
+      title: "Chrome Developer Tools under the Magnifying Glass",
+      label: "jQuery SF",
+      date: "2015",
+    },
+    {
+      title: "Backbone under the Magnifying Glass",
+      href: "https://www.youtube.com/watch?v=jbGm3mJXh_s",
+      label: "Backbone Conf",
+      date: "2015",
+    },
+  ]}
+/>
