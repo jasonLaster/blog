@@ -149,3 +149,17 @@ table {
   overflow-x: auto;
   white-space: nowrap;
 }
+
+.prose .anchor {
+  @apply absolute invisible no-underline;
+  /* ... other styles ... */
+}
+
+.prose *:hover > .anchor {
+  @apply visible;
+}
+
+.prose .anchor:after {
+  @apply text-neutral-300 dark:text-neutral-700;
+  content: "#";
+}
