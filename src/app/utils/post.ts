@@ -36,6 +36,22 @@ function getMDXFiles(dir: string) {
     .map(dirent => dirent.name);
 }
 
+/*
+async function importMetadata(filePath: string): Promise<Metadata> {
+  try {
+    const importPath = filePath
+      .replace(/\\/g, '/')
+      .replace(/^.*?blog\/src\//, '@/')
+      .replace(/\.mdx$/, '');
+
+    const { metadata } = await import(importPath);
+    return standardizeMetadata(metadata);
+  } catch (error) {
+    throw new Error(`Error importing metadata from ${filePath} ${error}`);
+  }
+}
+*/
+
 // Function to extract metadata without using dynamic imports
 export function extractMetadata(filePath: string): Metadata {
   const content = fs.readFileSync(filePath, 'utf-8');
@@ -86,14 +102,14 @@ export function extractMetadata(filePath: string): Metadata {
 async function getMDXData(dir: string) {
   const mdxDirs = getMDXFiles(dir);
 
-  const posts = mdxDirs.map((dirName) => {
+  const posts = await Promise.all(mdxDirs.map(async (dirName) => {
     try {
       // Get the absolute path to the MDX file
       const filePath = path.join(dir, dirName, 'page.mdx');
 
-      // Extract metadata directly from the file
+      // Use importMetadata instead of extractMetadata
+      // const metadata = await importMetadata(filePath);
       const metadata = extractMetadata(filePath);
-
       if (metadata.draft) {
         return null;
       }
@@ -120,11 +136,11 @@ async function getMDXData(dir: string) {
         content: '',
       };
     }
-  });
+  }));
 
   return posts.filter(post => post !== null);
 }
 
-export function getBlogPosts() {
+export async function getBlogPosts() {
   return getMDXData(path.join(process.cwd(), 'src', 'app', 'posts'));
 }
