@@ -10,7 +10,7 @@ export const metadata = {
   categories: ["JS"],
 };
 
-After 8 years, last year I finally made the jump and migrated off of my legacy Jekyll blog and onto NextJS. Dmitry, of Reshaped fame, had made a NextJS template that was inspired by Brian Lovin blog and I was excited to adopt both a modern stack and design ([post](/2024-02-19-migrating-to-next)).
+After a decade, last year I finally made the jump and migrated off of my legacy Jekyll blog and onto NextJS. Dmitry, of Reshaped fame, had made a NextJS template that was inspired by Brian Lovin blog and I was excited to adopt both a modern stack and design ([post](/2024-02-19-migrating-to-next)).
 
 After a year, some of the cracks were beginning to show. The most important was page load time. Because the site was server rendered, and not staticly built, each page could take a couple of seconds to load.
 
@@ -228,23 +228,69 @@ While I was migrating the posts from the old YAML frontmatter format to the new 
 
 Cursor found all of the posts and eagerly went to work updating each of them. A couple of hours later, I realized that in addition to updating the format of the metadata, it also played copy writer and updated many of the page titles!
 
-
-
 ### Supporting theme toggling
 
 One of my primary frustrations with the old site was that the wrong theme would often flash in from the server side render.
 
 The new site lifts Guillermo's terrific `ThemeToggle` button and theme-effect which includes several nice details.
 
-* The theme toggle button is a tri-state where the third mode is system.
-* The theme ties into Tailwind via it's darkMode `class` mode.
-* There's a `themeEffect` function which is run synchronously at page load even before the stylesheet has loaded and React has mounted.
-* `themeEffect` will read the pref from localStorage and pause transitions while the theme is being applied.
+- The theme toggle button is a tri-state where the third mode is system.
+- The theme ties into Tailwind via it's darkMode `class` mode.
+- There's a `themeEffect` function which is run synchronously at page load even before the stylesheet has loaded and React has mounted.
+- `themeEffect` will read the pref from localStorage and pause transitions while the theme is being applied.
 
 With that said, I shoud confess that even though i was lifting the implementation, it was still pretty difficult to setup because the latest version's of NextJS use Tailwind v4 and Guillermo's site uses v3. After quite a bit of debugging, I learned that in V4 `tailwind.config.js` is not read by default and needs to be registered via a `config` command. There are also some other slight differences like the tailwind utilities are replaced with a single import.
 
-```css 
+```css
 @import "tailwindcss";
 @config "../../tailwind.config.js";
 ```
+
+### Slugifying headers
+
+Another nice benefit of upgrading, was that Vercel's [demo site](https://github.com/vercel/examples/tree/main/solutions/blog) included a slugified header component that shows `#` on hover and makes it easy to share your current position.
+
+This is a feature I was hoping to add, but it feels even better to borrow and extend.
+
+```js
+function slugify(str) {
+  return str
+    .toString()
+    .toLowerCase()
+    .trim() // Remove whitespace from both ends of a string
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/&/g, "-and-") // Replace & with 'and'
+    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except for -
+    .replace(/\-\-+/g, "-"); // Replace multiple - with single -
+}
+
+function createHeading(level) {
+  const Heading = ({ children }) => {
+    const slug = slugify(children);
+    return React.createElement(
+      `h${level}`,
+      {
+        id: slug,
+        className: `group flex whitespace-pre-wrap text-gray-800 dark:text-zinc-200 font-medium mt-8 mb-3 ${
+          level === 1 ? "font-medium pt-12" : ""
+        }`,
+      },
+      <>
+        <a
+          href={`#${slug}`}
+          key={`link-${slug}`}
+          className="opacity-0 group-hover:opacity-100 group-focus:opacity-100 ml-[-20px] pr-[4px] text-gray-600 dark:text-zinc-500 hover:text-gray-800 dark:hover:text-zinc-300"
+        >
+          #
+        </a>
+        {children}
+      </>
+    );
+  };
+
+  Heading.displayName = `Heading${level}`;
+
+```
+
+
 

@@ -22,12 +22,12 @@ This site draws inspiration from:
 - [x] Add theme picker
 - [x] split notes and posts
 - [x] improve theme
+- [x] sluggify headers
 
 ### Fast follow
 
 - [ ] simplify the narrative
 - [ ] Add a search box for posts
-- [ ] sluggify headers
 - [ ] dynamic og
 - [ ] change the syntax highlighting theme
 - [ ] remove src dir since it adds extra nesting

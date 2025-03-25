@@ -3,38 +3,69 @@ import Link from "next/link";
 import { highlight } from "sugar-high";
 import { Tweet } from "react-tweet";
 
-type HeadingProps = ComponentPropsWithoutRef<"h1">;
 type ParagraphProps = ComponentPropsWithoutRef<"p">;
 type ListProps = ComponentPropsWithoutRef<"ul">;
 type ListItemProps = ComponentPropsWithoutRef<"li">;
 type AnchorProps = ComponentPropsWithoutRef<"a">;
 type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 
+function slugify(str: string) {
+  return str
+    .toString()
+    .toLowerCase()
+    .trim() // Remove whitespace from both ends of a string
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/&/g, "-and-") // Replace & with 'and'
+    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except for -
+    .replace(/\-\-+/g, "-"); // Replace multiple - with single -
+}
+
+function createHeading(level: number) {
+  const Heading = ({ children }: { children: string }) => {
+    const slug = slugify(children);
+    return React.createElement(
+      `h${level}`,
+      {
+        id: slug,
+        className: `group flex whitespace-pre-wrap text-gray-800 dark:text-zinc-200 font-medium mt-8 mb-3 ${
+          level === 1 ? "font-medium pt-12" : ""
+        }`,
+      },
+      <>
+        <a
+          href={`#${slug}`}
+          key={`link-${slug}`}
+          className="opacity-0 group-hover:opacity-100 group-focus:opacity-100 ml-[-20px] pr-[4px] text-zinc-600 dark:text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+        >
+          #
+        </a>
+        {children}
+      </>
+    );
+  };
+
+  Heading.displayName = `Heading${level}`;
+
+  return Heading;
+}
+
 const components = {
   Tweet,
-  h1: (props: HeadingProps) => (
-    <h1 className="font-medium pt-12 mb-0" {...props} />
-  ),
-  h2: (props: HeadingProps) => (
-    <h2
-      className="text-gray-800 dark:text-zinc-200 font-medium mt-8 mb-3"
-      {...props}
-    />
-  ),
-  h3: (props: HeadingProps) => (
-    <h3
-      className="text-gray-800 dark:text-zinc-200 font-medium mt-8 mb-3"
-      {...props}
-    />
-  ),
-  h4: (props: HeadingProps) => (
-    <h4 className="font-medium mt-8 mb-3" {...props} />
-  ),
+  h1: createHeading(1),
+  h2: createHeading(2),
+  h3: createHeading(3),
+  h4: createHeading(4),
+  h5: createHeading(5),
+  h6: createHeading(6),
+
   img: (props: ComponentPropsWithoutRef<"img">) => (
     <img className="my-4 rounded-lg" {...props} />
   ),
   p: (props: ParagraphProps) => (
-    <p className="text-gray-800 dark:text-zinc-300  mb-2" {...props} />
+    <p
+      className="text-gray-800 dark:text-zinc-300 my-[1em] leading-[1.5]"
+      {...props}
+    />
   ),
   ol: (props: ListProps) => (
     <ol
