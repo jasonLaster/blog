@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently \"next dev --turbopack\" \"bun run watch-posts\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "posts": "bun run scripts/posts.ts"
+    "posts": "bun run scripts/posts.ts",
+    "watch-posts": "nodemon -e mdx -w src/app/posts --ignore src/app/posts/posts.json -x \"bun run scripts/posts.ts\""
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
@@ -30,8 +31,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
+    "nodemon": "^3.1.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { formatDate, getBlogPosts } from '../blog/utils'
+import { formatDate, getBlogPosts } from '../posts/utils'
 
 export async function BlogPosts() {
   const allBlogs = await getBlogPosts()
@@ -19,7 +19,7 @@ export async function BlogPosts() {
           <Link
             key={post.slug}
             className="flex flex-col"
-            href={`/blog/posts/${post.slug}`}
+            href={`/posts/${post.slug}`}
           >
             <div className="w-full flex flex-col md:flex-row space-x-0 md:space-x-2 border-b border-gray-200 dark:border-gray-700 py-2 hover:bg-gray-50 dark:hover:bg-gray-800">
               <p className="text-neutral-400 dark:text-neutral-400 w-[65px] tabular-nums text-sm self-center pl-1">
@@ -28,7 +28,7 @@ export async function BlogPosts() {
               <p className="text-neutral-900 dark:text-neutral-100 tracking-tight grow">
                 {post.metadata.title}
               </p>
-              <p className="text-neutral-400 dark:text-neutral-400 w-[65px] tabular-nums shrink-0 text-sm self-center pl-1">
+              <p className="text-neutral-400 dark:text-neutral-400 w-[90px] tabular-nums shrink-0 text-sm self-center pl-1">
                 {post.metadata.categories?.join(', ')}
               </p>
             </div>

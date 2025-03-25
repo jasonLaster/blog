@@ -1,0 +1,102 @@
+export const metadata = {
+  title: 'Web Replay - An overview for web developers like me',
+  description: 'Understanding the architecture of Firefox Web Replay',
+  date: '2018-09-21',
+  categories: ['DevTools']
+};
+
+Brian Hackett recently published this brilliant [patch][patch], which prompted me to think a bit more about Web Replay's architecture. Yesterday, I had the opportunity to talk with him. Here are some of my notes. If you're interested in learning more, [MDN] has an in-depth overview.
+
+### High Level
+
+Web Replay is an experimental technology records Firefox's system calls while the browser is running. Later, when replaying it reads from the recording.
+
+Web Replay's strategy is similar to an end-to-end testing framework, which records user interactions and network calls and later replays the session. The major difference is the layer of abstraction (JS/OS). The test might be able to re-run consistenly, but it would be impossible to use it to step backwards in the debugger or jump back to an arbitrary point. This and many more things are now possible with Web Replay.
+
+<video width="600" controls>
+  <source src="/video/rr-big.mp4" type="video/mp4" />
+  <a href="/video/rr-big.mp4">download video</a>
+</video>
+
+### Interface Boundary
+
+Web Replay draws the boundary at the OS (system call) level. [ProcessRedirectDarwin.cpp][darwin] enumerates the system calls Web Replay intercepts and specifies the appropriate behavior. In many cases, the call is intercepted and its inputs and outputs are saved.
+
+```c++
+// Specify every function that is being redirected. MACRO is invoked with the
+// function's name, followed by any hooks associated with the redirection for
+// saving its output or adding a preamble.
+#define FOR_EACH_REDIRECTION(MACRO)
+  MACRO(mmap, nullptr, Preamble_mmap)                            \
+  MACRO(munmap, nullptr, Preamble_munmap)                        \
+  MACRO(read, SaveRvalHadErrorNegative<WriteBufferViaRval<1, 2>>) \
+  MACRO(open, SaveRvalHadErrorNegative)                       \
+```
+
+### Intercepting Calls
+
+Web Replay does not instrument the browser, it overwrites system calls. Put another way, it doesn't observe the OS, it monkey patches it. What could go wrong, right?!?!
+
+Web Replay maps the system call locations to a single Web Replay assembly function appropriately called `RecordReplayRedirectCall` in [ProcessRedirect.cpp][ProcessRedirect.cpp]. If you were wondering, "when are we going to get to the inlined assembly code?", now is the time! All kidding aside, if you're like me and have never seen assembly in the wild, here is a [video][video] series on assembly that I started watching this weekend, which is pretty great.
+
+```c++
+extern size_t
+RecordReplayRedirectCall(...);
+
+__asm(
+"_RecordReplayRedirectCall:"
+
+  // Save the system call's original function and arguments
+  "movq %rdi, 0(%rsp);"
+  "movq %rsi, 8(%rsp);"
+  "movq %rdx, 16(%rsp);"
+  "movq %rcx, 24(%rsp);"
+  "movq %r8, 32(%rsp);"
+  "movq %r9, 40(%rsp);"
+  "movsd %xmm0, 48(%rsp);"
+  "movsd %xmm1, 56(%rsp);"
+  "movsd %xmm2, 64(%rsp);"
+
+  // Call our real Intercept function
+  "call RecordReplayInterceptCall;"
+)
+```
+
+And now that we've intercepted the original system call and saved arguments, we can do the real work in `RecordReplayInterceptCall`.
+
+```c++
+RecordReplayInterceptCall(int aCallId, CallArguments* aArguments)
+{
+
+  // Let's figure out which redirection was called e.g mmap, read, write...
+  Redirection& redirection = gRedirections[aCallId];
+
+  Thread* thread = Thread::Current();
+
+  if (IsRecording()) {
+    RecordReplayInvokeCall(aArguments, redirection.mOriginalFunction);
+  }
+
+  // Add an event for the thread.
+  thread->Events().RecordOrReplayThreadEvent(CallIdToThreadEvent(aCallId));
+  redirection.mSaveOutput(thread->Events(), aArguments, &error);
+
+
+  return 0;
+}
+```
+
+There is some more special logic, but I think this summarized version does a good job of showing that we want to be able to call the original function, add the call to our thread's events stream, and save the output.
+
+### Conclusion
+
+Web Replay is super low-level, but its architecture does not need to be unacessible. For me, it's been a great opportunity to better understand how Firefox collaborates with the OS to perform the basic functions of a browser.
+
+I hope this post inspires you to dig deeper and ask questions. Feel free to join our [slack][slack] and ask us questions in `#rr`. Hopefully, this is just the beginning of a new magical debugging experience.
+
+[patch]: https://bugzilla.mozilla.org/show_bug.cgi?id=1491067
+[darwin]: https://searchfox.org/mozilla-central/source/toolkit/recordreplay/ProcessRedirectDarwin.cpp
+[ProcessRedirect.cpp]: https://searchfox.org/mozilla-central/source/toolkit/recordreplay/ProcessRedirect.cpp
+[video]: https://www.youtube.com/watch?v=wLXIWKUWpSs&list=PLmxT2pVYo5LB5EzTPZGfFN0c2GDiSXgQe&index=1
+[slack]: https://devtools-html-slack.herokuapp.com/
+[MDN]: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/WebReplay
