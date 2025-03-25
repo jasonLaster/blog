@@ -1,10 +1,9 @@
 export const metadata = {
-  "title": "Computed Properties",
-  "description": "Blog post about Computed Properties",
-  "date": "2015-05-01",
-  "categories": [
-    "Firefox"
-  ]
+  title: "Chrome DevTools - How are computed properties populated?",
+  description: "Blog post about How are computed properties populated?",
+  date: "2015-05-01",
+  categories: ["Chrome"],
+  note: true,
 };
 
 ### Where is the computed properties pane defined?
@@ -19,35 +18,37 @@ It's interesting that the inherited properties checkbox toggles the
 It's parent class is `WebInspector.ElementsSidebarPane`
 
 ```js
-WebInspector.ComputedStyleSidebarPane = function() {
-    WebInspector.ElementsSidebarPane.call(this, WebInspector.UIString("Computed Style"));
+WebInspector.ComputedStyleSidebarPane = function () {
+  WebInspector.ElementsSidebarPane.call(
+    this,
+    WebInspector.UIString("Computed Style")
+  );
 
-    var inheritedCheckBox = WebInspector.SettingsUI.createSettingCheckbox(
-      WebInspector.UIString("Show inherited properties"),
-      WebInspector.settings.showInheritedComputedStyleProperties,
-      true
-    );
+  var inheritedCheckBox = WebInspector.SettingsUI.createSettingCheckbox(
+    WebInspector.UIString("Show inherited properties"),
+    WebInspector.settings.showInheritedComputedStyleProperties,
+    true
+  );
 
-    WebInspector.settings.showInheritedComputedStyleProperties.addChangeListener(
-      this._showInheritedComputedStyleChanged.bind(this)
-    );
+  WebInspector.settings.showInheritedComputedStyleProperties.addChangeListener(
+    this._showInheritedComputedStyleChanged.bind(this)
+  );
 
-    this._propertiesContainer = this.bodyElement.createChild("div", "monospace");
-}
+  this._propertiesContainer = this.bodyElement.createChild("div", "monospace");
+};
 ```
 
-
 ###### functionality:
-+ setNode
-+ doUpdate
-+ setHostingPane
-+ setFilterBoxContainer
-+ \_onTraceProperty
-+ \_showInheritedComputedStyleChanged
-+ \_processColor
-+ \_innerRebuildUpdate
-+ \_isPropertyInherited
-+ \_updateFilter
 
+- setNode
+- doUpdate
+- setHostingPane
+- setFilterBoxContainer
+- \_onTraceProperty
+- \_showInheritedComputedStyleChanged
+- \_processColor
+- \_innerRebuildUpdate
+- \_isPropertyInherited
+- \_updateFilter
 
 ### How is the list of properties populated?

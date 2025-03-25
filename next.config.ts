@@ -8,7 +8,7 @@ const nextConfig = {
   // rehype or remark plugins. For my app, this is fine.
   experimental: {
     // mdxRs: true,
-    viewTransition: true
+    // viewTransition: true
   }
 }
 

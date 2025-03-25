@@ -1,16 +1,19 @@
 export const metadata = {
-  title: 'Chrome DevTools - Showing Object helpers',
-  description: 'Understanding DevTools object helper popup functionality',
-  date: '2015-03-11',
-  categories: ['Chrome']
+  title: "Showing Object helpers in Chrome DevTools",
+  description: "Understanding DevTools object helper popup functionality",
+  date: "2015-03-11",
+  note: true,
+  categories: ["Chrome"],
 };
-
 
 The Object Helper is a popup that shows a summary of an object in scope. It's cool because it's overlaying dynamic data on top of static code.
 
 It's an opportunity for your computer to tell you what's going on. It's one of many small ways we can help you understand what's going on.
 
-<img src="http://f.cl.ly/items/3y181i063I1Q0j0l1L3m/Image%202015-03-11%20at%2010.58.10%20PM.png" width="338px" />
+<img
+  src="http://f.cl.ly/items/3y181i063I1Q0j0l1L3m/Image%202015-03-11%20at%2010.58.10%20PM.png"
+  width="338px"
+/>
 
 ---
 
@@ -20,30 +23,29 @@ The object helper is setup and managed by the Javascript source frame. This is p
 
 The popover helper gets the text editor element and callbacks for the:
 
-+ anchor (probably where the popover should be positioned)
-+ resolving the object
-+ on hiding the popover
+- anchor (probably where the popover should be positioned)
+- resolving the object
+- on hiding the popover
 
 ```js
-WebInspector.JavaScriptSourceFrame = function(scriptsPanel, uiSourceCode)
-{
-    this._scriptsPanel = scriptsPanel;
-    this._breakpointManager = WebInspector.breakpointManager;
-    this._uiSourceCode = uiSourceCode;
-    this._compiler = new WebInspector.JavaScriptCompiler(this);
+WebInspector.JavaScriptSourceFrame = function (scriptsPanel, uiSourceCode) {
+  this._scriptsPanel = scriptsPanel;
+  this._breakpointManager = WebInspector.breakpointManager;
+  this._uiSourceCode = uiSourceCode;
+  this._compiler = new WebInspector.JavaScriptCompiler(this);
 
-    WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
+  WebInspector.UISourceCodeFrame.call(this, uiSourceCode);
 
-    this._popoverHelper = new WebInspector.ObjectPopoverHelper(
-        this.textEditor.element,
-        this._getPopoverAnchor.bind(this),
-        this._resolveObjectForPopover.bind(this),
-        this._onHidePopover.bind(this),
-        true
-    );
+  this._popoverHelper = new WebInspector.ObjectPopoverHelper(
+    this.textEditor.element,
+    this._getPopoverAnchor.bind(this),
+    this._resolveObjectForPopover.bind(this),
+    this._onHidePopover.bind(this),
+    true
+  );
 
-    this._registerShortcuts();
-}
+  this._registerShortcuts();
+};
 ```
 
 ### How is the popup shown
@@ -51,7 +53,6 @@ WebInspector.JavaScriptSourceFrame = function(scriptsPanel, uiSourceCode)
 The source frame has a `mouseOver` handler, which calls `showPopover`, which is bound to the `objectPopoverHelper`.
 
 `showPopover` is responsible for showing popover elements when there is data. Notice all of these callbacks that are hanging around, ready to be called when the time is right.
-
 
 ```js
 function showPopover(element, popover) {
@@ -80,7 +81,12 @@ function didQueryObject() {
 
   var popoverWidth = 300;
   var popoverHeight = 250;
-  popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
+  popover.showForAnchor(
+    popoverContentElement,
+    anchorElement,
+    popoverWidth,
+    popoverHeight
+  );
 }
 ```
 
@@ -91,16 +97,24 @@ In the example above, we're hovering over "app". This means that the inspector w
 
 ```js
 function _resolveObjectForPopover(anchorBox, showCallback, objectGroupName) {
-   var target = WebInspector.context.flavor(WebInspector.Target);
-   var lineNumber = anchorBox.highlight.lineNumber;
-   var startHighlight = anchorBox.highlight.startColumn;
-   var endHighlight = anchorBox.highlight.endColumn;
-   var line = this.textEditor.line(lineNumber);
+  var target = WebInspector.context.flavor(WebInspector.Target);
+  var lineNumber = anchorBox.highlight.lineNumber;
+  var startHighlight = anchorBox.highlight.startColumn;
+  var endHighlight = anchorBox.highlight.endColumn;
+  var line = this.textEditor.line(lineNumber);
 
-   var evaluationText = line.substring(startHighlight, endHighlight + 1);
-   var selectedCallFrame = target.debuggerModel.selectedCallFrame();
-   selectedCallFrame.evaluate(evaluationText, objectGroupName, false, true, false, false, showObjectPopover.bind(this));
+  var evaluationText = line.substring(startHighlight, endHighlight + 1);
+  var selectedCallFrame = target.debuggerModel.selectedCallFrame();
+  selectedCallFrame.evaluate(
+    evaluationText,
+    objectGroupName,
+    false,
+    true,
+    false,
+    false,
+    showObjectPopover.bind(this)
+  );
 
-   function showObjectPopover(result, wasThrown){}
+  function showObjectPopover(result, wasThrown) {}
 }
 ```

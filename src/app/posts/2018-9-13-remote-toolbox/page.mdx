@@ -1,10 +1,9 @@
 export const metadata = {
-  "title": "Remote Toolbox is coming!",
-  "description": "Blog post about Remote Toolbox is coming!",
-  "date": "2018-9-13",
-  "categories": [
-    "Firefox"
-  ]
+  title: "Remote Toolbox is coming to Firefox DevTools!",
+  description: "Blog post about Remote Toolbox is coming!",
+  date: "2018-9-13",
+  categories: ["Firefox"],
+  note: true,
 };
 
 One of the coolest technical aspects of Firefox's UI is that it is written in HTML/CSS/JS.
@@ -18,6 +17,7 @@ For most cases this works well, but if you're working on dev tools... then it is
 `@bgrins` came up with two scripts that help. The first launches the browser toolbox in a separate nightly process.
 
 ### browser-toolbox-run.sh
+
 ```bash
 # Start a normal instance with the debugger server running
 ./mach run --start-debugger-server 6081
@@ -30,7 +30,8 @@ MOZ_BROWSER_TOOLBOX_PORT=6081 /Applications/FirefoxNightly.app/Contents/MacOS/fi
 
 And lets say that you want to debug the browser toolbox itself. This is crazy, but you might just be that crazy, who knows. That is also possible as well.
 
-###  debug-browser-toolbox.sh
+### debug-browser-toolbox.sh
+
 ```bash
 ./mach run --start-debugger-server 6081 &
 

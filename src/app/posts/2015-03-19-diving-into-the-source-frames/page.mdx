@@ -1,20 +1,21 @@
-import Image from 'next/image';
-import JumpToDef from './jump-to-def.png';
+import Image from "next/image";
+import JumpToDef from "./jump-to-def.png";
 
 export const metadata = {
-  "title": "Chrome DevTools - Diving into the Source Frames",
-  "description": "Blog post about Chrome DevTools - Diving into the Source Frames",
-  "date": "2015-03-19",
-  "categories": [
-    "Firefox"
-  ]
+  title: " Diving into the Source Frames in Chrome DevTools",
+  description:
+    "Blog post about Chrome DevTools - Diving into the Source Frames",
+  date: "2015-03-19",
+  note: true,
+  categories: ["Chrome"],
 };
 
 #### Javascript Editor
+
 The javascript editor in devtools parlance is refereed to as a Source Frame. There are two source frames in devtools, the javascript editor and css editor.
 
-+ [JavascriptSourceFrame](https://github.com/jasonLaster/blink-devtools-docs/blob/master/source/JavascriptSourceFrame.md)
-+ [Source Frame](https://github.com/jasonLaster/blink-devtools-docs/blob/master/source_frame/SourceFrame.md)
+- [JavascriptSourceFrame](https://github.com/jasonLaster/blink-devtools-docs/blob/master/source/JavascriptSourceFrame.md)
+- [Source Frame](https://github.com/jasonLaster/blink-devtools-docs/blob/master/source_frame/SourceFrame.md)
 
 The javascript editor not surprisingly has a custom logic for communicating with the console and handling breakpoints.
 
@@ -36,28 +37,27 @@ jumpToSearchResult: function(index) {
 
 All of the shortcuts are defined in an object `WebInspector.ShortcutsScreen.SourcesPanelShortcuts`. Here's a dump of them for fun:
 
-+ SelectNextOccurrence
-+ SoftUndo
-+ GotoMatchingBracket
-+ ToggleAutocompletion
-+ IncreaseCSSUnitByOne
-+ DecreaseCSSUnitByOne
-+ IncreaseCSSUnitByTen
-+ DecreaseCSSUnitByTen
-+ EvaluateSelectionInConsole
-+ AddSelectionToWatch
-+ GoToMember
-+ GoToLine
-+ ToggleBreakpoint
-+ NextCallFrame
-+ PrevCallFrame
-+ ToggleComment
-+ JumpToPreviousLocation
-+ JumpToNextLocation
-+ CloseEditorTab
-+ Save
-+ SaveAll
-
+- SelectNextOccurrence
+- SoftUndo
+- GotoMatchingBracket
+- ToggleAutocompletion
+- IncreaseCSSUnitByOne
+- DecreaseCSSUnitByOne
+- IncreaseCSSUnitByTen
+- DecreaseCSSUnitByTen
+- EvaluateSelectionInConsole
+- AddSelectionToWatch
+- GoToMember
+- GoToLine
+- ToggleBreakpoint
+- NextCallFrame
+- PrevCallFrame
+- ToggleComment
+- JumpToPreviousLocation
+- JumpToNextLocation
+- CloseEditorTab
+- Save
+- SaveAll
 
 #### How do the function links work?
 
@@ -73,16 +73,24 @@ The formatting for the popover is done in `didGetFunctionDetails`
 
 ```js
 function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
-    var container = createElementWithClass("div", "object-popover-container");
+  var container = createElementWithClass("div", "object-popover-container");
 
-    var title = container.createChild("div", "function-popover-title source-code");
-    var functionName = title.createChild("span", "function-name").textContent = response.functionName;
+  var title = container.createChild(
+    "div",
+    "function-popover-title source-code"
+  );
+  var functionName = (title.createChild("span", "function-name").textContent =
+    response.functionName);
 
-    var link = this._lazyLinkifier().linkifyRawLocation(response.location, response.sourceURL, "function-location-link");
-    title.appendChild(link);
+  var link = this._lazyLinkifier().linkifyRawLocation(
+    response.location,
+    response.sourceURL,
+    "function-location-link"
+  );
+  title.appendChild(link);
 
-    container.appendChild(popoverContentElement);
-    popover.showForAnchor(container, anchorElement);
+  container.appendChild(popoverContentElement);
+  popover.showForAnchor(container, anchorElement);
 }
 ```
 
@@ -92,13 +100,16 @@ I think it's pretty cool that the popover is shown with `showForAnchor` w/ the a
 
 The `ObjectHelper` sets up a basic [Linkifier](https://github.com/jasonLaster/blink-devtools-docs/blob/master/bindings/Linkifier.md) for jumping to function definitions.
 
-
 ```js
-WebInspector.Linkifier = function(formatter) {
-    this._formatter = formatter || new WebInspector.Linkifier.DefaultFormatter(WebInspector.Linkifier.MaxLengthForDisplayedURLs);
-    this._liveLocationsByTarget = new Map();
-    WebInspector.targetManager.observeTargets(this);
-}
+WebInspector.Linkifier = function (formatter) {
+  this._formatter =
+    formatter ||
+    new WebInspector.Linkifier.DefaultFormatter(
+      WebInspector.Linkifier.MaxLengthForDisplayedURLs
+    );
+  this._liveLocationsByTarget = new Map();
+  WebInspector.targetManager.observeTargets(this);
+};
 ```
 
 When building a link, it uses the standard `Linkifier` instance method `linkifyRawLocation`.

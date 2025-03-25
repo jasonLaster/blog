@@ -1,6 +1,4 @@
-
 ## Personal site
-
 
 ### Credit
 
@@ -13,27 +11,28 @@ This site draws inspiration from:
 - Vercel's demo blog which showed me how fetch pages
 - ... site which helped me convert my old Jekyll site to NextJS
 
-
-
 ### To do list
 
 Replace old blog
-- [x] Get the post title and metadata 
-- [x] Add analytics, perf 
+
+- [x] Get the post title and metadata
+- [x] Add analytics, perf
 - [x] metadata (title, favico)
- 
-Nice to haves
+- [x] Add static rendering
 - [x] sitemap
-- [] sluggify headrs
+- [x] Flip about and posts
+
+### Nice to haves
+
+- [ ] improve theme
+- [ ] simplify the narrative
+- [ ] Add a search box for posts
+- [ ] split notes and posts
+- [] sluggify headers
 - [] Add theme picker
 - [] dynamic og
-- [] Add static rendering 
-- [] change the syntax highlighting theme 
+- [] change the syntax highlighting theme
 - [] remove src dir since it adds extra nesting
+- [] confirm ai did not re-write the content of the posts
 
-
-
-This might be my OCD speaking, but I'm surprised it's difficult to pass meta
-
-
-This might be my OCD speaking, but I'm surprised you have to do something like posts.json in order to pass page title and date with NextJS MDX.
+---

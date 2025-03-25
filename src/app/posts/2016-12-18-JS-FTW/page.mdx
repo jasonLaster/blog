@@ -1,10 +1,9 @@
 export const metadata = {
-  "title": "How to start hacking on SpiderMonkey",
-  "description": "Blog post about How to start hacking on SpiderMonkey",
-  "date": "2016-12-18",
-  "categories": [
-    "Firefox"
-  ]
+  title: "How to start hacking on SpiderMonkey",
+  description: "Blog post about How to start hacking on SpiderMonkey",
+  date: "2016-12-18",
+  categories: ["Firefox"],
+  note: true,
 };
 
 This post is a collection of notes on how to get started hacking on SpiderMonkey, I mean holy shit, did I just change JS!?!!
@@ -150,7 +149,6 @@ make -j8 -s
 
 also, don't forget your semicolons! You might be making JS, but you're writing CPP, oh god.
 
-
 ### Running the tests
 
 Here's how you run the tests from the `out` directory
@@ -172,11 +170,10 @@ PASSED ALL
 gdb --args /Users/jlaster/src/mozilla/gecko/js/src/obj/dist/bin/js -f /Users/jlaster/src/mozilla/gecko/js/src/jit-test/lib/prologue.js --js-cache /Users/jlaster/src/mozilla/gecko/js/sr*   8322 c/jit-test/.js-cache -e "const platform='darwin'; const libdir='/Users/jlaster/src/mozilla/gecko/js/src/jit-test/lib/'; const scriptdir='/Users/jlaster/src/mozilla/gecko/js/src/jit-test/tests*   8322 /debug/'" -f /Users/jlaster/src/mozilla/gecko/js/src/jit-test/tests/debug/watchProperty-01.js
 ```
 
-
 ### Good resources
 
 Here are some good resource I found on spider monkey. I haven't done much with them
 
-* [JavaScript:New to SpiderMonkey - MozillaWiki](https://wiki.mozilla.org/JavaScript:New_to_SpiderMonkey)
-* [SpiderMonkey - Mozilla | MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey)
-* [JavaScript:New to SpiderMonkey - MozillaWiki](https://wiki.mozilla.org/JavaScript:New_to_SpiderMonkey)
+- [JavaScript:New to SpiderMonkey - MozillaWiki](https://wiki.mozilla.org/JavaScript:New_to_SpiderMonkey)
+- [SpiderMonkey - Mozilla | MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey)
+- [JavaScript:New to SpiderMonkey - MozillaWiki](https://wiki.mozilla.org/JavaScript:New_to_SpiderMonkey)
