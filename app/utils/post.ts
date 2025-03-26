@@ -142,5 +142,5 @@ async function getMDXData(dir: string) {
 }
 
 export async function getBlogPosts() {
-  return getMDXData(path.join(process.cwd(), 'src', 'app', 'posts'));
+  return getMDXData(path.join(process.cwd(), 'app', 'posts'));
 }
