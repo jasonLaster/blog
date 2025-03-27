@@ -1,0 +1,100 @@
+export const metadata = {
+  title: "How to train your SWE (software engineer)",
+  date: "2025-03-26",
+  categories: ["AI"],
+};
+
+Last year a friend told me that he wanted to build a browser. Unfortunately, Joel built a good chunk of Chrome DevTools and Playwright and is the kind of person you cannot dismiss easily.
+
+His idea was simple. If you could design an agent that was capable of building a browser, then you could feel confident, it could build many other valuable things. And the beautiful thing about building a browser and other foundational pieces of software are they are well specified and tested, so it's clear if you're making progress.
+
+Last night his agent made the leap from approximately 300 to 1,200 or approximately two thirds of a popular JS Parser's test suite. Put another way, his agent, which still does not have a name, has made more progress than all, but very few developers.
+
+His new parser recognizes the distinction between rest and spread expressions. It handles ASI, which for mere mortals is, automatic semicolon insertion, and is an obscure feature where JS will automatically insert semicolons in places that make sense because back in the day when Brenden Eich was vibe coding JS in ten days he thought that was a nice idea.
+
+The rate of progress the agent is making is so crazy that last night in a single iteration it made the leap from ~1,000 to ~1,200 passing tests when it realized that what it thought was JS labels were actually new scope declarations. When it made that realization, all of a sudden, a couple hundred tests which were failing started passing.
+
+This agent is doing something, I have not seen other software agents do. It's possible that scientific research agents have success in this area, but this thing is giving a new meaning to the notion of long horizon tasks.
+
+It is able to make progress on the Nth task without sacrificing the success of the N+1th task. It is able to back track when it is going down the wrong path. And most fundamental, it gets better as it goes. It's inference time RL in a way that makes me believe that when it inevitably replicates the parser, it will be better equipped to tackle TypeScript. Put another way, it learns in a way that resembles developers like Ariya Hidyat and Marijn Haverbeke who built two of the top OSS JS Parsers and developed true expertise along the way.
+
+## The landscape
+
+I think we're getting ahead of ourselves. Before we dive into how Joel's agent is designed and what makes it special we should probably discuss how it is different from vibe coding which is all the rage today and the other benchmarks on the scene.
+
+In a recent survey, 25% of the YC'25 batch shared that 95% of their software was vibe coded. Cursor recently shared that they were the fastest company to scale from 1M of recurring revenue to 100M. And products like V0 have had lots of success by focusing the dataset on NextJS, the react framework they build, Shadcn, the UI library they maintain, and their own infra and marketplace of integrations.
+
+Today, it's clear that AI has become a true co-pilot and is a force multiplier for many software developers and even assisting many non-developers at the same time.
+
+At the same time, the research labs are quickly saturating many of the benchmarks. It started with, MMLU, which was basically a set of interview questions. These questions were always fairly contrived, so it was no surprise that AI could learn how to complete them too.
+
+It then progressed to SWE-Bench which is effectively a set of OSS issues with corresponding test cases to verify the solution. When Devin launched in the spring of '23 it was ground breaking that they achieved 14%. This was the first time I can remember thinking that AI could transition from co-pilot to collaborator and take work from Github issue to passing PR. It was also the first time where you could see the agentic loop in action and imagine an agent progressing from reproduction, to analysis, to fix.
+
+Not satisfied with OSS issues, two months ago OpenAI introduced SWE-Lancer which starts with tasks published to Upwork with real monetary awards assigned to them. Each benchmark sits along a progression from contrived to realistic real world activity, yet Joel would argue that while they all have value, none of them captures what it is like to truly be a great software developer.
+
+Software developers do not parachute into a project and fix one-off issues. We join teams. We develop ownership over a codebase. And we shape it with long term plans. Put another way, it's one thing to be able to come up with a fix for an open source issue. It's another to have the judgement to assess whether it is a good fix and will make it easier or harder to make subsequent changes.
+
+At it's core, what makes building a JS parser distinct from fixing one thousand one off issues is that for the parser each feature stacks on top of each other. To fix a single OSS issue, the agentic developer might need to take 10 distinct actions over the course of a couple minutes. To build a JS parser, the agentic developer would need to take thousands of actions of the span of hours or days. And along the way, have to avoid hundreds of rabbit holes and develop a perspective on what it takes to make incremental progress on an evolving codebase.
+
+## Developing the first AI JS parser
+
+There are a couple of things that you'll need if you're going to ask an AI agent to build a JS Parser.
+
+1. The agent needs to be able to update source code. Parsers are massive programs and it's unrealistic to expect it to re-write the program each time. It needs to be able to edit the code like a developer would and test out a patch.
+2. The agent needs to be able to run the tests. Parsers have thousands of tests and it's critical to be able to see which tests pass after any given change.
+3. The agent needs to be able to debug issues when they innevitably come up. Parsers are deeply recursive programs, so being able to interpret console logs and stack traces are key.
+4. The agent needs to be able to decompose difficult problems. When the program returns the wrong output, it's important to be able to isolate the problem, and see if they are coming from either tokenizer or parser.
+5. The agent needs to be able to prioritize code quality. There will be times when in order to make progress, you first need to refactor the system. Identifying these moments is not obvious.
+6. The agent needs to be able to backtrack when it is going down the wrong direction. Some changes, like refactors, will cause some short term regressions, which you should push through and fix. Other changes, will simply break key components and should be reverted.
+7. And of course, the agent will need observability and caching. Shit will happen and without the ability to introspect and replicate you'd be in a world of pain.
+
+But, I'd argue that the most fundamental capability the agent will need in order to work for hours at a time is the ability to plan its work effectively. When most people talk about agentic planning, they're reffering to todo lists. This is **NOT** what this agent is doing.
+
+Here's an example the 294th plan that I picked at random.
+
+```md
+Based on the error message, our parser is having trouble with the compound assignment operator ">>>=". The error indicates it's recognizing the ">>>" part but then expecting an expression after that, rather than recognizing ">>>=" as a single operator.
+
+Here's the plan to fix this issue:
+
+1. Verify our multi-character operator handling:
+
+   - Make sure that ">>>=" is included in our list of multi-character operators
+   - Check our `readOperator()` function to ensure it's properly recognizing ">>>=" as a single token
+   - Verify that we're properly ordering our operator checks (longer operators should be checked before shorter ones)
+
+2. Update our operator precedence and associativity:
+
+   - Ensure that ">>>=" is recognized as an assignment operator in our `isAssignmentOperator()` helper function
+   - Check that our precedence handling for assignment operators is correct
+
+3. Fix tokenization order:
+
+   - Double-check that we're checking for ">>>=" before ">>>" in our token recognition
+   - The current error suggests we're recognizing ">>>" but not the subsequent "=" as part of the same operator
+
+4. Review our operator list:
+
+   - Make a comprehensive review of all our compound assignment operators
+   - Verify that multi-character operators like ">>>=", "<<=", "\*\*=", etc. are all properly included
+
+5. Test with various similar operators:
+   - Ensure our fix works for similar operators like ">>=", "<<=", etc.
+   - Make sure our operator tokenization is robust for all multi-character operators
+
+The root cause appears to be in our tokenization phase - we're not correctly recognizing ">>>=" as a single operator token, but instead breaking it up. We need to ensure our tokenizer correctly identifies and handles all compound operators, particularly when they share common prefixes.
+```
+
+I picked this plan at random because they're all like this. They are clear. There is a point of view on what needs to be done. There are hypothesis to test. There are ways to validate the work. And frankly, they're better in many ways than a plan that I or many people I know would come up with.
+
+And frankly, lets be honest. If you sat me down and gave me a day or two to build a JS Parser, I may get 20 or 50 tests to pass if I were lucky. This thing has gotten 1,200 to pass and will likely reach 90% completion soon, so it's got to be doing something special.
+
+Here's what I think it is doing and it's why earlier I talked about it's ability to learn and compared it to Ariya and Marijn. Good plans are being persisted. Bad plans are being rejected. It's that simple. When the agent is coming up with a new plan, it has access to the prior plans that were useful and is able to draw from them.
+
+It's this core ability which helps it learn. And it's why I don't think it's too much of a stretch to refer to it to inference time RL. And it's implications are pretty significant. If each plan subsequent plan is better than the last, then as it progresses from some of the easier problems to the harder, it is better equipped to tackle them.
+
+As it assess what would be a good change, it is able to draw from other plans, that were fundamental improvements to codebase, and were not just useful at fixing the Nth task, but were useful down the line for the N+1th task as well.
+
+Joel has not tested this yet, but I'd wager to bet, that when his agent starts re-building Typescript and eventually goes after the entire JS engine and browser, it'll benefit from sharing some of the final plans used to complete the JS Parser. Put another way, some of the meta work that went into becoming a better planner, will be transferable between projects.
+
+And if you allow yourself to make the jump from post-training to pre-training things become really fun. The same RL loop which helps agents build well specified systems (parsers, compilers, type systems, runtimes, databases, ...) could be used to refine the planning output at training time. And when a model ships with great computational reasoning and the judgement of Ariya, Marijn, and the best software developers, the sky is the limit. Will it be a better SWE, sure. Will it be a better architect and lawyer? Probably. Will it be a better chemist, physicist, mathemetician? This is where it becomes pure speculation, but I believe we'll finally be putting agency in the term agent.
