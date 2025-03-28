@@ -10,27 +10,28 @@ export const metadata = {
   categories: ["JS"],
 };
 
-After a decade, last year I finally made the jump and migrated off of my legacy Jekyll blog and onto NextJS. Dmitry, of Reshaped fame, had made a NextJS template that was inspired by Brian Lovin blog and I was excited to adopt both a modern stack and design ([post](/2024-02-19-migrating-to-next)).
+After a decade as a happy Jekyll user, last year I finally made the jump and migrated my blog to NextJS. [Dmitry](https://x.com/blvdmitry), of Reshaped fame, had made a NextJS template that was inspired by Brian Lovin's [site](https://x.com/blvdmitry/status/1758498848203268455) and I was excited to adopt both a modern stack and design ([post](/2024-02-19-migrating-to-next)).
 
-After a year, some of the cracks were beginning to show. The most important was page load time. Because the site was server rendered, and not staticly built, each page could take a couple of seconds to load.
+After a year, some of the cracks were beginning to show. The most important was page load time. Pages could take take a couple of seconds to load because they were server rendered and not staticly built.
 
-There were also some small details as well.
+There were also some small details:
 
-- If you tried to load the dark theme during the day, you'd see the light theme flash. Worse, if you set the light theme at night, you'd see the dark theme flash.
-- Because the layout had two sidebars, the content was never centered unless you entered a reader mode which added an additional click.
-- And because at the time, NextJS did not have first class support for MDX, the site used `MDXRemote` and rendered the markdown on demand which added complexity.
+- When you tried to load the dark theme during the day, you'd see the light theme flash. Worse, if you set the light theme at night, you'd see the dark theme flash.
 
-And while none of these issues were by themselves insurmountable, it felt like it would be easier to make the jump to Next 15 and adopt first class MDX support.
+* Because the layout had two sidebars, the content was never centered unless you entered a reader mode which added an additional click.
+* The site used `MDXRemote` and rendered the markdown on demand which added complexity.
+
+While none of these issues were insurmountable, it felt like it would be easier to make the jump to Next 15 and adopt first class MDX support.
 
 There was also the added benefit of being able to borrow ideas from [Lee Robinson](https://x.com/leeerob), Vercel's head of product, and [Guillermo Rauch](https://x.com/rauchg), Vercel's CEO, who both had modern setups.
 
-### Here are some of the lessons
+**Here are some of the lessons**
 
 ### Adding a post header
 
 On the surface, Guillermo and Lee have similar setups. They both use `@next/mdx` which makes it really easy to add `mdx` pages.
 
-```ts
+```next.config.ts
 import createMDX from "@next/mdx";
 
 /** @type {import('next').NextConfig} */
@@ -291,6 +292,3 @@ function createHeading(level) {
   Heading.displayName = `Heading${level}`;
 
 ```
-
-
-
