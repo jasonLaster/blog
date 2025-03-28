@@ -48,89 +48,6 @@ h4 {
   text-wrap: balance;
 }
 
-pre {
-  /* background-color: #16161e; */
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  line-height: 1;
-}
-
-pre::-webkit-scrollbar {
-  display: none;
-}
-
-pre {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-pre code {
-  font-family: "Menlo", "Monaco", "Courier New", monospace;
-  font-size: 14px;
-  padding: 0.5em 0.1em;
-}
-pre {
-  border-radius: 0.5em;
-  background-color: var(--color-slate-800);
-}
-
-:root {
-  --sh-identifier: #3c0d82;
-  --sh-keyword: #f47067;
-  --sh-string: #00a99a;
-  --sh-class: #8d85ff;
-  --sh-property: #4e8fdf;
-  --sh-entity: #6eafad;
-  --sh-jsxliterals: #bf7db6;
-  --sh-sign: #8996a3;
-  --sh-comment: #a19595;
-}
-
-pre code {
-  background-color: transparent;
-  padding: 0;
-  border: none;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-pre code > span .sh__token--identifier {
-  color: white !important;
-}
-
-code:not(pre code) span {
-  font-weight: 500;
-  color: black !important;
-}
-
-@media (prefers-color-scheme: dark) {
-  pre {
-    border-radius: 0.3em;
-    background-color: var(--color-zinc-800);
-  }
-
-  :root {
-    --sh-class: #7aa2f7;
-    --sh-sign: #89ddff;
-    --sh-string: #9ece6a;
-    --sh-keyword: #bb9af7;
-    --sh-comment: #565f89;
-    --sh-jsxliterals: #7aa2f7;
-    --sh-property: #73daca;
-    --sh-entity: #e0af68;
-  }
-
-  code:not(pre code) span {
-    color: var(--color-zinc-100) !important;
-  }
-}
-
-pre code span {
-  font-weight: 500;
-}
-
 hr {
   color: var(--color-gray-200);
 }
@@ -162,4 +79,53 @@ table {
 .prose .anchor:after {
   @apply text-neutral-300 dark:text-neutral-700;
   content: "#";
+}
+
+/* CODE */
+
+pre {
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
+
+  border-radius: 0 0 0.5rem 0.5rem;
+  overflow-x: auto;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+pre::-webkit-scrollbar {
+  display: none;
+}
+
+pre {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+p > code {
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.3rem;
+  font-size: 0.875rem;
+  @apply bg-white;
+  @apply text-zinc-800;
+}
+
+.dark p > code {
+  @apply bg-zinc-800;
+  @apply text-zinc-100;
+}
+
+@media (prefers-color-scheme: light) {
+  p > code {
+    @apply bg-white;
+    @apply text-zinc-800;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  p > code {
+    @apply bg-zinc-800;
+    @apply text-zinc-100;
+  }
 }

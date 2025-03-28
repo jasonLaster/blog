@@ -1,13 +1,20 @@
 import React, { ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
-import { highlight } from "sugar-high";
 import { Tweet } from "react-tweet";
+import { Code } from "bright";
 
 type ParagraphProps = ComponentPropsWithoutRef<"p">;
 type ListProps = ComponentPropsWithoutRef<"ul">;
 type ListItemProps = ComponentPropsWithoutRef<"li">;
 type AnchorProps = ComponentPropsWithoutRef<"a">;
 type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
+
+Code.theme = {
+  dark: "github-dark",
+  light: "github-light",
+  darkSelector: "html.dark",
+  lightSelector: "html:not(.dark)",
+};
 
 function slugify(str: string) {
   return str
@@ -115,10 +122,7 @@ const components = {
       </a>
     );
   },
-  code: ({ children, ...props }: ComponentPropsWithoutRef<"code">) => {
-    const codeHTML = highlight(children as string);
-    return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
-  },
+  pre: Code,
   Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
     <table>
       <thead>
