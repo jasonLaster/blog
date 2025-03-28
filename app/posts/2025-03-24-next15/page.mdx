@@ -23,7 +23,7 @@ There were also some small details:
 
 While none of these issues were insurmountable, it felt like it would be easier to make the jump to Next 15 and adopt first class MDX support.
 
-There was also the added benefit of being able to borrow ideas from [Lee Robinson](https://x.com/leeerob), Vercel's head of product, and [Guillermo Rauch](https://x.com/rauchg), Vercel's CEO, who both had modern setups.
+There was also the added benefit of being able to borrow ideas from [Lee Robinson](https://x.com/leeerob), Vercel's head of product, and [Guillermo Rauch](https://x.com/rauchg), Vercel's CEO, who both had modern setups ([1](https://github.com/leerob/site), [2](http://github.com/rauchg/blog/)). And Lee also published a great [tutorial](https://www.youtube.com/watch?v=34bRv6cQezo) last November.
 
 **Here are some of the lessons**
 
@@ -56,7 +56,7 @@ This is fine, and it may just by my OCD speaking, but I find having to keep the 
 
 The work around, is to have the post's `layout` component fetch the posts and pass them down to the Header component.
 
-```tsx
+```app/layout.tsx
 export default async function BlogLayout({
   children,
 }: {
@@ -84,7 +84,7 @@ export default function Header({ posts }: { posts: PostWithoutContent[] }) {
 
 While this is not worse than what we were doing before with the `posts.json` file, it is unfortunate because it feels like something that should be handled in the server component and thus avoidable.
 
-The rationale is that by not including path information, the server component, is able to preserve state across navigations, which is nice, but does have this downside.
+The rationale is that by not including path information, the server component, is able to preserve state across navigations, which is nice, but does have this one downside.
 
 ### Should metadata be Yaml or JS?
 
@@ -202,7 +202,7 @@ export function extractMetadata(filePath: string): Metadata {
 
 This is totally silly and is probably an area where `@nextjs/mdx` could export a `getPostsMetadata` function that takes care of this for you.
 
-### Updating the Layout
+### Updating the layout
 
 The previous layout was inspired by [Brian Lovin](https://brianlovin.com/)'s terrific blog and features a left sidebar and the ability to easily scroll through the posts.
 
@@ -231,9 +231,9 @@ Cursor found all of the posts and eagerly went to work updating each of them. A 
 
 ### Supporting theme toggling
 
-One of my primary frustrations with the old site was that the wrong theme would often flash in from the server side render.
+One of my top frustrations with the old site was that the wrong theme would often flash in from the server side render.
 
-The new site lifts Guillermo's terrific `ThemeToggle` button and theme-effect which includes several nice details.
+The new site lifts Guillermo's terrific `ThemeToggle` button and `theme-effect` which includes several nice details.
 
 - The theme toggle button is a tri-state where the third mode is system.
 - The theme ties into Tailwind via it's darkMode `class` mode.
@@ -292,3 +292,45 @@ function createHeading(level) {
   Heading.displayName = `Heading${level}`;
 
 ```
+
+### Syntax highlighting code blocks
+
+Initially I went with `sugar-high` because both Lee and Guillermo were using and I liked how light weight it was and how easy it was to add to `mdx-components`.
+
+```ts
+code: ({ children, ...props }: ComponentPropsWithoutRef<"code">) => {
+   const codeHTML = highlight(children as string);
+   return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
+},
+```
+
+
+
+After adding it, I ran into a couple of issues
+
+* I was not sure how to find nice light and dark themes
+* Setting the themes in the css for all three states (system, light, and dark) was surprisingly difficult
+* Styling inline-blocks separately from code blocks had some edge cases
+* It was not obvious how I'd add file tabs which is nice for showing the filename associated with the code
+
+
+
+After messing around for a couple of minutes, I decided to go with [Bright](https://bright.codehike.org/) which handled these cases fairly well and played nicely with `nextjs/mdx`
+
+```mdx-components.tsx
+Code.theme = {
+  dark: "github-dark",
+  light: "github-light",
+  darkSelector: "html.dark",
+  lightSelector: "html:not(.dark)",
+};
+
+const components = {
+  pre: Code 
+}
+```
+
+
+
+
+
