@@ -1,9 +1,11 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "A webpack plugin debugging story",
   description: "Blog post about Debugging Webpack",
   date: "2016-12-05",
   categories: ["Firefox"],
-};
+});
 
 We on the [Firefox Debugger](http://github.com/devtools-html/debugger.html) team started working on a brand new React / Redux debugger with webpack in March. We've setup webpack Dev Server and Hot Module Reloading. And we have to say, it rocks!
 

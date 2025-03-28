@@ -1,28 +1,28 @@
-export const metadata = {
-  title: 'Backbone Models in 10 tests',
-  description: 'A brief overview on neural networks and language models.',
-  date: '2013-09-22',
-  categories: ['OSS']
-};
+import { postMetadata } from "../../utils/metadata";
 
+export const metadata = postMetadata({
+  title: "Backbone Models in 10 tests",
+  description: "A brief overview on neural networks and language models.",
+  date: "2013-09-22",
+  categories: ["OSS"],
+});
 
-
-I think understanding Libraries and Frameworks is one of the most fundatmental things a Software Engineer can do. Understanding the underlying system allows you to get the most out of it. It helps you design new features and debug knarly bugs. 
+I think understanding Libraries and Frameworks is one of the most fundatmental things a Software Engineer can do. Understanding the underlying system allows you to get the most out of it. It helps you design new features and debug knarly bugs.
 
 Understanding the system that's one or two layers below your software also helps you understand that abstraction that it's built on top of. This layer is more generic by necesssity and will help you understand the shape of your objects and the constraints they will adhere to.
 
-So, how do you go about building this understanding. A good place to start is tutorials and books. These resources will give a good overview and theoretical grounding, but you won't get your hands dirty. You could download the code and read it. This is often frustrating because the libraries are mature and even the core classes have several edge-cases and feature bloat that will make it hard to understand. The best way to find the core bit of logic is to use git to go back in time to when the library was just built. The developer was probably thinking about building the "simplest" thing and that'll be the code you want to read and play with. 
+So, how do you go about building this understanding. A good place to start is tutorials and books. These resources will give a good overview and theoretical grounding, but you won't get your hands dirty. You could download the code and read it. This is often frustrating because the libraries are mature and even the core classes have several edge-cases and feature bloat that will make it hard to understand. The best way to find the core bit of logic is to use git to go back in time to when the library was just built. The developer was probably thinking about building the "simplest" thing and that'll be the code you want to read and play with.
 
-Reading code will probably only get you so far. Reading is mostly a passive activity and learning is best when it's active exploration. There are three good ways to play with a Library: fix a bug, remove a key component and try and add it, build tests or code that exercises it. All of these activities are better by going back in time with git. A bug in the early days is more fundamental and interesting. A commit could cover an entirely new feature, so if you're reading the commit logs and find a featrue that you want to add, checkout the commit before and try and implement it yourself. 
+Reading code will probably only get you so far. Reading is mostly a passive activity and learning is best when it's active exploration. There are three good ways to play with a Library: fix a bug, remove a key component and try and add it, build tests or code that exercises it. All of these activities are better by going back in time with git. A bug in the early days is more fundamental and interesting. A commit could cover an entirely new feature, so if you're reading the commit logs and find a featrue that you want to add, checkout the commit before and try and implement it yourself.
 
 The other day, I was designing an interview for a front-end dev and wanted it to be hands-on conversation provoking so I built most of Backbone's Model and Event classes as it looked a month after the first commit in 10 unit tests. I called the project Barebones!
 
 Check out the [Barebone Project][barebone] on github. Also, checkout the commit history to see how each test was added. And if you want to do it yourself, I recommend deleting the barebone.js file and running the specs yourself!
 
-
 ### Here are the 10 unit tests:
-1. Model set 
-2. Model get 
+
+1. Model set
+2. Model get
 3. Model initialize
 4. Model defaults
 5. Model bind
@@ -32,69 +32,60 @@ Check out the [Barebone Project][barebone] on github. Also, checkout the commit 
 9. Model set, which triggers a change event
 10. Model default should not trigger a change event
 
-As an exercise, I'm really happy with how the finished product is a usable data object. I also really like how the tests build on each other. Set and Get are trivial primitives, but layering in defaults and event-hooks makes you re-think strategies for reading and writing the data. 
-
+As an exercise, I'm really happy with how the finished product is a usable data object. I also really like how the tests build on each other. Set and Get are trivial primitives, but layering in defaults and event-hooks makes you re-think strategies for reading and writing the data.
 
 ### Here's the code:
 
-
 ```js
-var _ = require(__dirname + '/vendor/underscore');
-var extend = require(__dirname + '/lib/extend');
+var _ = require(__dirname + "/vendor/underscore");
+var extend = require(__dirname + "/lib/extend");
 var Barebone = {};
 
-
-Barebone.Model = function(attributes) {
+Barebone.Model = function (attributes) {
   attributes || (attributes = {});
 
   this.events = {};
   this.attributes = {};
-  this.set(this.defaults, {silent: true});
+  this.set(this.defaults, { silent: true });
   this.initialize(attributes);
-}
+};
 
 _.extend(Barebone.Model.prototype, {
+  initialize: function () {},
 
-  initialize: function() {},
-
-
-  set: function(attributes, options) {
-
+  set: function (attributes, options) {
     options || (options = {});
     var now = this.attributes;
 
-    for(var attr in attributes) {
+    for (var attr in attributes) {
       var value = attributes[attr];
 
       if (now[attr] != value) {
         this.attributes[attr] = value;
-        if (!options['silent']) {
-          this.trigger('change:'+attr, this, value);
+        if (!options["silent"]) {
+          this.trigger("change:" + attr, this, value);
         }
       }
-
     }
     return this;
   },
 
-  get: function(attribute) {
+  get: function (attribute) {
     return this.attributes[attribute];
-  }
-
+  },
 });
 
-
 Barebone.Events = {
-  bind: function(event, callback) {
-    console.log()
-    this.events[event] || (this.events[event] = [])
+  bind: function (event, callback) {
+    console.log();
+    this.events[event] || (this.events[event] = []);
     this.events[event].push(callback);
   },
 
-  trigger: function(event) {
+  trigger: function (event) {
     var callbacks = this.events[event];
 
-    if(!callbacks) {
+    if (!callbacks) {
       return this;
     }
 
@@ -106,10 +97,9 @@ Barebone.Events = {
     }
 
     return this;
-  }
-}
+  },
+};
 _.extend(Barebone.Model.prototype, Barebone.Events);
-
 
 Barebone.Model.extend = extend;
 module.exports = Barebone;

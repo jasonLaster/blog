@@ -1,14 +1,15 @@
 import Image from "next/image";
 import JumpToDef from "./jump-to-def.png";
+import { postMetadata } from "../../utils/metadata";
 
-export const metadata = {
+export const metadata = postMetadata({
   title: " Diving into the Source Frames in Chrome DevTools",
   description:
     "Blog post about Chrome DevTools - Diving into the Source Frames",
   date: "2015-03-19",
   note: true,
   categories: ["Chrome"],
-};
+});
 
 #### Javascript Editor
 

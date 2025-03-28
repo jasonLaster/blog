@@ -1,9 +1,11 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "Implmenting fast file search in Firefox devtools",
   description: "Blog post about Search Boxes",
   date: "2017-1-5",
   categories: ["Firefox"],
-};
+});
 
 Working on a Debugger presents new challenges everyday.
 Some of them are expected and exciting like formatting JS promises.

@@ -55,14 +55,16 @@ async function importMetadata(filePath: string): Promise<Metadata> {
 // Function to extract metadata without using dynamic imports
 export function extractMetadata(filePath: string): Metadata {
   const content = fs.readFileSync(filePath, 'utf-8');
+  const postMetadataMatch = content.match(/export const metadata = postMetadata\(({[\s\S]*?)\);/);
   const metadataMatch = content.match(/export const metadata = ({[\s\S]*?});/);
 
-  if (metadataMatch && metadataMatch[1]) {
+  const match = postMetadataMatch?.[1] || metadataMatch?.[1];
+  if (match) {
     try {
       // Use eval in a safer way by executing in a controlled scope
       const evalFn = new Function(`
         try {
-          const metadata = ${metadataMatch[1]};
+          const metadata = ${match};
           return JSON.stringify(metadata);
         } catch (e) {
           return '{"error": "Failed to evaluate metadata: " + e.message}';
@@ -84,7 +86,7 @@ export function extractMetadata(filePath: string): Metadata {
       return standardizeMetadata(metadata);
     } catch (error) {
       console.error(`Error processing metadata from ${filePath}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      console.error(`Original metadata: ${metadataMatch[1]}`);
+      console.error(`Original metadata: ${match}`);
       return {
         title: 'Error',
         publishedAt: new Date().toISOString(),

@@ -1,9 +1,11 @@
-export const metadata = {
-  title: 'Web Replay - An overview for web developers like me',
-  description: 'Understanding the architecture of Firefox Web Replay',
-  date: '2018-09-21',
-  categories: ['DevTools']
-};
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Web Replay - An overview for web developers like me",
+  description: "Understanding the architecture of Firefox Web Replay",
+  date: "2018-09-21",
+  categories: ["DevTools"],
+});
 
 Brian Hackett recently published this brilliant [patch][patch], which prompted me to think a bit more about Web Replay's architecture. Yesterday, I had the opportunity to talk with him. Here are some of my notes. If you're interested in learning more, [MDN] has an in-depth overview.
 

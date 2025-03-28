@@ -1,23 +1,21 @@
-import Image from 'next/image';
+import Image from "next/image";
 
-import Consolidation from './consolidation.jpg';
-import Trends from './trends-3.jpg'; 
+import Consolidation from "./consolidation.jpg";
+import Trends from "./trends-3.jpg";
+import { postMetadata } from "../../utils/metadata";
 
-export const metadata = {
-  "title": "Market Consolidation",
-  "description": "Blog post about Market Consolidation",
-  "date": "2024-12-28",
-  "categories": [
-    "Web"
-  ]
-};
+export const metadata = postMetadata({
+  title: "Market Consolidation",
+  description: "Blog post about Market Consolidation",
+  date: "2024-12-28",
+  categories: ["Web"],
+});
 
 <Image src={Consolidation} alt="Market Concentration Analysis 2000-2024" />
 
-
 The U.S. stock market has undergone a dramatic transformation from 2000 to 2024, both in size and composition. Starting at $9.36T in 2000, the market cap has grown nearly 6-fold to $52.64T, while experiencing significant volatility during the dot-com crash (-$2.61T in 2002), financial crisis (-$4.52T in 2008), and post-COVID tech correction (-$8.01T in 2022). The concentration of power among the top 10 companies has followed a U-shaped pattern: starting high at 41.60% during the dot-com bubble, dropping to a low of 16.64% in 2014, and rising again to 37.11% in 2024.
 
-The composition shift has been equally dramatic. In 2000, the market was dominated by financial (AIG, Citigroup), industrial (GE), and telecom (AT&T) companies, with Microsoft as the sole tech representative. By 2024, the market is overwhelmingly controlled by tech giants, with the "Magnificent Seven" (Apple, Microsoft, Amazon, NVIDIA, Meta, Alphabet, Tesla) leading the charge, primarily driven by AI and digital transformation. 
+The composition shift has been equally dramatic. In 2000, the market was dominated by financial (AIG, Citigroup), industrial (GE), and telecom (AT&T) companies, with Microsoft as the sole tech representative. By 2024, the market is overwhelmingly controlled by tech giants, with the "Magnificent Seven" (Apple, Microsoft, Amazon, NVIDIA, Meta, Alphabet, Tesla) leading the charge, primarily driven by AI and digital transformation.
 
 This shift reflects three major economic transitions: from physical to digital business models, from regional to global platforms, and from traditional valuation metrics to growth and AI potential. Only Microsoft has remained in the top 10 throughout this entire period, highlighting the massive turnover in corporate leadership as technology has reshaped the economy.
 
@@ -28,6 +26,7 @@ This shift reflects three major economic transitions: from physical to digital b
 ## Biennial Analysis (2000-2018)
 
 ### 2000
+
 - 41.6%, $9.4T, -$1.2T
 - **Changes**:
   - Added: BAC (Bank of America)
@@ -39,6 +38,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Cisco affected by dot-com valuation reset
 
 ### 2002
+
 - 40.5%, $6.8T, -$2.6T
 - **Changes**:
   - Added: WMT (Walmart)
@@ -50,6 +50,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Market seeking stable cash flows
 
 ### 2004
+
 - 35.8%, $9.2T, +$2.5T
 - **Changes**:
   - Added: GE, JNJ (Johnson & Johnson)
@@ -61,6 +62,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Global economic recovery
 
 ### 2006
+
 - 33.5%, $11.2T, +$2.0T
 - **Changes**:
   - Added: PG (Procter & Gamble), VZ (Verizon)
@@ -72,6 +74,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Housing bubble driving financial valuations
 
 ### 2008
+
 - 23.7%, $6.7T, -$4.5T
 - **Changes**:
   - Added: CVX (Chevron)
@@ -83,6 +86,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - AIG's near-collapse and bailout
 
 ### 2010
+
 - 18.8%, $9.4T, +$2.6T
 - **Changes**:
   - Added: AAPL (Apple), KO (Coca-Cola)
@@ -94,6 +98,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Tech beginning to displace financials
 
 ### 2012
+
 - 19.3%, $10.9T, +$1.6T
 - **Changes**:
   - Added: IBM (International Business Machines)
@@ -105,6 +110,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Post-crisis recovery gaining steam
 
 ### 2014
+
 - 16.6%, $15.9T, +$5.0T
 - **Changes**:
   - Added: BRK.B (Berkshire Hathaway), WFC (Wells Fargo)
@@ -116,6 +122,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - QE fueling market expansion
 
 ### 2016
+
 - 17.5%, $18.0T, +$2.0T
 - **Changes**:
   - Added: AMZN (Amazon), META (Facebook), GOOGL (Google)
@@ -127,6 +134,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Digital transformation accelerating
 
 ### 2018
+
 - 20.3%, $20.6T, +$2.6T
 - **Changes**:
   - Added: GOOG (Google Class C), BRK.B
@@ -140,6 +148,7 @@ This shift reflects three major economic transitions: from physical to digital b
 ## Annual Analysis (2019-2024)
 
 ### 2019
+
 - 21.9%, $26.8T, +$6.2T
 - **Changes**:
   - Added: V (Visa), WMT
@@ -151,6 +160,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Rise of fintech over traditional finance
 
 ### 2020
+
 - 27.5%, $32.3T, +$5.5T
 - **Changes**:
   - Added: TSLA (Tesla)
@@ -162,6 +172,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Banking sector COVID concerns
 
 ### 2021
+
 - 29.4%, $41.1T, +$8.8T
 - **Changes**:
   - Added: NVDA (NVIDIA), UNH (UnitedHealth Group)
@@ -173,6 +184,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Crypto bull market peak
 
 ### 2022
+
 - 23.8%, $33.1T, -$8.0T
 - **Changes**:
   - Added: XOM, BRK.B
@@ -184,6 +196,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Flight to value stocks
 
 ### 2023
+
 - 30.6%, $41.7T, +$8.6T
 - **Changes**:
   - Added: NVDA, META, LLY (Eli Lilly), AVGO (Broadcom)
@@ -195,6 +208,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Broadcom's VMware acquisition
 
 ### 2024
+
 - 37.1%, $52.6T, +$11.0T
 - **Changes**:
   - Added: WMT
@@ -206,6 +220,7 @@ This shift reflects three major economic transitions: from physical to digital b
   - Market narrowing to mega-cap tech
 
 ## Key Trends
+
 - **Sector Evolution**: Financial → Tech → AI
 - **Valuation Drivers**: Traditional Metrics → Growth → AI Potential
 - **Market Structure**: Diverse → Tech Concentrated

@@ -1,11 +1,11 @@
-export const metadata = {
-  "title": "CSS Transpiling - Lets create the future together",
-  "description": "Blog post about CSS Transpiling",
-  "date": "2015-08-19",
-  "categories": [
-    "CSS"
-  ]
-};
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "CSS Transpiling - Lets create the future together",
+  description: "Blog post about CSS Transpiling",
+  date: "2015-08-19",
+  categories: ["CSS"],
+});
 
 It looks like CSS transpiling is here and that's a very good thing for CSS.
 
@@ -55,17 +55,17 @@ input[type="range"]::track {
 
 ### CSS Modules (Project)
 
-A *CSS Module* is a CSS file in which all class names and animation names are scoped locally by default.
+A _CSS Module_ is a CSS file in which all class names and animation names are scoped locally by default.
 
 CSS Modules compile to a low-level interchange format called ICSS or [Interoperable CSS](https://github.com/css-modules/icss), but are written like normal CSS files:
 
-+ [CSS Modules](http://glenmaddern.com/articles/css-modules)
-+ [CSS Modules core](https://github.com/css-modules/css-modules-loader-core)
-+ [CSS Modules docs repo](https://github.com/css-modules/css-modules)
+- [CSS Modules](http://glenmaddern.com/articles/css-modules)
+- [CSS Modules core](https://github.com/css-modules/css-modules-loader-core)
+- [CSS Modules docs repo](https://github.com/css-modules/css-modules)
 
 ### Rucksack (Project)
 
 Rucksack makes CSS development less painful, with the features and shortcuts it should have come with out of the box.
 
-+ [Rucksack docs](http://simplaio.github.io/rucksack/)
-+ [Rucksack repo](https://github.com/simplaio/rucksack)
+- [Rucksack docs](http://simplaio.github.io/rucksack/)
+- [Rucksack repo](https://github.com/simplaio/rucksack)
