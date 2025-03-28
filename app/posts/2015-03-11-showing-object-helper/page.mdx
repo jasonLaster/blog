@@ -1,10 +1,12 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "Showing Object helpers in Chrome DevTools",
   description: "Understanding DevTools object helper popup functionality",
   date: "2015-03-11",
   note: true,
   categories: ["Chrome"],
-};
+});
 
 The Object Helper is a popup that shows a summary of an object in scope. It's cool because it's overlaying dynamic data on top of static code.
 

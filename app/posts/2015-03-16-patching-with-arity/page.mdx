@@ -1,11 +1,12 @@
-export const metadata = {
-  "title": "Monkey Patching with Arity",
-  "description": "Blog post about Patching with Arity",
-  "date": "2015-03-16",
-  "categories": [
-    "Firefox"
-  ]
-};
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Monkey Patching with Arity",
+  description:
+    "How do you monkey patch a function with an arbitrary number of arguments?",
+  date: "2015-03-16",
+  categories: ["Firefox"],
+});
 
 Monkey patching in javascript involves several building blocks `apply`, `call`, `arguments`, `function.length`.
 
@@ -18,19 +19,19 @@ This is actually pretty easy. `monkey` returns a new function that acts as a clo
 
 ```js
 function func(a, b, c) {
-  console.log(arguments)
+  console.log(arguments);
 }
 
 function monkey(f) {
   return function () {
     var context = this;
     f.apply(context, arguments);
-  }
+  };
 }
 
 var monkeyFunc = monkey(func);
-console.log(monkeyFunc(1,2,3)); // [1,2,3]
-console.log(monkeyFunc(1,2)); // [1,2]
+console.log(monkeyFunc(1, 2, 3)); // [1,2,3]
+console.log(monkeyFunc(1, 2)); // [1,2]
 ```
 
 #### Dynamic Arity
@@ -41,17 +42,18 @@ Does this matter, in most cases arity is not important because `monkeyFunc(1,23,
 
 So, when we monkey patch a function we want the patched function to have the same arity as the original function. In javascript this is hard because func.length cannot be overriden so we'll have to write some black magic of our own.
 
-
 ```js
 function func(a, b, c) {
-  console.log(arguments)
+  console.log(arguments);
 }
 
 function monkey(f) {
   window.f1 = f;
   window.c1 = this;
-  var argString = _.times(f.length, function(i) {return 'a'+ i}).join(",")
-  var funcString = 'return f1.apply(c1, arguments)';
+  var argString = _.times(f.length, function (i) {
+    return "a" + i;
+  }).join(",");
+  var funcString = "return f1.apply(c1, arguments)";
   return new Function(argString, funcString);
 }
 

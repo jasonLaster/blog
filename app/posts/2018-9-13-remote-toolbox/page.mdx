@@ -1,10 +1,11 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+export const metadata = postMetadata({
   title: "Remote Toolbox is coming to Firefox DevTools!",
   description: "Blog post about Remote Toolbox is coming!",
   date: "2018-9-13",
-  categories: ["Firefox"],
   note: true,
-};
+  categories: ["Firefox"],
+});
 
 One of the coolest technical aspects of Firefox's UI is that it is written in HTML/CSS/JS.
 Considering, it's age it was literally the biggest bet on the web.

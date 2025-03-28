@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Websockets1 from "./websockets-1.png";
 import Websockets2 from "./websockets-2.png";
+import { postMetadata } from "../../utils/metadata";
 
-export const metadata = {
+export const metadata = postMetadata({
   title: "Chrome DevTools - Filtering / Formatting Websocket frames",
   description: "Blog post about Getting WebSocket Frames",
   date: "2016-03-05",
   categories: ["Chrome"],
-  note: true,
-};
+});
 
 As of today, Chrome DevTools does not have great support for seeing web socket frames. Chrome DevTools uses it's standard `DataTable` component, which supports columns with sorting. It does not support filtering, formatting objects, or adding additional columns.
 

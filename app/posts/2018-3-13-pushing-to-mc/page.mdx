@@ -1,11 +1,12 @@
-export const metadata = {
-  "title": "Pushing to Mozilla Central",
-  "description": "Blog post about Pushing to Mozilla Central",
-  "date": "2018-3-13",
-  "categories": [
-    "Firefox"
-  ]
-};
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Pushing to Mozilla Central",
+  description: "Blog post about Pushing to Mozilla Central",
+  date: "2018-3-13",
+  categories: ["Firefox"],
+  note: true,
+});
 
 One of the tricky things about working on Firefox is that Mozilla uses Mercurial as the official SVM.
 The code is hosted at [http://hg.mozilla.org/](http://hg.mozilla.org/).

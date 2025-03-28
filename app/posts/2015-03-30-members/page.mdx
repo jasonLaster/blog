@@ -1,13 +1,14 @@
 import Image from "next/image";
 import FocusMembers from "./focus-members.png";
+import { postMetadata } from "../../utils/metadata";
 
-export const metadata = {
+export const metadata = postMetadata({
   title: "How does Chrome DevTools show the functions popup?",
   description: "Blog post about How does DevTools show the functions popup?",
   note: true,
   date: "2015-03-19",
   categories: ["Chrome"],
-};
+});
 
 <Image src={FocusMembers} alt="How does DevTools show the functions popup?" />
 

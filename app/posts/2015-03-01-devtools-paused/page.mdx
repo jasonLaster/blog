@@ -1,9 +1,11 @@
-export const metadata = {
-  title: 'What happens when DevTools Pauses',
-  description: 'Exploring the inner workings of Chrome DevTools',
-  date: '2015-03-01',
-  categories: ['Chrome']
-};
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "What happens when DevTools Pauses",
+  description: "Exploring the inner workings of Chrome DevTools",
+  date: "2015-03-01",
+  categories: ["Chrome"],
+});
 
 Over the past couple months, I've become increasingly curious about how chrome devtools works.
 In this post, I've tried to convert some of my notes into a question answer format.
@@ -190,7 +192,7 @@ function remoteObjectBinder(error, properties, internalProperties) {
     var property = internalProperties[i];
     var propertyValue = createRemoteObject(property.value);
     internalPropertiesResult.push(
-      new RemoteObjectProperty(property.name, propertyValue),
+      new RemoteObjectProperty(property.name, propertyValue)
     );
   }
 
@@ -247,16 +249,16 @@ function update() {
   this.nameElement = createNameElement(this.property.name);
   this.valueElement = createValueElement(
     this.property.value,
-    this.listItemElement,
+    this.listItemElement
   );
   var separatorElement = (createElementWithClass(
     "span",
-    "separator",
+    "separator"
   ).textContent = ": ");
   this.listItemElement.appendChildren(
     this.nameElement,
     separatorElement,
-    this.valueElement,
+    this.valueElement
   );
 }
 ```
@@ -298,7 +300,6 @@ Here's an overview, that we'll unpack below.
 
 ---
 
-
 The Inspector Debugger Agent, is a good enough place for the story to start.
 One of the interesting devTools patterns is that when there's a data object that's shared
 between the frontend and backend, there's often a model on the frontend and agent on the backend.
@@ -328,6 +329,7 @@ PassRefPtr<Array<CallFrame> > InspectorDebuggerAgent::currentCallFrames() {
   return injectedScript.wrapCallFrames(m_currentCallStack, 0);
 }
 ```
+
 ---
 
 ##### 2. wrapCallFrames
@@ -364,7 +366,7 @@ function wrapCallFrames(callFrame, asyncOrdinal) {
     result[depth] = new InjectedScript.CallFrameProxy(
       depth,
       callFrame,
-      asyncOrdinal,
+      asyncOrdinal
     );
     callFrame = callFrame.caller;
     ++depth;
@@ -405,7 +407,7 @@ InjectedScript.CallFrameProxy = function (ordinal, callFrame, asyncOrdinal) {
   if (callFrame.isAtReturn) {
     this.returnValue = injectedScript._wrapObject(
       callFrame.returnValue,
-      "backtrace",
+      "backtrace"
     );
   }
 };
@@ -465,4 +467,3 @@ I hope you enjoyed diving into chrome DevTools. The people who work on DevTools 
 done a great job at making the project as accessible as possible. I'll try and put together a couple more
 deep dives going forward, I've just begun exploring the project
 the past couple months, but already I've learned so much.
-

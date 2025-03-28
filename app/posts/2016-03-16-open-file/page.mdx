@@ -1,13 +1,14 @@
 import Image from "next/image";
 import ShowFile from "./show-file.jpg";
+import { postMetadata } from "../../utils/metadata";
 
-export const metadata = {
+export const metadata = postMetadata({
   title: "Firefox DevTools - Showing a File",
   description: "Blog post about Firefox DevTools - Showing a File",
   date: "2016-03-16",
   note: true,
   categories: ["Firefox"],
-};
+});
 
 ## How are sources shown in the debugger?
 

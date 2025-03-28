@@ -1,10 +1,12 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "Esprima from 30,000 feet",
   description: "Blog post about Esprima from 30,000 feet",
   date: "2015-07-17",
   note: true,
   categories: ["OSS"],
-};
+});
 
 Here's a complete list of functions inside of Esprima. I'm not going to try to document
 Esprima, but just organize the list in a quick pass so that we can see how Esprima looks from a 30,000 foot perspective.

@@ -1,9 +1,11 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "Hacking on Esprima, the JS Parser, Day 2",
   description: "Blog post about Esprima day 2",
   date: "2015-07-17",
   categories: ["OSS"],
-};
+});
 
 Yesterday, we looked at how Esprima parses `2+2`. Today,
 we're going to go one step further and see how Esprima parses `sum`.

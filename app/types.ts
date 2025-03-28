@@ -8,6 +8,7 @@ export type Metadata = {
   categories?: string[]
   draft?: boolean
   note?: boolean
+  description?: string
 }
 
 export type Post = {

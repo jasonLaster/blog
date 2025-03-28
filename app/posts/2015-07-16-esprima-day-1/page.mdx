@@ -1,9 +1,11 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "Hacking on Esprima, the JS Parser, Day 1",
   description: "Blog post about Esprima Day 1",
   date: "2015-07-16",
   categories: ["OSS"],
-};
+});
 
 Esprima is a JS parser that outputs an AST.
 There are plenty of articles on parsers and ASTs.

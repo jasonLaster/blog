@@ -1,10 +1,12 @@
-export const metadata = {
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
   title: "Adding Search to the FirefoxDebugger",
   description: "Blog post about Adding Search to the Debugger",
   date: "2017-2-21",
   note: true,
   categories: ["Firefox"],
-};
+});
 
 Seaching in a document _cmd+f_ has been a surprisingly hard feature to get right in the Debugger.
 On the surface, it seems like it should be simple, but there are a lot of subtle interactions

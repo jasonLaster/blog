@@ -1,14 +1,16 @@
 import BlogPost from "./blog-post.png";
 import Image from "next/image";
 import LandingPage from "./landing-page.png";
+import MyOGImage from "./my-og-image.png";
+import { postMetadata } from "../../utils/metadata";
 
-export const metadata = {
+export const metadata = postMetadata({
   title: "Migrating to Next.js 15",
-  description: "Blog post about migrating to Next.js 15",
+  description:
+    "Some of the lessons I learned adding post metadata, theme support, and syntax highlighting",
   date: "2025-03-24",
-  // draft: true,
   categories: ["JS"],
-};
+});
 
 After a decade as a happy Jekyll user, last year I finally made the jump and migrated my blog to NextJS. [Dmitry](https://x.com/blvdmitry), of Reshaped fame, had made a NextJS template that was inspired by Brian Lovin's [site](https://x.com/blvdmitry/status/1758498848203268455) and I was excited to adopt both a modern stack and design ([post](/2024-02-19-migrating-to-next)).
 
@@ -200,7 +202,7 @@ export function extractMetadata(filePath: string): Metadata {
 }
 ```
 
-This is totally silly and is probably an area where `@nextjs/mdx` could export a `getPostsMetadata` function that takes care of this for you.
+This is totally silly and is probably an area where `@next/mdx` could export a `getPostsMetadata` function that takes care of this for you.
 
 ### Updating the layout
 
@@ -304,18 +306,14 @@ code: ({ children, ...props }: ComponentPropsWithoutRef<"code">) => {
 },
 ```
 
-
-
 After adding it, I ran into a couple of issues
 
-* I was not sure how to find nice light and dark themes
-* Setting the themes in the css for all three states (system, light, and dark) was surprisingly difficult
-* Styling inline-blocks separately from code blocks had some edge cases
-* It was not obvious how I'd add file tabs which is nice for showing the filename associated with the code
+- I was not sure how to find nice light and dark themes
+- Setting the themes in the css for all three states (system, light, and dark) was surprisingly difficult
+- Styling inline-blocks separately from code blocks had some edge cases
+- It was not obvious how I'd add file tabs which is nice for showing the filename associated with the code
 
-
-
-After messing around for a couple of minutes, I decided to go with [Bright](https://bright.codehike.org/) which handled these cases fairly well and played nicely with `nextjs/mdx`
+After messing around for a couple of minutes, I decided to go with [Bright](https://bright.codehike.org/) which handled these cases fairly well and played nicely with `next/mdx`
 
 ```mdx-components.tsx
 Code.theme = {
@@ -326,11 +324,57 @@ Code.theme = {
 };
 
 const components = {
-  pre: Code 
+  pre: Code
 }
 ```
 
+### Adding a dynamic OG Image
 
+NextJS makes it fairly easy to add dynamic OG images. I started with this [example](https://vercel.com/guides/dynamic-text-as-image) and then updated the export function to `export function GET(request: NextRequest) {` to support Next 15 and asked Cursor to update the look and feel and it got it right in one shot.
 
+<Image src={MyOGImage} alt="og-image" />
 
+I haven't tested this yet, but I believe that I should be able to register the image by adding the `openGraph` metadata.
 
+```page.mdx
+export const metadata = {
+  title: "Migrating to Next.js 15",
+  description:
+    "Some of the lessons I learned adding post metadata, theme support, and syntax highlighting",
+  date: "2025-03-24",
+  categories: ["JS"],
+  openGraph: {
+    title: "Migrating to Next.js 15",
+    description:
+      "Some of the lessons I learned adding post metadata, theme support, and syntax highlighting",
+    images: [{ url: "/og/?title=Migrating to Next.js 15" }],
+  },
+};
+```
+
+There's obviously a decent amount of duplication here, so you can clean it up by adding a helper function.
+
+```page.mdx
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Migrating to Next.js 15",
+  description:
+    "Some of the lessons I learned adding post metadata, theme support, and syntax highlighting",
+  date: "2025-03-24",
+  categories: ["JS"],
+})
+```
+
+```utils/metadata.ts
+export const postMetadata = (post: Post) => {
+  return {
+    ...post,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      images: [{ url: `/og/?title=${post.title}` }],
+    },
+  };
+};
+```
