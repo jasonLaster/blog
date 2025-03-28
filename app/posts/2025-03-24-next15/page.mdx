@@ -56,7 +56,7 @@ This is fine, and it may just by my OCD speaking, but I find having to keep the 
 
 The work around, is to have the post's `layout` component fetch the posts and pass them down to the Header component.
 
-```tsx
+```app/layout.tsx
 export default async function BlogLayout({
   children,
 }: {
@@ -84,7 +84,7 @@ export default function Header({ posts }: { posts: PostWithoutContent[] }) {
 
 While this is not worse than what we were doing before with the `posts.json` file, it is unfortunate because it feels like something that should be handled in the server component and thus avoidable.
 
-The rationale is that by not including path information, the server component, is able to preserve state across navigations, which is nice, but does have this downside.
+The rationale is that by not including path information, the server component, is able to preserve state across navigations, which is nice, but does have this one downside.
 
 ### Should metadata be Yaml or JS?
 
@@ -202,7 +202,7 @@ export function extractMetadata(filePath: string): Metadata {
 
 This is totally silly and is probably an area where `@nextjs/mdx` could export a `getPostsMetadata` function that takes care of this for you.
 
-### Updating the Layout
+### Updating the layout
 
 The previous layout was inspired by [Brian Lovin](https://brianlovin.com/)'s terrific blog and features a left sidebar and the ability to easily scroll through the posts.
 
@@ -231,9 +231,9 @@ Cursor found all of the posts and eagerly went to work updating each of them. A 
 
 ### Supporting theme toggling
 
-One of my primary frustrations with the old site was that the wrong theme would often flash in from the server side render.
+One of my top frustrations with the old site was that the wrong theme would often flash in from the server side render.
 
-The new site lifts Guillermo's terrific `ThemeToggle` button and theme-effect which includes several nice details.
+The new site lifts Guillermo's terrific `ThemeToggle` button and `theme-effect` which includes several nice details.
 
 - The theme toggle button is a tri-state where the third mode is system.
 - The theme ties into Tailwind via it's darkMode `class` mode.
