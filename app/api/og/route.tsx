@@ -5,7 +5,7 @@ export const config = {
   runtime: "edge",
 };
 
-const baseURL = "https://jlast.dev";
+const baseURL = "https://jlast.io";
 
 export function GET(request: NextRequest) {
   try {
@@ -62,10 +62,9 @@ export function GET(request: NextRequest) {
               style={{
                 color: "white",
                 fontSize: "32px",
-                fontWeight: "500",
               }}
             >
-              jlast.dev
+              jlast.io
             </span>
             <img
               alt="Jlast"
