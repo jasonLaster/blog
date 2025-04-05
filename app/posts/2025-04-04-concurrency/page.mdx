@@ -1,4 +1,6 @@
 import { postMetadata } from "../../utils/metadata";
+import { Code } from "bright";
+import { Tabs } from "../../components/tabs";
 
 export const metadata = postMetadata({
   title: "Running concurrent tasks in Node.js",
@@ -12,16 +14,10 @@ export const metadata = postMetadata({
 
 Node.js worker threads are similar to web workers in the browser. In the example below, we use a worker to calculate the value of a fibonacci sequence.
 
-```
-bun main.js 10
+<Tabs lineNumbers>
 
-[PARENT] sendMessage(fibonacci)
-[CHILD] onMessage(fibonacci)
-[PARENT] onMessage(result)
-Fibonacci(10) = 55
-```
-
-```main.js
+```js
+// title main.js
 const { Worker } = require("worker_threads");
 
 const worker = new Worker("./worker.js");
@@ -45,7 +41,8 @@ console.log(`[PARENT] sendMessage(fibonacci)`);
 worker.postMessage({ type: "fibonacci", input });
 ```
 
-```worker.js
+```js
+// title worker.js
 const { parentPort } = require("worker_threads");
 
 parentPort.on("message", (msg) => {
@@ -62,24 +59,27 @@ function fibonacci(n) {
 }
 ```
 
+```js
+// title stdout
+
+bun main.js 10
+
+[PARENT] sendMessage(fibonacci)
+[CHILD] onMessage(fibonacci)
+[PARENT] onMessage(result)
+Fibonacci(10) = 55
+```
+
+</Tabs>
+
 ### Sharing memory
 
 Unlike browser workers, Node.js `worker_threads` are able to share memory via `sharedArrayBuffer`. This example shows how you can setup a worker pool to compute save random strings into a shared array buffer.
 
-```bash
-[slot 0] ggp57iwq9x4hs3m10h6g0scq
-[slot 1] g3u7yziwv7g9eab39sctl784hl1
-[slot 2] 93v7hwlrxh2hu3xw7ii
-[slot 3] 0lmk5nxibmgih2prkbr8
-[slot 4] us982gb0w0ji
-[slot 5] v2zi563lyis23qy476o5d1
-[slot 6] uvcbbg0qj5ss34jsut6kkpjk84ag
-[slot 7] c7t9ont2d
-[slot 8] 3boerc3rbe09y6rsrpltxkbi041
-[slot 9] 3w58ypnj
-```
+<Tabs lineNumbers>
 
-```main.js
+```js
+// title main.js
 const { Worker } = require("worker_threads");
 
 const MESSAGE_SLOT_COUNT = 10;
@@ -111,7 +111,8 @@ setInterval(() => {
 }, 1000);
 ```
 
-```worker.js
+```js
+// title worker.js
 const { workerData } = require("worker_threads");
 
 const { index, buffer, slotSize } = workerData;
@@ -136,6 +137,22 @@ setInterval(() => {
 }, 2000);
 ```
 
+```js
+// title stdout
+[slot 0] ggp57iwq9x4hs3m10h6g0scq
+[slot 1] g3u7yziwv7g9eab39sctl784hl1
+[slot 2] 93v7hwlrxh2hu3xw7ii
+[slot 3] 0lmk5nxibmgih2prkbr8
+[slot 4] us982gb0w0ji
+[slot 5] v2zi563lyis23qy476o5d1
+[slot 6] uvcbbg0qj5ss34jsut6kkpjk84ag
+[slot 7] c7t9ont2d
+[slot 8] 3boerc3rbe09y6rsrpltxkbi041
+[slot 9] 3w58ypnj
+```
+
+</Tabs>
+
 ### Handling write contention
 
 Whenever you're dealing with threads and shared memory, it's useful to try and avoid write contention where two workers can be trying to update the same state or read from partially written state.
@@ -147,23 +164,10 @@ The parent will be responsible for managing which slots are available so that no
 1. a slot is never released, so it is only updated once
 2. a worker requests multiple slots, which will also prevent it from releasing prior slots
 
-```
-  Active slots: 6, 3
+<Tabs lineNumbers>
 
-  ### Slots
-  [slot 0] ul6gbhqhphending
-  [slot 1] 3aoez0xdqcending
-  [slot 2] tflam3aoo1ending
-  [slot 3] Worker 2 pending
-  [slot 4] 1n15ifmt00ending
-  [slot 5] k7jy78pgp1ending
-  [slot 6] Worker 1 pending
-  [slot 7] zthil3vahoending
-  [slot 8] 5ij96kymtuending
-  [slot 9] 4vf412qncoending
-```
-
-```main.js
+```js
+// title main.js
 const { Worker } = require("worker_threads");
 const fs = require("fs");
 
@@ -242,7 +246,8 @@ setInterval(() => {
 }, 1000);
 ```
 
-```worker.js
+```js
+// title worker.js
 const { parentPort, workerData } = require("worker_threads");
 
 const { id, buffer, slotSize } = workerData;
@@ -308,3 +313,56 @@ async function workLoop() {
 
 workLoop();
 ```
+
+```js
+// title out.md
+  Active slots: 6, 3
+
+  ### Slots
+  [slot 0] ul6gbhqhphending
+  [slot 1] 3aoez0xdqcending
+  [slot 2] tflam3aoo1ending
+  [slot 3] Worker 2 pending
+  [slot 4] 1n15ifmt00ending
+  [slot 5] k7jy78pgp1ending
+  [slot 6] Worker 1 pending
+  [slot 7] zthil3vahoending
+  [slot 8] 5ij96kymtuending
+  [slot 9] 4vf412qncoending
+```
+
+```js
+// title stdout
+
+bun main.js
+CHILD [WORKER 2] request_slot
+CHILD [WORKER 1] request_slot
+Main [Worker 2] request_slot 8
+Main [Worker 1] request_slot 1
+CHILD [WORKER 1] request_slot
+CHILD [WORKER 1] addString(Worker 1 pending, 1)
+CHILD [WORKER 2] request_slot
+CHILD [WORKER 2] addString(Worker 2 pending, 8)
+addString("Worker 2 pending", 8)
+addString("Worker 1 pending", 1)
+CHILD [WORKER 1] addString(ae109apr2i, 1)
+addString("ae109apr2i", 1)
+CHILD [WORKER 1] request_slot 1
+CHILD [WORKER 1] request_slot
+Main [Worker 1] release_slot 1
+Main [Worker 1] request_slot 7
+CHILD [WORKER 1] request_slot
+CHILD [WORKER 1] addString(Worker 1 pending, 7)
+addString("Worker 1 pending", 7)
+CHILD [WORKER 1] addString(gbn4im6my2, 7)
+addString("gbn4im6my2", 7)
+CHILD [WORKER 1] request_slot 7
+CHILD [WORKER 1] request_slot
+Main [Worker 1] release_slot 7
+Main [Worker 1] request_slot 5
+CHILD [WORKER 1] request_slot
+CHILD [WORKER 1] addString(Worker 1 pending, 5)
+addString("Worker 1 pending", 5)
+```
+
+</Tabs>
