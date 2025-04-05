@@ -1,0 +1,310 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Running concurrent tasks in Node.js",
+  description: "Blog post about running concurrent tasks in Node.js",
+  date: "2025-04-04",
+  note: true,
+  categories: ["JS"],
+});
+
+### Setting up worker threads
+
+Node.js worker threads are similar to web workers in the browser. In the example below, we use a worker to calculate the value of a fibonacci sequence.
+
+```
+bun main.js 10
+
+[PARENT] sendMessage(fibonacci)
+[CHILD] onMessage(fibonacci)
+[PARENT] onMessage(result)
+Fibonacci(10) = 55
+```
+
+```main.js
+const { Worker } = require("worker_threads");
+
+const worker = new Worker("./worker.js");
+
+worker.on("message", (msg) => {
+  console.log(`[PARENT] onMessage(${msg.type})`);
+  if (msg.type === "result") {
+    console.log(`Fibonacci(${msg.input}) = ${msg.result}`);
+    process.exit(0);
+  }
+});
+
+const input = parseInt(process.argv[2]);
+
+if (isNaN(input)) {
+  console.log("Please provide a number. This isn’t mind reading class.");
+  process.exit(1);
+}
+
+console.log(`[PARENT] sendMessage(fibonacci)`);
+worker.postMessage({ type: "fibonacci", input });
+```
+
+```worker.js
+const { parentPort } = require("worker_threads");
+
+parentPort.on("message", (msg) => {
+  console.log(`[CHILD] onMessage(${msg.type})`);
+  if (msg.type == "fibonacci") {
+    const result = fibonacci(msg.input);
+    parentPort.postMessage({ type: "result", input: msg.input, result });
+  }
+});
+
+function fibonacci(n) {
+  if (n < 2) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+```
+
+### Sharing memory
+
+Unlike browser workers, Node.js `worker_threads` are able to share memory via `sharedArrayBuffer`. This example shows how you can setup a worker pool to compute save random strings into a shared array buffer.
+
+```bash
+[slot 0] ggp57iwq9x4hs3m10h6g0scq
+[slot 1] g3u7yziwv7g9eab39sctl784hl1
+[slot 2] 93v7hwlrxh2hu3xw7ii
+[slot 3] 0lmk5nxibmgih2prkbr8
+[slot 4] us982gb0w0ji
+[slot 5] v2zi563lyis23qy476o5d1
+[slot 6] uvcbbg0qj5ss34jsut6kkpjk84ag
+[slot 7] c7t9ont2d
+[slot 8] 3boerc3rbe09y6rsrpltxkbi041
+[slot 9] 3w58ypnj
+```
+
+```main.js
+const { Worker } = require("worker_threads");
+
+const MESSAGE_SLOT_COUNT = 10;
+const SLOT_SIZE = 32; // bytes per string
+const TOTAL_BYTES = SLOT_SIZE * MESSAGE_SLOT_COUNT;
+
+const sharedBuffer = new SharedArrayBuffer(TOTAL_BYTES);
+const sharedArray = new Uint8Array(sharedBuffer);
+
+const decoder = new TextDecoder();
+
+const workers = [];
+
+for (let i = 0; i < MESSAGE_SLOT_COUNT; i++) {
+  const worker = new Worker("./worker.js", {
+    workerData: { index: i, buffer: sharedBuffer, slotSize: SLOT_SIZE },
+  });
+  workers.push(worker);
+}
+
+setInterval(() => {
+  console.clear();
+  for (let i = 0; i < MESSAGE_SLOT_COUNT; i++) {
+    const offset = i * SLOT_SIZE;
+    const slice = sharedArray.slice(offset, offset + SLOT_SIZE);
+    const str = decoder.decode(slice).replace(/\0/g, ""); // remove null chars
+    console.log(`[slot ${i}] ${str}`);
+  }
+}, 1000);
+```
+
+```worker.js
+const { workerData } = require("worker_threads");
+
+const { index, buffer, slotSize } = workerData;
+const sharedArray = new Uint8Array(buffer);
+const encoder = new TextEncoder();
+
+function getRandomString(length) {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
+}
+
+setInterval(() => {
+  const str = getRandomString(Math.floor(Math.random() * (slotSize - 1)) + 1); // leave room for null byte
+  const encoded = encoder.encode(str);
+  const offset = index * slotSize;
+
+  sharedArray.fill(0, offset, offset + slotSize); // clear old content
+  sharedArray.set(encoded.slice(0, slotSize), offset);
+}, 2000);
+```
+
+### Handling write contention
+
+Whenever you're dealing with threads and shared memory, it's useful to try and avoid write contention where two workers can be trying to update the same state or read from partially written state.
+
+For this example, we'll use a fairly contrived example where we have 10 slots of shared memory that two workers are writing to. Each worker will request a slot, start writing to the slot, and when it's done, release the slot back to the pool.
+
+The parent will be responsible for managing which slots are available so that no two workers will write to the same slot. There are several scenarios to watch out for:
+
+1. a slot is never released, so it is only updated once
+2. a worker requests multiple slots, which will also prevent it from releasing prior slots
+
+```
+  Active slots: 6, 3
+
+  ### Slots
+  [slot 0] ul6gbhqhphending
+  [slot 1] 3aoez0xdqcending
+  [slot 2] tflam3aoo1ending
+  [slot 3] Worker 2 pending
+  [slot 4] 1n15ifmt00ending
+  [slot 5] k7jy78pgp1ending
+  [slot 6] Worker 1 pending
+  [slot 7] zthil3vahoending
+  [slot 8] 5ij96kymtuending
+  [slot 9] 4vf412qncoending
+```
+
+```main.js
+const { Worker } = require("worker_threads");
+const fs = require("fs");
+
+const SLOT_COUNT = 10;
+const SLOT_SIZE = 64;
+const sharedBuffer = new SharedArrayBuffer(SLOT_COUNT * SLOT_SIZE);
+const sharedArray = new Uint8Array(sharedBuffer);
+const decoder = new TextDecoder();
+
+const freeSlots = new Set();
+for (let i = 0; i < SLOT_COUNT; i++) {
+  freeSlots.add(i);
+}
+
+const activeSlots = new Set();
+
+function allocateSlot() {
+  const index = Math.floor(Math.random() * freeSlots.size);
+  const randomSlot = [...freeSlots][index];
+  freeSlots.delete(randomSlot);
+  activeSlots.add(randomSlot);
+  if (randomSlot === undefined) {
+    throw new Error(
+      `randomSlot cannot be undefined index=${index} freeSlots.size=${freeSlots.size}`
+    );
+  }
+  return randomSlot;
+}
+
+function releaseSlot(index) {
+  freeSlots.add(index);
+  activeSlots.delete(index);
+}
+
+const workers = [];
+for (let i = 1; i < 3; i++) {
+  const worker = new Worker("./worker.js", {
+    workerData: { id: i, buffer: sharedBuffer, slotSize: SLOT_SIZE },
+  });
+
+  worker.on("message", (msg) => {
+    if (msg.type === "request_slot") {
+      const slotIndex = allocateSlot();
+      console.log(`Main [Worker ${msg.workerId}] request_slot ${slotIndex}`);
+      worker.postMessage({ type: "grant_slot", slotIndex });
+    } else if (msg.type === "release_slot") {
+      const slotIndex = msg.slotIndex;
+      console.log(`Main [Worker ${msg.workerId}] release_slot ${slotIndex}`);
+
+      releaseSlot(slotIndex);
+    }
+  });
+  workers.push(worker);
+}
+
+let index = 0;
+
+setInterval(() => {
+  const slots = [];
+  for (let i = 0; i < SLOT_COUNT; i++) {
+    const offset = i * SLOT_SIZE;
+    const slice = sharedArray.slice(offset, offset + SLOT_SIZE);
+    const text = decoder.decode(slice).replace(/\0/g, "");
+    slots.push(`[slot ${i}] ${text}`);
+  }
+
+  const out = `
+  Active slots: ${[...activeSlots].join(", ")}
+
+  ### Slots
+  ${slots.join("\n  ")}
+  `;
+
+  fs.writeFileSync("./out.md", out);
+  fs.writeFileSync(`./out/out-${index++}`, out);
+}, 1000);
+```
+
+```worker.js
+const { parentPort, workerData } = require("worker_threads");
+
+const { id, buffer, slotSize } = workerData;
+const sharedArray = new Uint8Array(buffer);
+const encoder = new TextEncoder();
+
+function getRandomString(length) {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
+}
+
+let slotIndex;
+
+parentPort.on("message", (msg) => {
+  if (msg.type == "grant_slot") {
+    slotIndex = msg.slotIndex;
+  }
+});
+
+function addString(str, index) {
+  console.log(`CHILD [WORKER ${id}] addString(${str}, ${index})`);
+  const offset = index * slotSize;
+
+  // First clear the slot
+  sharedArray.fill(0, offset, offset + index);
+
+  // console.log(`addString("${str}", ${index})`);
+
+  // Then add the new string
+  const encoded = encoder.encode(str);
+  sharedArray.set(encoded.slice(0, slotSize), offset);
+}
+
+async function workLoop() {
+  while (true) {
+    console.log(`CHILD [WORKER ${id}] request_slot`);
+
+    if (slotIndex === undefined) {
+      parentPort.postMessage({ type: "request_slot", workerId: id });
+      slotIndex = -1;
+    }
+
+    if (slotIndex === undefined || slotIndex === -1) {
+      await new Promise((r) => setTimeout(r, 100));
+      continue;
+    }
+
+    addString(`Worker ${id} pending`, slotIndex);
+
+    await new Promise((r) => setTimeout(r, Math.random() * 5 * 1_000));
+
+    addString(getRandomString(10), slotIndex);
+    await new Promise((r) => setTimeout(r, Math.random() * 1_00));
+
+    console.log(`CHILD [WORKER ${id}] request_slot ${slotIndex}`);
+    parentPort.postMessage({ type: "release_slot", slotIndex, workerId: id });
+    slotIndex = undefined;
+  }
+}
+
+workLoop();
+```
