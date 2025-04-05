@@ -42,7 +42,7 @@ function createHeading(level: number) {
         <a
           href={`#${slug}`}
           key={`link-${slug}`}
-          className="opacity-0 group-hover:opacity-100 group-focus:opacity-100 ml-[-20px] pr-[4px] text-zinc-600 dark:text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+          className="opacity-0 group-hover:opacity-100 group-focus:opacity-100 ml-[-14px] pr-[4px] text-zinc-600 dark:text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
         >
           #
         </a>
