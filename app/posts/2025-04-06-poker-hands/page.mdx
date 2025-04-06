@@ -1,0 +1,155 @@
+import { postMetadata } from "../../utils/metadata";
+import { Tabs } from "../../components/tabs";
+import {Code} from "bright"
+
+export const metadata = postMetadata({
+  title: "Find all possible five card hands.",
+  description: "This blog post shows how you can find all possible five card combinations when handed seven cards.",
+  date: "2025-04-06",
+  note: true,
+  categories: ["JS"],
+});
+
+Last night I was working on a relatively simple problem: "find the best poker hand". The problem was pretty trivial because it boiled down to questions like, "how do you find a flush". 
+
+Then came the kicker, we're playing Texas Hold'em and you've got seven cards in your hand and need to find the best possible five card hand. Oh shit, now we've got to find all possible five card hands. Now, that is a problem.
+
+My first thought was, does JS have an N choose M function? If so, we're good. My second thought was, oh wait, even if it did, it might return how many possible hands there were and not my actual hand. Lets roll up our sleeves and get to work. 
+
+
+### Getting combinations 
+
+After thinking about this problem for an embarressing amount of time, I had an insight which i thought was pretty clever.
+
+While it's hard to come up with all possible 5 hand combinations, it's actually pretty easy to come up with all possible combinations and then filter out the bad ones.
+
+Here's what it looked like. Start with `[[0], [1]]` and then turn it into `[[0,0], [0,1], [1,0], [1,1]]` which is basically taking each item in the list and folding `[[0], [1]]` into it.
+
+This worked pretty well and once i had all permutations that added up to five like `[1,0,1,1,0]` I mapped that onto the hands and got combos.
+
+While this worked, I could recognize it was not really proper and we could do better.
+
+<Code lineNumbers>
+```js 
+function getCombinations(list) {
+  let n = list.length;
+  let sets = [[0], [1]];
+
+  while (--n > 0) {
+    const newSet = [];
+    for (const item of sets) {
+      newSet.push([0, ...item], [1, ...item]);
+    }
+
+    sets = newSet;
+  }
+
+  const goodSets = sets.filter(
+    (item) => item.reduce((prev, curr) => prev + curr, 0) === 5,
+  );
+
+  const hands = goodSets.map((set) =>
+    set
+      .map((value, index) => (value === 1 ? list[index] : null))
+      .filter(Boolean),
+  );
+
+  return hands;
+}
+```
+</Code>
+
+### Find all hands recursively
+
+After stepping away and thinking about it a bit more, I remembered that it's possible to map most recursive solutions into an iterative loop and vice versa. 
+
+Okay, I'd come up with the iteratie approach first. Could I map this onto a recursive approach.
+
+I thnk the approach I came up with was pretty cool and was in some ways really similar. 
+
+The algorith was this. 
+
+1. When you start off, pluck the first card out of the hand and create a list of combinations with and without the card (`[[card], []]`) 
+2. Keep going and for each new card duplicate the list of combinations and add it to the first half and keep it out of the second half.
+3. Once you're out of cards, filter the permutations so it only includes five carded hands because it's still possible to have more or fewer. 
+
+The approach was cleaner because it better expressed the three states: 
+1. no combinations 
+2. no cards left 
+3. everything else 
+
+But, when I asked chatGPT how to solve it, it mentioned that there was a recursive approach that involved backtracking which looked closer to what I wanted to do initially. And the next day when i was talking to a friend she called out backtracking as one of the things she learned over the past couple of months, so i thought it'd be fun to try and tackle it too.
+
+<Code lineNumbers>
+```js
+function findHands(newCards, combinations = []) {
+  if (newCards.length == 0) {
+    return combinations
+      .map((combo) => combo.filter(Boolean))
+      .filter((combo) => combo.length === 5);
+  }
+
+  const card = newCards.shift();
+
+  const newCombinations =
+    combinations.length == 0
+      ? [[card], [null]]
+      : [
+          ...combinations.map((combo) => [card, ...combo]),
+          ...combinations.map((combo) => [null, ...combo]),
+        ];
+
+
+  return findHands(newCards, newCombinations);
+}
+```
+</Code>
+
+### Finding all hands through backtracking
+
+With backtracking, the approach is to add cards consecutively until you reach a five card hand, and then remove the last one and keep going.
+
+Using this approach you get something that looks like 
+
+```
+[1,2,3,4,5]
+[1,2,3,4,6]
+[1,2,3,4,7],
+[1,2,3,5,6]
+...
+```
+
+This approach is super appealing because it feels closer to what you'd want to do as a human and I'm pretty sure is algorithmically more efficient.
+
+Here's how you represent it in code:
+
+1. if your index is higher than the list bail out. This is a bad set, so just return `[]`
+2. If your set reaches five cards, return it. This is the good stuff.
+3. Finally, we're looking for both the combinations that include the item and the ones that don't. It's fairly easy to represent this as two recursive function calls. And once we have them, merge them.
+
+I found this [replay](https://app.replay.io/recording/get-all-combinations--37874c1f-a584-4562-9314-19ae8b3a4925) made it a lot easier to follow the recursion and see the various branching. 
+
+
+<Code lineNumbers>
+```js 
+function getCombinations(current, list, index, total) {
+  if (index > list.length) {
+    return [];
+  }
+
+  if (current.length == total) {
+    return [current];
+  }
+
+  const withItem = getCombinations(
+    [...current, list[index]],
+    list,
+    index + 1,
+    total
+  );
+
+  const withoutItem = getCombinations(current, list, index + 1, total);
+  return [...withItem, ...withoutItem];
+}
+```
+</Code>
