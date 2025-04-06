@@ -1,0 +1,264 @@
+import { postMetadata } from "../../utils/metadata";
+import { Tabs } from "../../components/tabs";
+
+export const metadata = postMetadata({
+  title: "Minimum Steps to Convert String A to B",
+  description: "This blog post walks through the steps required to get comfortable doing a basic breath first problem.",
+  date: "2025-04-06",
+  note: true,
+  categories: ["JS"],
+});
+
+
+
+**Description**:
+
+You’re given two strings start and target consisting of lowercase English letters. You are also given a list of valid “intermediate” strings called wordList. Each move allows you to change exactly one character in the current string, and the result must be a string that exists in the wordList or be equal to the target.
+
+Write a function to determine the minimum number of moves required to transform start into target. If it’s not possible, return -1.
+
+Each transformation must be one character at a time, and each intermediate string must be in the wordList or the final target.
+
+
+```ts 
+function minTransformationSteps(start: string, target: string, wordList: string[]): number
+```
+
+**Output** 
+```
+minTransformationSteps("hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"])
+// Output: 4
+// Explanation: hit → hot → dot → dog → cog
+```
+
+
+
+**Notes**
+
+Before really thinking about the problem, created a scratch pad where I could walk through the steps the algorithm would need to go through.
+
+
+```
+hit *
+- cit
+- hot *
+  - cot
+  - hog *
+    - cog
+- hig 
+```
+
+This step helped me calm down and feel like I had this, even though i had a strong intuition i'd need to implement a recursive function and i didn't see how it'd look yet.
+
+Once that was done, i wanted to turn my intuition into steps, so cam up with this representation
+
+```
+[(cit, 1), (hot,1), (hig,1)] # generate candidates
+(cit) [(hot,1), (hig,1)] # rule out cit because it's not on the list
+(hot) [(cot,2), (hog,2), (hig,1)] # add cot and hog to the list
+(cot) [(hog,2), (hig,1)] # rule out cot because it's not on the list 
+(hog) [(cog,3), (hig,1)] # add cog to the list 
+(cog) [(hig,1)] # :tada: it's what we wanted all along
+```
+
+
+At this point, i felt pretty confient just sitting down and writing the thing. At one point we needed a small helper function which was fine to split out as well, but in this case I chose to finish sketching out the program before debugging any one part of it.
+
+I think the reason was that I was most concerned about getting my weird step-by-step algorithm represented and figured we could fix the bugs afterwards.
+
+Here are some of the issues I ran into
+
+1. Initially, i only transformed words with the target chars in mind. This meant that i missed some of the intermediate words that i needed to use.
+2. I had loops that let me go back to prior versions. This was fixed by saving the prior states and rejecting them.
+
+
+**Learnings**
+* When I was debugging, I found it helpful to exit the loop after N runs. This kept things simple.
+* I was surprised to see that the final solution did not need to be recursive.
+
+**Code**
+
+<Tabs>
+```ts 
+// title transform.ts 
+
+function transformWord(start: string, n: number, m: number) {
+  const update = `${start}`.split("");
+  update[n] = `abcdefghijklmopqrstuvwyxz`.split("")[m];
+  return update.join("");
+}
+
+function minTransformationSteps(
+  start: string,
+  target: string,
+  wordList: string[]
+): number {
+  const candidates: Candidate[] = [];
+  let candidate: Candidate | void = { word: start, numTransforms: 0 };
+  const priorAttempts: Set<string> = new Set();
+
+  while (candidate) {
+    for (let n = 0; n < candidate.word.length; n++) {
+      for (let m = 0; m < 25; m++) {
+        const newCandidate = transformWord(candidate.word, n, m);
+
+        if (newCandidate == target) {
+          return candidate.numTransforms + 1;
+        }
+
+        if (
+          wordList.includes(newCandidate) &&
+          !priorAttempts.has(newCandidate)
+        ) {
+          candidates.push({
+            word: newCandidate,
+            numTransforms: candidate.numTransforms + 1,
+          });
+        }
+
+        priorAttempts.add(newCandidate);
+      }
+    }
+
+    candidate = candidates.shift();
+  }
+
+  return -1;
+}
+``` 
+
+```js 
+// title stdout
+
+{
+  candidate: "hit",
+  candidates: 0,
+}
+{
+  candidate: "hot",
+  candidates: 0,
+}
+{
+  candidate: "dot",
+  candidates: 1,
+}
+{
+  candidate: "lot",
+  candidates: 1,
+}
+{
+  candidate: "dog",
+  candidates: 1,
+}
+4
+```
+</Tabs>
+
+**Step 2: Add faster lookups**
+
+As an optimization step, I was asked to come up with a faster way to see if the candidate word was in the word list.
+
+This looked like going from a list of words `["hat", "hot", "cat", "coo"]` to a character based lookup map.
+
+```ts
+const tree = { h: {a: {t: true}, {o: {t: true}}}}
+```
+
+Coming up with the datastructure was easy, but thinking through how to populate it was hard. The insight here was remembering that I could pass a reference to the `subTree` and update it effectfully. This meant that I could actually recursively go character by character and populate the tree.
+
+
+```ts 
+function populateTree(tree, word: string) {
+  if (word == "") {
+    return;
+  }
+
+  const [char, ...chars] = word.split("");
+  if (chars.length === 0) {
+    tree.set(char, true);
+  } else {
+    if (!tree.has(char)) {
+      tree.set(char, new Map());
+    }
+  }
+
+  populateTree(tree.get(char), chars.join(""));
+}
+
+function buildWordListLookup(wordList) {
+  const tree = new Map();
+
+  for (const word of wordList) {
+    populateTree(tree, word);
+  }
+
+  return tree;
+}
+
+function lookupWord(tree, word) {
+  let subTree = tree;
+  for (const char of word.split("")) {
+    if (!subTree) {
+      return false;
+    }
+    subTree = subTree.get(char);
+  }
+
+  return subTree;
+}
+```
+
+After going with the recursive approach, I was curious to see how it would compare with the iterative approach.
+
+Funny enough, I found the recursive approach a bit easier to think about because it was nicer to walk through the characters and call `populateTree` with the sub tree and remaining characters. 
+
+This is probably a small difference though and the two were fairly simple. The bigger difference was that I had a couple of bugs with the loop where I was accidentally throwing away previous work which required slowing down and tracking the intermediate states.
+
+<Tabs>
+
+```ts 
+// title recursion.ts
+
+function populateTree(tree, word: string) {
+  if (word == "") {
+    return;
+  }
+
+  const [char, ...chars] = word.split("");
+  if (chars.length === 0) {
+    tree.set(char, true);
+  } else {
+    if (!tree.has(char)) {
+      tree.set(char, new Map());
+    }
+  }
+
+  populateTree(tree.get(char), chars.join(""));
+}
+```
+
+```ts 
+// title iterative.ts 
+
+function populateTreeLoop(tree, word: string) {
+  let subTree = tree;
+  const chars = word.split("");
+  for (i = 0; i < chars.length; i++) {
+    const char = chars[i];
+    if (i == chars.length - 1) {
+      subTree.set(char, true);
+    } else {
+      if (subTree.has(char)) {
+        const newtree = subTree.get(char);
+        subTree = newtree;
+      } else {
+        const newTree = new Map();
+        subTree.set(char, newTree);
+        subTree = newTree;
+      }
+    }
+  }
+  return tree;
+}
+```
+</Tabs>
