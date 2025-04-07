@@ -1,0 +1,118 @@
+import { postMetadata } from "../../utils/metadata";
+import { Tabs } from "../../components/tabs"
+
+
+export const metadata = postMetadata({
+  title: "Setting up a simple distributed queue",
+  description: "This blog post walks through some of the ways in which you can add a queue to your app",
+  date: "2025-04-07",
+  note: true,
+  categories: ["Software"],
+});
+
+## With a database
+
+Postgres has support for selecting a record and setting its status in a single transaction which protects it against write contention.
+
+* `FOR UPDATE SKIP LOCKED` is critical for preventing two tasks from being selected by seperate transactions.
+* `WHERE id IN (SELECT id FROM next_task)` makes it easy to set one or many tasks to `in_progress` in the transaction`
+* `RETURNING *` returns the full task record for the transaction
+
+<Tabs>
+
+```js
+// title SELECT_TASK.sql
+BEGIN;
+
+-- Select and lock a pending task, skipping those already locked
+WITH next_task AS (
+  SELECT id FROM tasks
+  WHERE status = 'pending'
+  FOR UPDATE SKIP LOCKED
+  LIMIT 1
+)
+
+-- Set its status to 'in_progress'
+UPDATE tasks
+SET status = 'in_progress'
+WHERE id IN (SELECT id FROM next_task)
+RETURNING *;
+
+COMMIT;
+```
+
+```js 
+// title getNextTask.js 
+
+import { Pool } from 'pg';
+
+const pool = new Pool();
+
+async function getAndClaimTask() {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const { rows } = await client.query(`
+      WITH next_task AS (
+        SELECT id FROM tasks
+        WHERE status = 'pending'
+        FOR UPDATE SKIP LOCKED
+        LIMIT 1
+      )
+      UPDATE tasks
+      SET status = 'in_progress'
+      WHERE id IN (SELECT id FROM next_task)
+      RETURNING *;
+    `);
+
+    await client.query('COMMIT');
+    return rows[0] || null;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+```
+
+```js 
+// title schema.sql 
+
+CREATE TABLE tasks (
+  id SERIAL PRIMARY KEY,
+  data TEXT,
+  status TEXT -- e.g., 'pending', 'in_progress', 'done'
+);
+```
+
+</Tabs>
+
+## Queing libraries
+
+There are several libraries like [graphile-worker][1] and [pg-boss][2] that wrap the `SKIP LOCKED` approach and provide some useful primitives like concurrency limits. 
+
+
+```js 
+import { run, Worker } from 'graphile-worker';
+
+run({
+  concurrency: 5,
+  taskList: {
+    send_email: async (payload) => {
+      // send email using payload
+    },
+  },
+});
+```
+
+
+## Other approaches
+
+* In memory 
+* In SQS or another dedicated queue 
+
+
+[1]: https://github.com/graphile/worker
+[2]: https://github.com/timgit/pg-boss
