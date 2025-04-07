@@ -18,6 +18,8 @@
     "@vercel/og": "^0.6.5",
     "@vercel/speed-insights": "^1.2.0",
     "bright": "^1.0.0",
+    "inngest": "^3.34.4",
+    "inngest-cli": "^1.5.6",
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
