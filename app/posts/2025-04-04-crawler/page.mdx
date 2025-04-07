@@ -1,0 +1,203 @@
+import { postMetadata } from "../../utils/metadata";
+import {Tabs} from "../../components/tabs"
+
+export const metadata = postMetadata({
+  title: "Build a crawler",
+  description: "This post walks through some of the steps for building a simple crawler",
+  date: "2025-04-07",
+  note: true,
+  draft: true,
+  categories: ["JS"],
+});
+
+
+You're given a helper function `getFullyQualifiedLinks` that is able to fetch a web page and return the URLs on the page. It's pretty crude, so don't study it too closely, but it works.
+
+Your job is to use it to fetch all of the links that are under the root domain.
+
+```js
+// Implement a crawler that outputs all the unique URLs
+// (i.e. clickable links) under a root domain.  All of the links you output should have the same domain as the root.
+// We've provided a helper function for you.
+async function getFullyQualifiedLinks(url) {
+  const response = await fetch(url);
+  const pageContent = await response.text();
+
+  const links = [];
+  const linkRegex = /a\s+(?:[^>]*?\s+)?href="([^"]+?)"/g;
+  let match;
+
+  while ((match = linkRegex.exec(pageContent))) {
+    const relativeLink = match[1];
+    if (relativeLink) {
+      const fullyQualifiedLink = new URL(relativeLink, url).href;
+      links.push(fullyQualifiedLink);
+    }
+  }
+  return links;
+}
+```
+
+### Version 1
+
+The simple version follows an algorithm that looks like this 
+1. go to the page 
+2. get the qualified links 
+3. prune the links to remove hashes and dedupe them 
+4. filter out links which you've visited and are not under the root 
+5. add these new links the queue 
+6. repeat and pull a url from the queue   
+
+```js
+const websiteToCrawl = "https://andyljones.com";
+const pagesToCrawl = [];
+const priorSites = new Set();
+let currentPage = websiteToCrawl;
+
+(async () => {
+  while (currentPage) {
+    // console.log(currentPage, pagesToCrawl.length, priorSites.size);
+
+    priorSites.add(currentPage);
+    const links = await getFullyQualifiedLinks(currentPage);
+    const prunedLinks = [...new Set(links.map(url => url.match(/(.*)#/)?.[1] || url))];
+    const sameDomainLinks = prunedLinks.filter((url) => url.startsWith(websiteToCrawl));
+    const filteredLinks = sameDomainLinks.filter((url) => !priorSites.has(url));
+
+    pagesToCrawl.push(...filteredLinks);
+    currentPage = pagesToCrawl.shift();
+  }
+
+  console.log(priorSites.size, [...priorSites]);
+})();
+```
+
+### Okay, now make the crawler fetch results in parallel
+
+When I first thought about this question, I immediately went to a place where we'd need to spin up workers and have them pull URLs from a queue. 
+
+This took me in a direction of wanting a pub/sub architecture where the workers and main thread are decoupled.
+
+<Tabs>
+
+```js 
+// title main.js 
+
+import {Worker} from "worker_threads"
+
+const websiteToCrawl = "https://andyljones.com";
+const pagesToCrawl = [];
+const priorSites = new Set();
+let currentPage = websiteToCrawl;
+
+
+const workers = []
+for (let i = 0; i < 5; i++) {
+  const worker = new Worker('./worker.js', {
+    workerData: {id: i}
+  })
+
+  worker.on('message', onMessage)
+  workers.push(worker)
+}
+
+function onMessage(msg) {
+  if (msg.type == "request_url") {
+    const url = pagesToCrawl.shift();
+    workers[msg.workerId].postMessage({type: "new_url", url})
+  }
+
+  if (msg.type == "found_urls") {
+    const filteredLinks = msg.urls.filter((url) => !priorSites.has(url));
+    pagesToCrawl.push(...filteredLinks);
+  }
+}
+```
+
+```js 
+// title worker.js 
+import {parentPort} from "worker_threads"
+
+let currentPage = null;
+parentPort.on("message", (msg) => {
+  if (msg.type === "new_url") {
+    currentPage = msg.url
+  }
+})
+
+(async () => {
+  while (true) {
+    if (currentPage === null) {
+      parentPort.postMessage('request_url')
+    } else  {
+      const links = await getFullyQualifiedLinks(currentPage);
+      const prunedLinks = [...new Set(links.map(url => url.match(/(.*)#/)?.[1] || url))];
+      const sameDomainLinks = prunedLinks.filter((url) => url.startsWith(websiteToCrawl));
+      parentPort.postMessage('found_urls', urls)
+      currentPage = null;
+    }    
+  }
+})()
+```
+
+</Tabs>
+
+This code is terrible. There's tons of indirection and coordination. And worse of all, it doesn't even know when it's done! Absolutely gross.
+
+And to add insult to injury, there's a super elegant solution hiding in plain sight. 
+
+**Step 1: Lift the inner while loop!**
+
+```js
+async function worker() {
+  // code that used to be in the IIFE
+}
+
+(async () => {
+  await worker();
+  console.log(priorSites.size, [...priorSites]);
+})();
+```
+
+**Step 2: Run multiple workers!**
+
+And then the remaining question is, how do you go from one worker to three workers. The funny thing is there's nothing stopping you from simply calling worker three more times!
+
+```js
+(async () => {
+  await Promise.all([worker(), worker(), worker()]);
+  console.log(priorSites.size, [...priorSites]);
+})();
+```
+
+**Here's the final solution**
+
+
+```js 
+const websiteToCrawl = "https://andyljones.com";
+const pagesToCrawl = [];
+const priorSites = new Set();
+let currentPage = websiteToCrawl;
+
+async function worker() {
+  while (currentPage) {
+    // console.log(currentPage, pagesToCrawl.length, priorSites.size);
+
+    priorSites.add(currentPage);
+    const links = await getFullyQualifiedLinks(currentPage);
+    const prunedLinks = [...new Set(links.map(url => url.match(/(.*)#/)?.[1] || url))];
+    const sameDomainLinks = prunedLinks.filter((url) => url.startsWith(websiteToCrawl));
+    const filteredLinks = sameDomainLinks.filter((url) => !priorSites.has(url));
+
+    pagesToCrawl.push(...filteredLinks);
+    currentPage = pagesToCrawl.shift();
+  }
+}
+
+(async () => {
+  await Promise.all(Array.from({ length: 5 }, worker))
+  console.log(priorSites.size, [...priorSites]);
+})();
+```
+
+_Isn't that so pretty?_ Don't get me wrong, of course there's a time and place for pub/sub and queueing, but if you don't need it, you can just lean on promises and the event loop. 
