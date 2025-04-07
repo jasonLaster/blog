@@ -1,0 +1,499 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "The systems design conversation.",
+  description: "This blog post walks through some of the fundamentals of destributed system design",
+  date: "2025-04-07",
+  note: true,
+  categories: ["Software"],
+});
+
+
+## Starting the conversation 
+
+**Ask refining questions:**
+
+Often, it helps to divide the requirements into two groups:
+- Requirements that the clients need directly—for example, the ability to send messages in near real-time to friends.
+- Requirements that are needed indirectly—for example, messaging service performance shouldn't degrade with increasing user load.
+
+**Handle the data:**
+- What's the size of the data right now?
+- At what rate is the data expected to grow over time?
+- How will the data be consumed by other subsystems or end users?
+- Is the data read-heavy or write-heavy?
+- Do we need strict consistency of data, or will eventual consistency work?
+- What's the durability target of the data?
+- What privacy and regulatory requirements do we require for storing or transmitting user data?
+
+
+**Discuss the components:**
+
+- what types of databases should we use 
+- Front-end components, load balancers, caches, databases, firewalls, and CDNs are just some examples of system components.
+
+
+**Discuss trade-offs:**
+
+These are some of the reasons why such diversity exists in design solutions:
+
+- Different components have different pros and cons. We'll need to carefully weigh what works for us.
+- Different choices have different costs in terms of money and technical complexity. We need to efficiently utilize our resources.
+E- very design has its weaknesses. As designers, we should be aware of all of them, and we should have a follow-up plan to tackle them.
+
+
+## Modern system design 
+
+System design aims to build systems that are reliable, effective, and maintainable, among other characteristics.
+
+- **Reliable systems** handle faults, failures, and errors.
+- **Effective systems** meet all user needs and business requirements.
+- **Maintainable systems** are flexible and easy to scale up or down and iterate on top of.
+
+
+**Building blocks:**
+- Sharded counters
+- Distributed task scheduler
+- Distributed logging
+- Distributed search
+- Blob store
+- Rate limiter
+- Pub-sub system
+- Distributed messaging queue
+- Distributed cache
+- Distributed monitoring
+- Monitoring server-side errors
+- Monitoring client-side errors
+- Sequencer
+- CDN
+- Key-value store
+- Databases
+- Load balancers
+- DNS
+
+
+### RPC
+
+RPCs are used in many real-world services. Take a look at the examples given below:
+
+* **Google**: Google uses RPC in various parts of its distributed infrastructure. They have developed gRPC, an open-source framework that uses RPC to build efficient and highly performant distributed systems. 
+
+* **Uber**: Uber uses RPC for various functions, including real-time location tracking, ride matching, and communication between drivers and riders.
+
+* **Facebook**: Most services at Facebook are written using Thrift for RPC, and some storage systems use Thrift for serializing records on disk. 
+
+
+_How are RPCs and APIs different?_
+
+* RPCs are more like calling a function remotely, not accessing a resource
+* RPCs often uses binary protocols (like gRPC, Thrift, Cap'n Proto)
+* RPCs are faster and more efficient (especially over HTTP/2 or raw TCP)
+* RPCS are tightly coupled and usually share IDL (Interface Definition Language)
+* RPCs works well with code generation
+
+### Spectrum of consistency models
+
+There is a difference between consistency in ACID properties and consistency in the CAP theorem.
+
+Database rules are at the heart of ACID consistency. If a schema specifies that a value must be unique, a consistent system will ensure that the value is unique throughout all actions. If a foreign key indicates that deleting one row will also delete associated rows, a consistent system ensures that the state can't contain related rows once the base row has been destroyed.
+
+CAP consistency guarantees that, in a distributed system, every replica of the same logical value has the same precise value at all times. It's worth noting that this is a logical rather than a physical guarantee. Due to the speed of light, replicating numbers throughout a cluster may take some time. By preventing clients from accessing different values at separate nodes, the cluster can nevertheless give a logical picture.
+
+
+
+**Eventual consistency** is the weakest consistency model. If writes keep coming in, read replicas might never converge. 
+
+> The domain name system is a highly available system that enables name lookups to a hundred million devices across the Internet. It uses an eventual consistency model and doesn't necessarily reflect the latest values.
+
+
+**Causal consistency** works by categorizing operations into dependent and independent operations. Dependent operations are also called causally-related operations. Causal consistency preserves the order of the causally-related operations.
+
+> The causal consistency model is used in a commenting system. For example, for the replies to a comment on a Facebook post, we want to display comments after the comment it replies to. This is because there is a cause-and-effect relationship between a comment and its replies.
+
+**Sequential consistency** is stronger than the causal consistency model. It preserves the ordering specified by each client's program. However, sequential consistency doesn't ensure that the writes are visible instantaneously or in the same order as they occurred according to some global clock.
+
+> In social networking applications, we usually don't care about the order in which some of our friends' posts appear. However, we still anticipate a single friend's posts to appear in the correct order in which they were created. 
+Similarly, we expect our friends' comments in a post to display in the order that they were submitted. The sequential consistency model captures all of these qualities.
+
+
+**Strict consistency** or linearizability is the strongest consistency model. This model ensures that a read request from any replicas will get the latest write value. Once the client receives the acknowledgment that the write operation has been performed, other clients can read that value.
+
+Usually, synchronous replication is one of the ingredients for achieving strong consistency, though it in itself is not sufficient. We might need consensus algorithms such as Paxos and Raft to achieve strong consistency.
+
+> Updating an account's password requires strict consistency. For example, if we suspect suspicious activity on our bank account, we immediately change our password so that no unauthorized users can access our account. If it were possible to access our account using an old password due to a lack of strict consistency, then changing passwords would be a useless security strategy.
+
+### Failure modes 
+
+**Fail-stop** The node in the distributed system halts permanently. However, the other nodes can still detect that node by communicating with it. 
+
+**Crash** The node  halts silently, and the other nodes can't detect that the node has stopped working.
+
+**Omission failures** The node fails to send or receive messages. 
+
+**Temporal failures**, the node generates correct results, but is too late to be useful. This failure could be due to bad algorithms, a bad design strategy, or a loss of synchronization between the processor clocks.
+
+**Byzantine failures** The node exhibits random behavior like transmitting arbitrary messages at arbitrary times, producing wrong results, or stopping midway.
+
+## Non-functional system characteristics
+
+**Availability** is the percentage of time that some service or infrastructure is accessible to clients and is operated upon under normal conditions. 
+
+**Reliability** is the probability that the service will perform its functions for a specified time. 
+
+* **MTBF** mean time between failures 
+* **MTTR** mean time to repair 
+* **SLOs** service level objectives
+* **SLIs** service level indicators
+
+
+**Scalability** is the ability of a system to handle an increasing amount of workload without compromising performance. 
+
+The workload can be of different types, including the following:
+
+* Request workload: This is the number of requests served by the system.
+* Data/storage workload: This is the amount of data stored by the system.
+
+_Vertical vs Horizontal_
+* Vertical scaling, also known as “scaling up,” refers to scaling by providing additional capabilities (for example, additional CPUs or RAM) to an existing device. 
+* Horizontal scaling, also known as “scaling out,” refers to increasing the number of machines in the network. We use commodity nodes for this purpose because of their attractive dollar-cost benefits
+
+
+
+**Maintainability** Besides building a system, one of the main tasks afterward is keeping the system up and running by finding and fixing bugs, adding new functionalities, keeping the system's platform updated, and ensuring smooth system operations.
+
+* **Operability**: This is the ease with which we can ensure the system's smooth operational running under normal circumstances and achieve normal conditions under a fault.
+* **Lucidity**: This refers to the simplicity of the code. The simpler the code base, the easier it is to understand and maintain it, and vice versa.
+* **Modifiability**: This is the capability of the system to integrate modified, new, and unforeseen features without any hassle.
+
+
+**Fault Tolerance** refers to a system's ability to execute persistently even if one or more of its components fail regardless of whether it's a software or hardware issue.
+
+_Fault tolerance techniques_
+* **Replication** With this technique, we can replicate both the services and data. We can swap out failed nodes with healthy ones and a failed data store with its replica.
+* **Checkpointing** is a technique that saves the system's state in stable storage for later retrieval in case of failures due to errors or service disruptions.
+
+## Building Blocks for modern system design
+
+
+**Domain Name System**: How to design hierarchical and distributed naming systems for computers connected to the Internet via different Internet protocols.
+
+**Load Balancers**: Distribute incoming clients' requests among a pool of available servers. It also reduces load and can bypass failed servers.
+
+**Databases**: Store, retrieve, modify, and delete data in connection with different data-processing procedures. 
+
+**Key-Value Store**: Non-relational database that stores data in the form of a key-value pair. 
+
+**Content Delivery Network**: Deliver content such as videos, images, audio, and webpages. 
+
+**Sequencer**: Generate unique IDs with a major focus on maintaining causality. 
+
+**Service Monitoring**: Monitoring is often useful to get early warning systems so that system administrators can act ahead of an impending problem becoming a huge issue.
+
+**Distributed Caching**: Multiple cache servers coordinate to store frequently accessed data.
+
+**Distributed Messaging Queue**: Queue consisting of multiple servers, which is used between interacting entities called producers and consumers.
+
+**Publish-Subscribe System**: Asynchronous service-to-service communication method called a pub-sub system. 
+
+**Rate Limiter**: Throttle incoming requests for a service based on the predefined limit. 
+
+**Blob Store**: This building block focuses on a storage solution for unstructured data—for example, multimedia files and binary executables.
+
+**Distributed Search**: Take a query from a user and returns relevant content in a few seconds or less.
+
+**Distributed Logging**: Allow services in a distributed system to log their events efficiently. 
+
+**Distributed Task Scheduling**: A system that mediates between tasks and resources. 
+
+**Sharded Counters**: Counting system to deal with millions of concurrent read/write requests, such as likes on a celebrity's tweet.
+
+### DNS 
+
+The domain name system (DNS) is the Internet's naming service that maps human-friendly domain names to machine-readable IP addresses. 
+
+* **Name servers**: It's important to understand that the DNS isn't a single server. It's a complete infrastructure with numerous servers. DNS servers that respond to users' queries are called name servers.
+
+* **Resource records**: The DNS database stores domain name to IP address mappings in the form of resource records (RR). 
+
+  * A Provides the hostname to IP address mapping
+  * NS Provides the hostname that is the authoritative DNS for a domain name  
+  * CNAME Provides the mapping from alias to canonical  hostname
+  * MX Provides the mapping of mail server from alias to canonical hostname
+
+**DNS hierarchy**
+There are mainly four types of servers in the DNS hierarchy:
+
+* **DNS resolver**: Resolvers initiate the querying sequence and forward requests to the other DNS name servers. Typically, DNS resolvers lie within the premise of the user's network. However, DNS resolvers can also cater to users' DNS queries through caching techniques, as we will see shortly. These servers can also be called local or default servers.
+
+* **Root-level name servers**: These servers receive requests from local servers. Root name servers maintain name servers based on top-level domain names, such as .com, .edu, .us, and so on. For instance, when a user requests the IP address of educative.io, root-level name servers will return a list of top-level domain (TLD) servers that hold the IP addresses of the .io domain.
+
+* **Top-level domain** (TLD) name servers: These servers hold the IP addresses of authoritative name servers. The querying party will get a list of IP addresses that belong to the authoritative servers of the organization.
+
+* **Authoritative name servers**: These are the organization's DNS name servers that provide the IP addresses of the web or application servers.
+
+### Load balancing 
+
+Generally, LBs sit between clients and servers. Requests go through to servers and back to clients via the load balancing layer. However, that isn't the only point where load balancers are used.
+
+They can also go between web servers and application servers and application servers and database servers.
+
+In addition to helping with Scalability, they can also perform the following services:
+
+* **Health checking**: LBs use the heartbeat protocol to monitor the health and, therefore, reliability of end-servers. Another advantage of health checking is the improved user experience.
+* **TLS termination**: LBs reduce the burden on end-servers by handling TLS termination with the client.
+* **Predictive analytics**: LBs can predict traffic patterns through analytics performed over traffic passing through them or using statistics of traffic obtained over time.
+* **Reduced human intervention**: Because of LB automation, reduced system administration efforts are required in handling failures.
+* **Service discovery**: An advantage of LBs is that the clients' requests are forwarded to appropriate hosting servers by inquiring about the service registry.
+* **Security**: LBs may also improve security by mitigating attacks like denial-of-service (DoS) at different layers of the OSI model (layers 3, 4, and 7).
+
+
+**Algorithms of load balancers**
+
+Load balancers distribute client requests according to an algorithm. Some well-known algorithms are given below:
+
+* **Round-robin scheduling**: In this algorithm, each request is forwarded to a server in the pool in a repeating sequential manner.
+* **Weighted round-robin**: If some servers have a higher capability of serving clients' requests, then it's preferred to use a weighted round-robin algorithm. * **Least connections**: In certain cases, even if all the servers have the same capacity to serve clients, uneven load on certain servers is still a possibility. 
+* **Least response time**: In performance-sensitive services, algorithms such as least response time are required. 
+* **IP hash**: Some applications provide a different level of service to users based on their IP addresses.
+* **URL hash**: It may be possible that some services within the application are provided by specific servers only.
+
+**Stateful vs Stateless**
+
+* Stateful load balancers might keep session level details to route requests to the same servers.
+
+* Stateless LBs use consistent hashing to make forwarding decisions
+
+
+### Databases 
+
+**Advantages**
+* **Managing large data**: A large amount of data can be easily handled with a database, which wouldn't be possible using other tools.
+**data consistency**: Due to different constraints in databases, we can retrieve accurate data whenever we want.
+* **Security**: A database only allows authorized users to access data.
+* **Data integrity**: Databases ensure data integrity by using different constraints for data.
+* **Availability**: Databases can be replicated on different servers, which can be concurrently updated. 
+* **Scalability**: Databases are divided to manage the load on a single node. This increases scalability.
+
+
+**Relational databases**
+
+* Schema 
+* SQL
+* ACID
+  * atomicity: A transaction is considered an atomic unit.
+  * consistency: At any given time, the database should be in a consistent
+  * isolation: Transactions running concurrently, will not affect each other
+  * durability: Completed transactions will survive permanently
+
+**NoSQL databases**
+
+* Simple design
+* Horizontal scaling 
+* Availability
+* Unstructured data 
+* Cost 
+
+Types:
+* Key value store: Dynamo
+* Document: Mongo
+* Columnar: Redshift, Clickhouse, ...
+* Graph: Neo4j
+
+
+**Data replication**
+
+Additional complexities that could arise due to replication are as follows:
+
+* How do we keep multiple copies of data consistent with each other?
+* How do we deal with failed replica nodes?
+* Should we replicate synchronously or asynchronously?
+* How do we deal with replication lag in case of asynchronous replication?
+* How do we handle concurrent writes?
+* What consistency model needs to be exposed to the end programmers?
+
+Types of models 
+* Single leader or primary-secondary replication
+  * Statement-based replication
+  * Write-ahead log (WAL) shipping
+  * Logical (row-based) replication
+
+* Multi-leader replication
+  * Conflict 
+  * Last-write-wins
+* Peer-to-peer or leaderless replication
+  * Quorum 
+
+
+**Data Partitioning**
+
+Data partitioning (or sharding) enables us to use multiple nodes where each node manages some part of the whole data. To handle increasing query rates and data amounts, we strive for balanced partitions and balanced read/write load.
+
+Generally, we use the following two ways to shard the data:
+* Vertical sharding
+* Horizontal sharding
+
+
+Often, vertical sharding is used to increase the speed of data retrieval from a table consisting of columns with very wide text or a binary large object (blob). In this case, the column with large text or a blob is split into a different table.
+
+Horizontal sharding or partitioning is used to divide a table into multiple tables by splitting data row-wise, as shown in the figure in the next section. Each partition of the original table distributed over database servers is called a shard. 
+
+
+_ZooKeeper_ To track changes in the cluster, many distributed data systems need a separate management server like ZooKeeper. Zookeeper keeps track of all the mappings in the network, and each node connects to ZooKeeper for the information. 
+
+### Key-value Store
+
+Key-value stores are distributed hash tables (DHTs). A key is generated by the hash function and should be unique. In a key-value store, a key binds to a specific value and doesn't assume anything about the structure of the value.
+
+> Usually, it's preferred to keep the size of value relatively smaller (KB to MB). We can put large data in the blob store and put links to that data in the value field.
+
+> Examples of key-value store usage include bestseller lists, shopping carts, customer preferences, session management, sales rank, and product catalogs.
+
+### Content Delivery Network (CDN)
+
+* The proxy servers are placed on the network edge.
+* Sufficient bandwidth available through the path 
+
+
+
+**Components**
+
+* Clients: End users use various clients, like browsers, smartphones, and other devices, to request content from the CDN.
+* Routing system: The routing system directs clients to the nearest CDN facility. 
+* Scrubber servers: Scrubber servers are used to separate the good traffic from malicious traffic and protect against well-known attacks, like DDoS. 
+* Proxy servers: The proxy or edge proxy servers serve the content from RAM to the users. Proxy servers store hot data in RAM, though they can store cold data in SSD or hard drive as well. 
+* Distribution system: The distribution system is responsible for distributing content to all the edge proxy servers to different CDN facilities. 
+* Origin servers: The CDN infrastructure facilitates users with data received from the origin servers. 
+* Management system: The management systems are important in CDNs from a business and managerial aspect where resource usage and statistics are constantly observed. 
+
+
+**Workflow**
+
+1. The origin servers provide the URI namespace delegation of all objects cached in the CDN to the request routing system.
+2. The origin server publishes the content to the distribution system responsible for data distribution across the active edge proxy servers.
+3. The distribution system distributes the content among the proxy servers and provides feedback to the request routing system. 
+4. The client requests the routing system for a suitable proxy server from the request routing system.
+5. The request routing system returns the IP address of an appropriate proxy server.
+6. The client request routes through the scrubber servers for security reasons.
+7. The scrubber server forwards good traffic to the edge proxy server.
+8. The edge proxy server serves the client request and periodically forwards accounting information to the management system. The management system updates the origin servers and sends feedback to the routing system about the statistics and detail of the content. However, the request is routed to the origin servers if the content isn’t available in the proxy servers. 
+
+### Sequencer
+
+There can be millions of events happening per second in a large distributed system. Commenting on a post on Facebook, sharing a Tweet, and posting a picture on Instagram are just a few examples of such events. We need a mechanism to distinguish these events from each other. One such mechanism is the assignment of globally unique IDs to each of these events.
+
+* A straw man solution for our design uses UUIDs (universally unique IDs). This is a 128-bit number. It gives us about `10^38` unique numbers.
+
+* A secondary option is using the auto-increment feature of a database. 
+
+* Using a range handler lets any service claim a range of IDs.
+
+### Distributed Monitoring
+
+**Metrics and alerting** 
+
+* Monitor critical local processes on a server for crashes.
+* Monitor any anomalies in the use of CPU/memory/disk/network bandwidth by a process on a server.
+* Monitor overall server health, such as CPU, memory, disk, network bandwidth, average load, and so on.
+* Monitor hardware component faults on a server, such as memory failures, failing or slowing disk, and so on.
+* Monitor the server’s ability to reach out-of-server critical services, such as network file systems and so on.
+* Monitor all network switches, load balancers, and any other specialized hardware inside a data center.
+* Monitor power consumption at the server, rack, and data center levels.
+* Monitor any power events on the servers, racks, and data center.
+* Monitor routing information and DNS for external clients.
+* Monitor network links and paths’ latency inside and across the data centers.
+* Monitor network status at the peering points.
+* Monitor overall service health that might span multiple data centers—for example, a CDN and its performance.
+
+**Components**
+* Storage: A time-series database stores metrics data, such as the current CPU use or the number of exceptions in an application.
+
+* Data collector service: This fetches the relevant data from each service and saves it in the storage.
+
+* Querying service: This is an API that can query on the time-series database and return the relevant information.
+
+
+### The Distributed Cache
+
+A cache is a nonpersistent storage area used to keep repeatedly read and written data, which provides the end user with lower latency
+
+
+
+**Caches are beneficial in the following ways**:
+
+* They minimize user-perceived latency by precalculating results and storing frequently accessed data.
+* They pre-generate expensive queries from the database.
+* They store user session data temporarily.
+* They serve data from temporary storage even if the data store is down temporarily.
+* Finally, they reduce network costs by serving data from local resources.
+
+
+**Structure** 
+* **Writing policies** Data is written to cache and databases. The order in which data writing happens has performance implications.
+
+* **Eviction policies** Since the cache is built on limited storage (RAM), we ideally want to keep the most frequently accessed data in the cache. 
+
+* **Cache invalidation** Certain cached data may get outdated.
+
+* **Storage mechanism** A distributed storage has many servers. 
+
+* **Cache client** A cache server stores cache entries, but a cache client calls the cache server to request data. 
+
+Writing policies 
+* Write-through cache: The write-through mechanism writes on the cache as well as on the database
+* Write-back cache: In the write-back cache mechanism, the data is first written to the cache and asynchronously written to the database. 
+* Write-around cache: This strategy involves writing data to the database only. Later, when a read is triggered for the data, it’s written to cache after a cache miss.
+
+Eviction policies
+*  Least recently used (LRU)
+*  Most recently used (MRU)
+*  Least frequently used (LFU)
+*  Most frequently used (MFU)
+
+Cache invalidation 
+* Active expiration: This method actively checks the TTL of cache entries through a daemon process or thread.
+* Passive expiration: This method checks the TTL of a cache entry at the time of access.
+
+### Messaging Queue
+
+A messaging queue is an intermediate component between the interacting entities known as producers and consumers.
+
+Benefits 
+
+* Improved performance: A messaging queue enables asynchronous communication between the two interacting entities, producers and consumers, and eliminates their relative speed difference. A
+
+* Better reliability: The separation of interacting entities via a messaging queue makes the system more fault tolerant. 
+
+* Granular scalability: Asynchronous communication makes the system more scalable. 
+
+* Easy decoupling: A messaging queue decouples dependencies among different entities in a system. 
+
+* Rate limiting: Messaging queues also help absorb any load spikes and prevent services from becoming overloaded.
+
+* Priority queue: Multiple queues can be used to implement different priorities—for example, one queue for each priority—and give more service time to a higher priority queue.
+
+Use cases
+
+* Sending emails 
+* Data post-processing
+* Recommender systems
+
+
+### Pub-sub
+
+Publish-subscribe messaging, often known as pub-sub messaging, is an asynchronous service-to-service communication method that’s popular in serverless and microservices architectures.
+
+### The Rate Limiter
+
+A rate limiter is generally used as a defensive layer for services to avoid their excessive usage, whether intended or unintended. It also protects services against abusive behaviors that target the application layer, such as denial-of-service (DOS) attacks and brute-force password attempts.
+
+### Blob Store
+
+A Blob store is a storage solution for unstructured data. We can store photos, audio, videos, binary executable codes, or other multimedia items in a blob store.
+
+### Task Scheduler
+
+A task is a piece of computational work that requires resources (CPU time, memory, storage, network bandwidth, and so on) for some specified time. For example, uploading a photo or a video on Facebook or Instagram consists of the following background tasks:
+
+* Encode the photo or video in multiple resolutions.
+* Validate the photo or video to check for content monetization copyrights, and many more.
+
