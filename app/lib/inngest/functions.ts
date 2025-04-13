@@ -1,7 +1,10 @@
 import { inngest } from "./client";
-import { neon } from "@neondatabase/serverless";
-import { getEBIDetails } from "../ebi";
-const sql = neon(process.env.DATABASE_URL!);
+import {
+  EBIResult,
+  getEBIDetails,
+  sendDetailsUnavailable,
+  sendUpdate,
+} from "../ebi";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -12,13 +15,6 @@ export const helloWorld = inngest.createFunction(
   }
 );
 
-type Task = {
-  id: number;
-  created_at: Date;
-  type: string;
-  data: unknown;
-};
-
 export const getEBIDetail = inngest.createFunction(
   {
     id: "get-ebi-detail",
@@ -28,13 +24,51 @@ export const getEBIDetail = inngest.createFunction(
     cron: "0 0 * * *",
   },
   async ({ step }) => {
-    await step.run("get-ebi-detail", async () => {
-      const data = await getEBIDetails();
+    const { data: ebiDetails, failed } = await step.run(
+      "get-ebi-detail",
+      async () => {
+        try {
+          const data = await getEBIDetails();
+          return { data, failed: false };
+        } catch (error) {
+          console.error("Error getting EBI details", error);
+          const emailResponse = await sendDetailsUnavailable(
+            error as Error,
+            "jason.laster.11@gmail.com"
+          );
 
-      const result =
-        (await sql`INSERT INTO tasks (type, data) VALUES ('ebi', ${data}) RETURNING *`) as Task[];
+          return { data: emailResponse, failed: true };
+        }
+      }
+    );
 
-      return { result };
+    if (failed) {
+      return { message: "Failed to get EBI details" };
+    }
+
+    const emailResponse = await step.run("send-email", async () => {
+      if (!ebiDetails) {
+        return { message: "No EBI details" };
+      }
+
+      if (
+        ebiDetails &&
+        "premium_discount" in ebiDetails &&
+        typeof ebiDetails.premium_discount === "string"
+      ) {
+        if (parseFloat(ebiDetails.premium_discount) < -0.2) {
+          const email = await sendUpdate(
+            ebiDetails as EBIResult,
+            "jason.laster.11@gmail.com"
+          );
+
+          return { message: "Premium is low", email };
+        }
+      }
+
+      return { message: "Premium is fine" };
     });
+
+    return { emailResponse, ebiDetails };
   }
 );

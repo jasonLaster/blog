@@ -1,5 +1,19 @@
-import { getEBIDetails } from "../app/lib/ebi";
+import { getEBIDetails, sendUpdate } from "../app/lib/ebi";
 
-getEBIDetails().then((data) => {
-  console.log(data);
-});
+if (false) {
+  getEBIDetails().then((data) => {
+    console.log(data);
+  });
+}
+
+if (true) {
+  sendUpdate(
+    {
+      premium_discount: "-0.01",
+      median_30_day_spread: "0.14",
+    },
+    "jason.laster.11@gmail.com"
+  ).then((data) => {
+    console.log(data);
+  });
+}
