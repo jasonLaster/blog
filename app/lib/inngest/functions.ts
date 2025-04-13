@@ -1,7 +1,9 @@
 import { inngest } from "./client";
-import { neon } from "@neondatabase/serverless";
-import { getEBIDetails } from "../ebi";
-const sql = neon(process.env.DATABASE_URL!);
+import {
+  getEBIDetails,
+  sendNetAssetsAlert,
+  sendPremiumDiscountAlert,
+} from "../ebi";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -12,13 +14,6 @@ export const helloWorld = inngest.createFunction(
   }
 );
 
-type Task = {
-  id: number;
-  created_at: Date;
-  type: string;
-  data: unknown;
-};
-
 export const getEBIDetail = inngest.createFunction(
   {
     id: "get-ebi-detail",
@@ -28,13 +23,29 @@ export const getEBIDetail = inngest.createFunction(
     cron: "0 0 * * *",
   },
   async ({ step }) => {
-    await step.run("get-ebi-detail", async () => {
-      const data = await getEBIDetails();
+    const ebiDetails = await step.run("get-ebi-detail", async () =>
+      getEBIDetails()
+    );
 
-      const result =
-        (await sql`INSERT INTO tasks (type, data) VALUES ('ebi', ${data}) RETURNING *`) as Task[];
+    const ebiAssertions = await step.run("ebi-assertions", async () => {
+      if (!ebiDetails) {
+        return { message: "No EBI details" };
+      }
 
-      return { result };
+      if (parseFloat(ebiDetails.premium_discount) < -0.2) {
+        const email = await sendPremiumDiscountAlert(ebiDetails);
+        return { message: "Premium is low", email };
+      }
+
+      const netAssets = parseFloat(ebiDetails.net_assets.replace(/,/g, ""));
+      if (netAssets < 400_000_000) {
+        const email = await sendNetAssetsAlert(ebiDetails);
+        return { message: "Net assets are low", email };
+      }
+
+      return { message: "EBI is fine!" };
     });
+
+    return { ebiAssertions, ebiDetails };
   }
 );
