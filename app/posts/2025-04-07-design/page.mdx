@@ -497,3 +497,31 @@ A task is a piece of computational work that requires resources (CPU time, memor
 * Encode the photo or video in multiple resolutions.
 * Validate the photo or video to check for content monetization copyrights, and many more.
 
+
+## Prompts 
+
+### Designing a news feed 
+
+* It might seem impractical to save a cache of tweets per user, but if each user's feed is 1k tweet IDs, that's about 10kb, and even if we stored 1B user's feeds, that'd only be 10TB. 10kb -> 10MB (1k users) -> 10GB (1M users) -> 10TB (1B users)
+
+* There are different strategies for when we want to update the feed cache. We can do it periodically, we can do it when a user's follows posts a tweet.
+
+* We could use an index to keep reply tweets. We could use a columnar db, but that seems like overkill because you really want the other columns.
+
+* We'll want tweet metadata in a DB. 
+
+* Random services: Notifications, Search, Advertising 
+
+* Like, views, and retweet counts
+
+Concerns:
+
+* Telemetry
+* Reliability
+
+
+Features 
+* Infinite loading: show the first hundred, ... up to a point that's in the cache. 
+
+
+
