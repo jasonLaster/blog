@@ -68,12 +68,32 @@ const components = {
   img: (props: ComponentPropsWithoutRef<"img">) => (
     <img className="my-4 rounded-lg" {...props} />
   ),
-  p: (props: ParagraphProps) => (
-    <p
-      className="text-gray-800 dark:text-zinc-300 my-[1em] leading-[1.5]"
-      {...props}
-    />
-  ),
+  p: (props: ParagraphProps) => {
+    // Handle both standard Markdown dividers and the special ⸻ character
+    if (
+      props.children &&
+      typeof props.children === "string"
+    ) {
+      const content = props.children.trim();
+      
+      // Check for special em dash divider
+      if (content === "⸻") {
+        return <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />;
+      }
+      
+      // Check for standard markdown dividers
+      if (/^[\-*_]{3,}$/.test(content)) {
+        return <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />;
+      }
+    }
+    
+    return (
+      <p
+        className="text-gray-800 dark:text-zinc-300 my-[1em] leading-[1.5]"
+        {...props}
+      />
+    );
+  },
   ol: (props: ListProps) => (
     <ol
       className="text-gray-800 dark:text-zinc-300 list-decimal pl-5 space-y-2"
@@ -123,31 +143,68 @@ const components = {
     );
   },
   pre: Code,
-  Table: ({ data }: { data: { headers: string[]; rows: string[][] } }) => (
-    <table>
-      <thead>
-        <tr>
-          {data.headers.map((header, index) => (
-            <th key={index}>{header}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.rows.map((row, index) => (
-          <tr key={index}>
-            {row.map((cell, cellIndex) => (
-              <td key={cellIndex}>{cell}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+
+  table: (props: ComponentPropsWithoutRef<"table">) => (
+    <div className="overflow-x-auto my-8">
+      <table className="min-w-full border-collapse text-sm" {...props} />
+    </div>
   ),
+  thead: (props: ComponentPropsWithoutRef<"thead">) => (
+    <thead className="bg-gray-100 dark:bg-zinc-800" {...props} />
+  ),
+  tbody: (props: ComponentPropsWithoutRef<"tbody">) => (
+    <tbody className="divide-y divide-gray-200 dark:divide-zinc-700" {...props} />
+  ),
+  tr: (props: ComponentPropsWithoutRef<"tr">) => (
+    <tr className="hover:bg-gray-50 dark:hover:bg-zinc-800/50" {...props} />
+  ),
+  th: (props: ComponentPropsWithoutRef<"th">) => {
+    // Parse width attribute from header content like "Header [w-300px]"
+    let columnWidth = '';
+    let displayContent = props.children;
+
+    if (props.children && typeof props.children === 'string') {
+      const widthMatch = props.children.match(/\s*\[w-(\d+)px\]\s*$/);
+      
+      if (widthMatch) {
+        // Extract the width value
+        const widthValue = widthMatch[1];
+        columnWidth = `w-[${widthValue}px]`;
+
+        
+        // Remove the width directive from the display content
+        displayContent = props.children.replace(/\s*\[w-\d+px\]\s*$/, '');
+      }
+    }
+    
+    return (
+      <th 
+        className={`px-4 py-3 text-left font-medium text-gray-700 dark:text-zinc-300 ${columnWidth}`} 
+        {...props}
+      >
+        {displayContent}
+      </th>
+    );
+  },
+  td: (props: ComponentPropsWithoutRef<"td">) => {
+    return (
+      <td 
+        className="px-4 py-3 text-gray-800 dark:text-zinc-300 border-t border-gray-200 dark:border-zinc-700 whitespace-normal break-words align-top" 
+        {...props} 
+      />
+    );
+  },
+
   blockquote: (props: BlockquoteProps) => (
     <blockquote
       className="ml-[0.075em] border-l-3 border-gray-300 pl-4 text-gray-700 dark:border-zinc-600 dark:text-zinc-300"
       {...props}
     />
+  ),
+  
+  // Explicit horizontal rule component
+  hr: () => (
+    <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />
   ),
 };
 

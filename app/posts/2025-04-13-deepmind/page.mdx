@@ -1,0 +1,157 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "DeepMind's progression from Chess to Chips",
+  description: "",
+  date: "2025-04-13",
+  note: true,
+  categories: ["AI"],
+});
+
+
+Documentaries like [AlphaGo][50] and accomplishments like getting a silver rank in International Math Olympiad, have made it impossible to ignore DeepMind's progress. 
+
+Behind each project, there's a simple idea: can an agent through self play learn how to play agame at a superhuman level. This weekend, I dove in and thanks to ChatGPT's Deep Research, traced the progression from chess to mathematical proofs and finally chips.
+
+This post was the product of a collaboration with ChatGPT. Hope you enjoy.
+
+
+## DeepMind's Alpha Projects
+| Project | Domain | Key Contribution |
+|---------|---------|-----------------|
+| [**AlphaZero**][1]<br/>[Arxiv][20] | Board Games (Chess, Shogi, Go) | Learned to master multiple games from scratch with one algorithm, using self-play reinforcement learning. |
+| [**AlphaStar**][2]<br/>[Arxiv][13] | Video Game (StarCraft II) | First AI to reach Grandmaster level in StarCraft II, using multi-agent reinforcement learning. |
+| [**AlphaFold**][4]<br/>[Arxiv][19] | Biology (Protein Folding) | Predicted protein 3D structures with atomic accuracy, effectively solving the 50-year protein-folding grand challenge. |
+| [**AlphaTensor**][7]<br/>[Arxiv][21] | Mathematics (Algorithms) | First AI system to discover novel algorithms for matrix multiplication, improving on human-designed methods. |
+| [**AlphaDev**][8]<br/>[Arxiv][15] | Computer Science (Algorithms) | Used AI to discover faster sorting algorithms in assembly code via reinforcement learning, outperforming decades-old human benchmarks. |
+| [**AlphaCode**][9]<br/>[Arxiv][16] | Computer Programming | Achieved human-level performance in coding competitions, generating code with transformer models. |
+| [**AlphaProof**][11]<br/>[ArXiv][17] | Mathematics (Theorem Proving) | New AI system for formal math proof solving; used reinforcement learning in a proof assistant to solve several IMO problems. |
+| [**AlphaChip**][12]<br/>[Arxiv][18] | Hardware (Chip Design) | AI method for automating chip floorplanning; uses reinforcement learning to produce chip layouts faster and with comparable or better quality than human experts. |
+
+[1]: https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/
+[2]: https://deepmind.google/discover/blog/alphastar-mastering-the-real-time-strategy-game-starcraft-ii/
+[3]: https://deepmind.google/discover/blog/muzero-mastering-go-chess-shogi-and-atari-without-rules/
+[4]: https://deepmind.google/discover/blog/alphafold-a-solution-to-a-50-year-old-grand-challenge-in-biology/
+[5]: https://deepmind.google/discover/blog/alphafold-reveals-the-structure-of-the-protein-universe/
+[6]: https://deepmind.google/discover/blog/alphafold-3-advances-in-atomic-scale-structure-prediction/
+[7]: https://deepmind.google/discover/blog/discovering-novel-algorithms-with-alphatensor/
+[8]: https://deepmind.google/discover/blog/alphadev-discovers-faster-sorting-algorithms/
+[9]: https://deepmind.google/discover/blog/competitive-programming-with-alphacode/
+[10]: https://deepmind.google/discover/blog/alphageometry-an-olympiad-level-ai-system-for-geometry/
+[11]: https://deepmind.google/discover/blog/alphaproof-proving-mathematical-theorems-with-reinforcement-learning/
+[12]: https://deepmind.google/discover/blog/using-ai-to-design-better-computer-chips/
+[13]: https://arxiv.org/abs/2308.03526
+[14]: https://www.nature.com/articles/s41586-022-05172-4
+[15]: https://arxiv.org/abs/2503.05934
+[16]: https://arxiv.org/abs/2203.07814
+[17]: https://arxiv.org/abs/2410.15700
+[18]: https://arxiv.org/abs/2411.10053
+[19]: https://arxiv.org/abs/2210.03488
+[20]: https://arxiv.org/abs/1712.01815
+[21]: https://arxiv.org/abs/2402.14396
+⸻
+
+
+## AlphaZero: Mastering Games with Reinforcement Learning and Search
+
+AlphaZero is a game-playing AI that demonstrated how an RL and search loop can achieve superhuman skill in chess, shogi, and Go without any human-provided strategies. It replaced the handcrafted evaluation functions and brute-force search of traditional chess programs with a deep neural network and a general-purpose search algorithm. The only domain knowledge given was the basic rules of each game – no opening books or endgame databases.
+
+How it works: AlphaZero learns via self-play reinforcement learning. It starts with a random neural network that evaluates game positions and suggests moves, and it improves by playing millions of games against itself. Outcomes (win, lose, or draw) are used as feedback to update the network so that it gradually favors moves leading to victory. Over time, the system refines its strategy entirely through this trial-and-error process, without needing example games from human experts. In just a few hours of training (tens of thousands of self-play games), AlphaZero rediscovered fundamental strategies and surpassed the strongest traditional engines in each game.
+
+A key component of AlphaZero is its use of **Monte Carlo Tree Search** (MCTS) at decision time. The trained neural network provides two outputs for a given game state: 
+1. A policy (probability distribution over possible moves) 
+2. A value (prediction of win/draw/loss from that state). 
+
+During play, AlphaZero runs an MCTS guided by these network predictions to explore possible future move sequences. This search finds a more informed move to play than the raw network policy alone. Crucially, the network+MCTS combination is far more selective than brute-force search: AlphaZero examines only a tiny fraction of the positions that traditional engines would consider (thousands of positions per second instead of millions) while still finding strong moves. The neural network’s learned intuition dramatically prunes the search space, focusing on the most promising moves, and MCTS in turn produces improved data to further train the network. This feedback loop – network guiding search, and search outcomes training the network – is the core of AlphaZero’s power.
+
+Results: AlphaZero’s architecture was general enough to handle multiple games with the same algorithm and network design. By the end of training, it had achieved superhuman performance: for example, it defeated Stockfish (the world-champion chess engine) in a 1000-game match, and likewise decisively beat top programs in shogi and the earlier AlphaGo Zero in Go. Perhaps more impressively, it did so with a unique style of play; because it wasn’t constrained by human conventions, it found creative, “alien” strategies that inspired even professional players. AlphaZero demonstrated that an RL system with search and minimal prior knowledge can learn a complex task from scratch and outperform decades of hand-tuned human knowledge.
+
+
+## AlphaProof: Adapting the AlphaZero Loop to Formal Theorem Proving
+
+After games, DeepMind turned to formal mathematics with **AlphaProof** – a system for proving theorems that adapts AlphaZero’s reinforcement learning and search loop to the domain of **symbolic logic**. In formal theorem proving, the “game” consists of finding a sequence of logical inference steps (a proof) that leads from axioms to a given statement. This domain presents new challenges: the state is a mathematical proof state (in a system like **Lean**), the action space is enormous (there could be thousands of possible **lemmas** or transformations to apply at each step), and unlike games, there wasn’t an easy way to generate unlimited training data because random proof attempts rarely succeed. Moreover, reasoning in natural language can lead to hallucinations – plausible-sounding but incorrect steps – so a strict formal approach is needed for correctness.
+
+**Architecture and approach**: AlphaProof tackled these challenges by coupling a pre-trained language model with the AlphaZero-style RL algorithm. The language model (a transformer trained on mathematical text and formal proofs) provides prior knowledge of the domain, suggesting promising proof steps in the formal language (Lean) – essentially serving as the policy network for which actions to try. This model is fine-tuned to work in the formal environment so that its suggestions are syntactically correct Lean statements. AlphaProof then uses an AlphaZero-like loop: it takes a formal theorem to prove, and searches over possible proof steps – exploring different sequences of actions that might lead to a valid proof. This search is analogous to MCTS, except that the branches are possible proofs rather than game moves. If a candidate sequence completes a proof, the formal proof checker (Lean) verifies it, which is akin to a “win” in a game. Each proven theorem (or discovered counterexample) provides a learning signal: the system updates its neural network (the language model) to make those successful proof paths more likely in the future. In this way, AlphaProof trains itself to prove theorems, gradually improving its ability to navigate the vast space of mathematical logic.
+
+**Generating training data**: One of the biggest hurdles was the lack of large-scale formal training data – there are relatively few human-written formal proofs. To overcome this, DeepMind generated a huge number of synthetic training problems. They used a “formalizer” model to translate around 1 million informal math problems (written in natural language, drawn from textbooks or contests) into formal statements in Lean. This yielded on the order of 100 million formal problems of varying difficulty (many more than humans have ever written). AlphaProof could practice on this trove of problems, starting with easier ones and gradually attempting harder ones, much like AlphaZero generated self-play games of increasing complexity. During training, AlphaProof proved or disproved millions of these statements over a period of weeks, continuously refining its model. The training was even adaptive: when faced with a particularly hard problem (such as an International Mathematical Olympiad question), the system would generate and practice on variations of that problem to build intuition, reinforcing any partial progress until it could solve the original challenge.
+
+**AlphaProof’s reinforcement learning loop**: A large set of informal math problems is first formalized into the Lean language by a neural network, creating a training library of formal problems. Then a solver network (the AlphaProof agent) searches for proofs or disproofs of these problems, using the AlphaZero-style self-training loop to gradually handle more and more difficult proofs. Each successful proof is added to the agent’s experience, improving its theorem-proving policy over time.
+
+**Outcomes**: Using this method, AlphaProof achieved a milestone in automatic math reasoning. In 2024, AlphaProof (combined with a geometry solver) managed to solve 4 out of 6 problems on the International Mathematical Olympiad (IMO) exam, a result equivalent to a silver medal performance by a human competitor. Notably, it found proofs for the hardest problem on the exam – a problem only five human contestants solved – by determining the answer and then formally proving it correct￼. This was the first time an AI system reached this level on the IMO. The success illustrates how the AlphaZero loop was adapted to a domain requiring symbolic reasoning: the system learned to search through a proof space with the help of a neural guide, balancing logical rigor (no incorrect steps allowed) with the creativity to try complex, non-obvious proof strategies. AlphaProof’s approach addresses the huge action space by using a learned policy to focus on plausible steps, and it uses formal verification as a solid training signal (proofs are either correct or not, just as a game is a win or loss). This marks an evolution of the AlphaZero paradigm from playing games to tackling the “game of theorem proving,” where the rules are logic and the payoff is a validated proof.
+
+
+## AlphaChip: Reinforcement Learning for Chip Design Optimization
+
+The same fundamental RL+search approach has also been applied beyond pure reasoning tasks, into the realm of hardware engineering. AlphaChip is DeepMind’s system for chip floorplanning – the task of arranging circuit components (like blocks of a computer chip) on a chip canvas in an optimal way. This problem has been notoriously difficult and was traditionally addressed with heuristic algorithms and a lot of expert tweaking; it’s often compared to solving a 3D puzzle with millions of possible configurations and many constraints (wire lengths, timings, power, etc.). DeepMind and Google researchers recognized that chip placement could be posed as a kind of game for an AI to play. In fact, AlphaChip was one of the first RL approaches to solve a real-world engineering problem, and it achieved results beyond human level in chip design.
+
+**Treating design as a game**: Similar to how AlphaZero viewed a board game, AlphaChip treats chip layout as a sequential decision game. The “board” is the chip canvas (usually a grid or continuous layout area), and the “pieces” are the circuit blocks (modules like memory blocks, compute units, etc.). AlphaChip’s agent starts with an empty chip layout (a blank grid) and places one block at a time in some location, incrementally building a complete floorplan. Each placement is like a move in a game. When all components have been placed, the layout is evaluated for its quality – for example, how short the wiring is, how well it meets all design constraints. AlphaChip then receives a reward based on the final layout quality. This sparse, end-of-episode reward drives the reinforcement learning: if a placement sequence results in a better chip (shorter wires, better performance), the agent learns to make those placement choices more frequently.
+
+**Neural architecture and learning**: Unlike AlphaZero’s convolutional network (good for grids) or AlphaProof’s language model, AlphaChip uses a **graph neural network** (GNN) as its policy/value network. This is because a chip design is naturally represented as a graph of connected components – the **netlist** of the circuit describes which blocks need to be connected by wires. AlphaChip’s “edge-based” GNN processes this graph and also takes into account the partial placement on the grid, allowing it to learn the relationships between components (for instance, which blocks communicate a lot and should be placed near each other). This learned representation helps generalize knowledge: the same network can apply its learned strategy to different chip layouts, not just one specific chip. In essence, the neural net guides the agent where to place the next block, and also evaluates how promising the current partial layout looks (much like AlphaZero’s policy and value outputs).
+
+AlphaChip’s training proceeds through many iterations of placing all blocks (playing a “game” from start to finish) and then adjusting the neural network to favor decisions that led to better outcomes. Over time and many training episodes, the agent becomes better at anticipating the long-term consequences of early placement decisions – for example, it learns to reserve space for later blocks and minimize eventual wire congestion. Notably, AlphaChip’s approach allowed it to improve with experience in a way that conventional algorithms do not. The team first pre-trained AlphaChip on a variety of existing chip floorplanning tasks (for example, layouts from prior chip generations or smaller subsystems) to give it a base of knowledge. With this experience, the agent can quickly adapt to a new chip design. In fact, the system was shown to become better and faster as it solves more instances of the placement task, much like a human designer gaining intuition over multiple projects. This is a departure from standard electronic design automation tools, which don’t learn across runs – whereas AlphaChip gets cumulatively smarter, reducing the time needed for new layouts.
+
+**Results and impact**: The AlphaChip methodology was first introduced in a 2020 research preprint (published in Nature in 2021) and later refined and officially named “AlphaChip” in 2024. It quickly proved its worth by producing chip layouts superior to human designs in a fraction of the time. For instance, AlphaChip can generate “superhuman” chip floorplans in hours rather than weeks or months of manual effort. Its layouts for Google’s Tensor Processing Unit (TPU) chips achieved lower wire lengths and better performance than the layouts crafted by expert human engineers, contributing to improved next-generation hardware. In fact, AlphaChip’s automated layouts have been used in three generations of TPU chips (including the latest ones used in Google’s datacenters), underscoring that the system is not just a research demo but a production-quality tool. By treating floorplanning as a game and learning from scratch, AlphaChip revolutionized a key phase of chip design, showing that deep RL and search can handle the complexity of real-world engineering. Its success has spurred a wave of research into AI for chip design, and the approach is being extended to other stages of the chip design process as well (like logic synthesis and routing).
+
+
+---
+
+### Foundational Terms
+
+
+| Term | Meaning [w-300px] | Description  |
+|------|---------|-------------|
+| EDA | Electronic Design Automation | Software tools used to design, simulate, verify, and lay out integrated circuits (ICs). |
+| HDL | Hardware Description Language | Languages like Verilog or VHDL used to describe hardware logic at a high level. |
+| RTL | Register-Transfer Level | An abstraction of digital logic that describes how data moves between registers and what operations are done. |
+| ASIC | Application-Specific Integrated Circuit | A custom-designed chip optimized for a specific task (e.g., GPUs, TPUs). |
+| FPGA | Field-Programmable Gate Array | A reprogrammable chip; used for prototyping or flexible hardware deployment. |
+
+
+
+### Design and Layout Terms
+
+| Term | Meaning | Description |
+|------|---------|-------------|
+| Netlist | Network List | A list of all components and their electrical connections (output of logic synthesis). |
+| Floorplanning | - | The process of placing blocks or macros in optimal positions on the chip canvas. |
+| Placement | - | Assigning physical locations to standard cells on the floorplan. |
+| Routing | - | Connecting the placed components with wires (metal layers). |
+| PPA | Power, Performance, Area | The holy trinity of chip design metrics. Optimizing for all three is a central goal. |
+
+
+
+### Synthesis and Verification
+
+| Term | Meaning | Description |
+|------|---------|-------------|
+| Logic Synthesis | | The process of converting RTL into gate-level netlists using technology libraries. |
+| Timing Closure | | Ensuring the design meets all timing constraints after placement and routing. |
+| STA | Static Timing Analysis | A method to check whether all signal paths meet required timing without simulation. |
+| DRC | Design Rule Check | Ensures layout complies with manufacturing rules. |
+| LVS | Layout vs. Schematic | Confirms that the physical layout matches the logical design. |
+
+
+
+
+### Simulation and Testing
+
+| Term | Meaning | Description |
+|------|---------|-------------|
+| Testbench | - | A simulation wrapper for verifying RTL behavior under various inputs. |
+| Functional Verification |  - | Checking that the design works as intended (logic-level). |
+| Formal Verification | -  | Proving properties about the design using mathematical techniques. |
+| Coverage |  - | Metric for how thoroughly the design has been tested (e.g., line, toggle, FSM coverage). |
+
+
+
+
+### AI/ML and Tooling Context
+
+| Term | Meaning | Description |
+|------|---------|-------------|
+| GNN | Graph Neural Network | Used in tools like AlphaChip to process netlist graphs and learn placement strategies. |
+| Toolchain | - | A sequence of EDA tools used from RTL to GDSII (final layout). |
+| GDSII | Graphic Data System II | The file format used for final chip layouts handed to fabrication. |
+| PDK | Process Design Kit | The tech-specific set of rules and models used for a particular chip manufacturing process. |
+
+[50]: https://www.youtube.com/watch?v=WXuK6gekU1Y
