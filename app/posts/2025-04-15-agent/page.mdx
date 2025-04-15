@@ -1,0 +1,358 @@
+import { postMetadata } from "../../utils/metadata";
+import {Tabs} from "../../components/tabs"
+
+
+export const metadata = postMetadata({
+  title: "Building a minimal viable coding agent",
+  description: "This post covers the steps needed to build an agent that's able to use tools like list_files, read_file, and edit_file.",
+  date: "2025-04-15",
+  categories: ["AI"],
+});
+
+It's been exciting to watch the rapid progress with coding agents over the past few months.
+
+One reason this feels especially compelling is that as models become more powerful, the guardrails seem to drop away, and the tooling around them grows simpler.
+
+When Thorsten Ball published a detailed [walkthrough][1] earlier today on building an agent, I couldn't resist jumping in. Since we're among friends here, I'll admit: although I'd read Claude Code's original [implementation][2] and had a general sense of how tool calling worked, I hadn't actually tried invoking tools directly before today.
+
+If you're looking for a thorough, step-by-step guide—and you're comfortable with Go—I highly recommend Thorsten's [post][1]. He walks through each step, making it easy to follow along if you take your time.
+
+However, if you prefer TypeScript and you're comfortable with exploring some aspects at a higher level, this post is for you. There's also a [repo][3] you can clone and experiment with directly.
+
+## Architecture Overview
+
+At a high level, the key components here are the Agent and the tools.
+
+The tools themselves are quite minimal. For example, `readFile` essentially wraps `fs.readFile`. Interestingly, the critical part of each tool isn't really the implementation—it's the description field, which instructs the model on how and when to use it.
+
+The Agent class primarily revolves around two functions:
+
+* A **run** function that loops continuously, handling user and agent messages.
+* A **runInference** function that determines the agent's next move.
+
+The **runInference** function handles the core logic of tool calling. Conceptually, it's straightforward: you provide the model with available tools, and when the model decides a tool is needed, it invokes the appropriate function and incorporates the results. There's a subtle complexity here because models may request multiple tool calls, each potentially leading to further calls. I'm not entirely satisfied with my current approach—if anyone has ideas for simplifying this, I'd love to hear them.
+
+Lastly, a quick note on logging and observability. Initially, I relied on console logs for tracking results, but this quickly became confusing since the agent runs in the terminal. I soon shifted to a JSON logger writing to `out/<timestamp>.jsonl`. This setup works fine, but using a dedicated tracing tool like Braintrust provides a much clearer visualization of traces.
+
+
+## Code
+
+<Tabs lineNumbers={true}>
+
+```ts 
+// title agent.ts
+import { Agent } from "./src/agent";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+(async () => {
+  try {
+    const agent = new Agent();
+    await agent.run();
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unknown error occurred.");
+    }
+  }
+})();
+```
+
+```ts
+// title tools.ts
+import * as fs from "fs/promises";
+import { Dirent } from "fs";
+
+// Tool definitions and types
+export interface ToolDefinition {
+  name: string;
+  description: string;
+  function: (input: any) => Promise<string>;
+  input_schema: Record<string, any>;
+}
+
+export const readFileTool: ToolDefinition = {
+  name: "read_file",
+  description:
+    "Read the contents of a given relative file path. Use this when you want to see what's inside a file. Do not use this with directory names.",
+  input_schema: {
+    type: "object",
+    properties: {
+      path: {
+        type: "string",
+        description: "The relative path of a file in the working directory.",
+      },
+    },
+    required: ["path"],
+  },
+  function: async (input: { path: string }) => {
+    try {
+      const content = await fs.readFile(input.path, "utf-8");
+      return content;
+    } catch (error: any) {
+      throw new Error(`Failed to read file: ${error.message}`);
+    }
+  },
+};
+
+export const listFilesTool: ToolDefinition = {
+  name: "list_files",
+  description:
+    "List files and directories at a given path. If no path is provided, lists files in the current directory.",
+  input_schema: {
+    type: "object",
+    properties: {
+      path: {
+        type: "string",
+        description:
+          "Optional relative path to list files from. Defaults to current directory if not provided.",
+      },
+    },
+  },
+  function: async (input: { path?: string }) => {
+    const dirPath = input.path || ".";
+    try {
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
+      return entries
+        .map((entry: Dirent) =>
+          entry.isDirectory() ? `${entry.name}/` : entry.name
+        )
+        .join("\n");
+    } catch (error: any) {
+      throw new Error(`Failed to list files: ${error.message}`);
+    }
+  },
+};
+
+export const editFileTool: ToolDefinition = {
+  name: "edit_file",
+  description:
+    "Edit a file by replacing all occurrences of a string with another string.",
+  input_schema: {
+    type: "object",
+    properties: {
+      path: {
+        type: "string",
+        description: "The relative path of the file to edit.",
+      },
+      old_str: {
+        type: "string",
+        description: "The string to replace.",
+      },
+      new_str: {
+        type: "string",
+        description: "The replacement string.",
+      },
+    },
+    required: ["path", "old_str", "new_str"],
+  },
+  function: async (input: {
+    path: string;
+    old_str: string;
+    new_str: string;
+  }) => {
+    try {
+      const content = await fs.readFile(input.path, "utf-8");
+      const newContent = content.split(input.old_str).join(input.new_str);
+      await fs.writeFile(input.path, newContent, "utf-8");
+      return "File edited successfully.";
+    } catch (error: any) {
+      if (error.code === "ENOENT") {
+        // File doesn't exist, create it with the new content
+        await fs.writeFile(input.path, input.new_str, "utf-8");
+        return `File "${input.path}" created with the specified content.`;
+      }
+      throw new Error(`Failed to edit file: ${error.message}`);
+    }
+  },
+};
+```
+
+```ts 
+// title src/agent.ts
+import Anthropic from "@anthropic-ai/sdk";
+import { Message, MessageParam } from "@anthropic-ai/sdk/resources";
+import readline from "node:readline";
+import {
+  ToolDefinition,
+  readFileTool,
+  editFileTool,
+  listFilesTool,
+} from "./tools";
+import { logger as JSONLogger } from "./logger";
+
+import { initLogger, traced } from "braintrust";
+
+initLogger({
+  projectName: "code-agent",
+  apiKey: process.env.BRAINTRUST_API_KEY,
+});
+
+export class Agent {
+  private client: Anthropic;
+  private tools: ToolDefinition[];
+  private toolsMap: Record<string, ToolDefinition>;
+  private rl: readline.Interface;
+  private isRunning: boolean = false;
+
+  constructor() {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      throw new Error("ANTHROPIC_API_KEY environment variable is required");
+    }
+    this.client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+    this.tools = [readFileTool, listFilesTool, editFileTool];
+
+    this.toolsMap = {};
+    for (const tool of this.tools) {
+      this.toolsMap[tool.name] = tool;
+    }
+
+    this.rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+  }
+
+  async getUserMessage(): Promise<string> {
+    return new Promise((resolve) => {
+      this.rl.question("You: ", (answer: string) => {
+        resolve(answer);
+      });
+    });
+  }
+
+  async runInference(
+    conversation: MessageParam[]
+  ): Promise<[MessageParam[], Message]> {
+    return traced(async (span) => {
+      const tools = this.tools.map((tool) => ({
+        name: tool.name,
+        description: tool.description,
+        input_schema: {
+          type: "object" as const,
+          properties: tool.input_schema.properties || {},
+          required: tool.input_schema.required || [],
+        },
+      }));
+
+      const response = await this.client.messages.create({
+        model: "claude-3-7-sonnet-20250219",
+        max_tokens: 1024,
+        messages: conversation,
+        tools,
+      });
+
+      if (response.stop_reason == "tool_use") {
+        conversation.push({ role: "assistant", content: response.content });
+        const validResults = await Promise.all(
+          response.content
+            .filter((content) => content.type == "tool_use")
+            .map(async (content) => {
+              try {
+                const result = await this.toolsMap[content.name].function(
+                  content.input
+                );
+
+                JSONLogger.log({
+                  event: "tool_usage",
+                  tool: content.name,
+                  input: content.input,
+                  result: result,
+                });
+
+                span.log({
+                  input: content.input,
+                  output: result,
+                  metadata: {
+                    tool: content.name,
+                  },
+                });
+
+                return {
+                  type: "tool_result" as const,
+                  tool_use_id: content.id,
+                  content: result,
+                };
+              } catch (error: any) {
+                JSONLogger.log({
+                  event: "tool_error",
+                  tool: content.name,
+                  input: content.input,
+                  error: error.message,
+                });
+
+                return {
+                  type: "tool_result" as const,
+                  tool_use_id: content.id,
+                  content: `Error: ${error.message}`,
+                };
+              }
+            })
+        );
+
+        conversation.push({ role: "user", content: validResults });
+        return this.runInference(conversation);
+      }
+
+      return [conversation, response];
+    });
+  }
+
+  async run(): Promise<void> {
+    await traced(async (span: any) => {
+      console.log(
+        "Welcome to the JS Coding Agent! Type your message. (Ctrl+C to exit)"
+      );
+      JSONLogger.log({ event: "session_start" });
+
+      // Set up signal handler for graceful shutdown
+      this.isRunning = true;
+      process.on("SIGINT", () => {
+        console.log("\nGracefully shutting down...");
+        JSONLogger.log({ event: "session_end", reason: "SIGINT" });
+        this.isRunning = false;
+        this.rl.close();
+        throw "Shutting down";
+      });
+
+      const conversation: MessageParam[] = [];
+      while (this.isRunning) {
+        const userMsg = await this.getUserMessage();
+        if (!this.isRunning) break; // Check if we've been interrupted during input
+
+        JSONLogger.log({ event: "user_input", message: userMsg });
+
+        const input = { role: "user", content: userMsg };
+        conversation.push(input);
+        try {
+          const [_, response] = await this.runInference(conversation);
+
+          // Extract text content from the response
+          const responseText = response.content
+            .filter((content) => content.type === "text")
+            .map((content) => content.text)
+            .join("\n");
+
+          span.log({ input, response: responseText });
+
+          console.log(`Agent: ${responseText}`);
+          JSONLogger.log({ event: "agent_response", message: responseText });
+        } catch (err: any) {
+          console.error(`Error: ${err.message}`);
+          JSONLogger.log({ event: "error", message: err.message });
+        }
+      }
+    });
+  }
+}
+```
+</Tabs>
+
+
+[1]: https://ampcode.com/how-to-build-an-agent
+[2]: https://github.com/Yuyz0112/claude-code-reverse
+[3]: https://github.com/jasonLaster/coding-agent
