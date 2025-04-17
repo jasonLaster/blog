@@ -23,7 +23,14 @@ The obvious solution is to deploy the playwright report to Vercel. Vercel satisf
 1. Vercel is super flexible and even supports hosting simple HTML web pages
 2. Vercel supports preview branches which gives you a unique URL for each report
 
-The way I got setup was to first deploy a playwright-report which i had locally. This walked me through the steps of creating a Vercel project. Once I had a project, then all I had to do was add this step to our existing Github workflow.
+The way I got setup was to first deploy a playwright-report which i had locally. 
+
+```bash
+cd playwright-report
+vercel deploy
+```
+
+Deploying the report locally created a new Vercel project which I was able to re-use in the Github workflow. If you already have playwright github action, all you'll need to do is add this step to your workflow.
 
 ```yaml
 - name: Deploy playwright report to Vercel
