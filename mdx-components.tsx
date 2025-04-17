@@ -8,6 +8,8 @@ type ListProps = ComponentPropsWithoutRef<"ul">;
 type ListItemProps = ComponentPropsWithoutRef<"li">;
 type AnchorProps = ComponentPropsWithoutRef<"a">;
 type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
+type DetailsProps = ComponentPropsWithoutRef<"details">;
+type SummaryProps = ComponentPropsWithoutRef<"summary">;
 
 Code.theme = {
   dark: "github-dark",
@@ -70,23 +72,24 @@ const components = {
   ),
   p: (props: ParagraphProps) => {
     // Handle both standard Markdown dividers and the special ⸻ character
-    if (
-      props.children &&
-      typeof props.children === "string"
-    ) {
+    if (props.children && typeof props.children === "string") {
       const content = props.children.trim();
-      
+
       // Check for special em dash divider
       if (content === "⸻") {
-        return <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />;
+        return (
+          <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />
+        );
       }
-      
+
       // Check for standard markdown dividers
       if (/^[\-*_]{3,}$/.test(content)) {
-        return <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />;
+        return (
+          <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />
+        );
       }
     }
-    
+
     return (
       <p
         className="text-gray-800 dark:text-zinc-300 my-[1em] leading-[1.5]"
@@ -153,33 +156,35 @@ const components = {
     <thead className="bg-gray-100 dark:bg-zinc-800" {...props} />
   ),
   tbody: (props: ComponentPropsWithoutRef<"tbody">) => (
-    <tbody className="divide-y divide-gray-200 dark:divide-zinc-700" {...props} />
+    <tbody
+      className="divide-y divide-gray-200 dark:divide-zinc-700"
+      {...props}
+    />
   ),
   tr: (props: ComponentPropsWithoutRef<"tr">) => (
     <tr className="hover:bg-gray-50 dark:hover:bg-zinc-800/50" {...props} />
   ),
   th: (props: ComponentPropsWithoutRef<"th">) => {
     // Parse width attribute from header content like "Header [w-300px]"
-    let columnWidth = '';
+    let columnWidth = "";
     let displayContent = props.children;
 
-    if (props.children && typeof props.children === 'string') {
+    if (props.children && typeof props.children === "string") {
       const widthMatch = props.children.match(/\s*\[w-(\d+)px\]\s*$/);
-      
+
       if (widthMatch) {
         // Extract the width value
         const widthValue = widthMatch[1];
         columnWidth = `w-[${widthValue}px]`;
 
-        
         // Remove the width directive from the display content
-        displayContent = props.children.replace(/\s*\[w-\d+px\]\s*$/, '');
+        displayContent = props.children.replace(/\s*\[w-\d+px\]\s*$/, "");
       }
     }
-    
+
     return (
-      <th 
-        className={`px-4 py-3 text-left font-medium text-gray-700 dark:text-zinc-300 ${columnWidth}`} 
+      <th
+        className={`px-4 py-3 text-left font-medium text-gray-700 dark:text-zinc-300 ${columnWidth}`}
         {...props}
       >
         {displayContent}
@@ -188,9 +193,9 @@ const components = {
   },
   td: (props: ComponentPropsWithoutRef<"td">) => {
     return (
-      <td 
-        className="px-4 py-3 text-gray-800 dark:text-zinc-300 border-t border-gray-200 dark:border-zinc-700 whitespace-normal break-words align-top" 
-        {...props} 
+      <td
+        className="px-4 py-3 text-gray-800 dark:text-zinc-300 border-t border-gray-200 dark:border-zinc-700 whitespace-normal break-words align-top"
+        {...props}
       />
     );
   },
@@ -201,7 +206,42 @@ const components = {
       {...props}
     />
   ),
-  
+
+  // Disclosure components
+  Details: ({ children, ...props }: DetailsProps) => {
+    return (
+      <details className="my-4 group " {...props}>
+        {children}
+      </details>
+    );
+  },
+
+  Summary: ({ children, ...props }: SummaryProps) => {
+    return (
+      <summary
+        className="cursor-pointer font-medium text-gray-800 dark:text-zinc-200 list-none flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-zinc-800/50"
+        {...props}
+      >
+        <span className="inline-flex items-center justify-center w-4 text-gray-500 dark:text-zinc-400 group-open:rotate-90 transition-transform">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </span>
+        {children}
+      </summary>
+    );
+  },
+
   // Explicit horizontal rule component
   hr: () => (
     <hr className="my-8 border-t border-gray-300 dark:border-zinc-700" />
