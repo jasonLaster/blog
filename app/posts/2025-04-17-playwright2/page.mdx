@@ -1,0 +1,106 @@
+import { postMetadata } from "../../utils/metadata";
+
+
+export const metadata = postMetadata({
+  title: "Setting up Playwright with Clerk",
+  description: "How to setup a Playwright test for a Next.js app with Clerk.",
+  date: "2025-04-17",
+  note: true,
+  categories: ["JS"],
+});
+
+
+I just spent the day setting up Playwright for janethq.com and want to share some of the problems I ran into so that you don't have to.
+
+**Janet's stack**
+
+- Next.js
+- Clerk (OAuth)
+- Vercel
+- Github Actions
+
+
+## Signing in 
+
+The first question you'll run into is how do i sign in with Clerk? Fortunately, they have a [testing utility](https://clerk.com/docs/testing/playwright/overview) that will disable their bot detection when Playwright attempts to sign in.
+
+For the most part, the `signin` function is straightforward. The only gotcha I ran into was that sometimes, `goto('sign-in')` would be empty which I think is likely a race condition on Clerk's side. 
+
+The workaround was to keep trying to go to the `/sign-in` page until the email input was visible. It feels dirty, and I'm sure there's a better way, but it works (most of the time).
+
+> There's another gotcha, where if you have another browser open with the same session, that might also cause the signin flow to fail. I'm not 100% sure, but logging into a different account in the other browser seemed to help.
+
+```ts 
+import { setupClerkTestingToken } from "@clerk/testing/playwright";
+import { Page } from "@playwright/test";
+
+export async function signin(page: Page) {
+  await setupClerkTestingToken({ page });
+
+  while (true) {
+    await page.goto("/sign-in");
+    const emailInput = page.getByRole("textbox", { name: "Email address" });
+    try {
+      await emailInput.waitFor({ timeout: 1000 });
+      break;
+    } catch {
+      continue;
+    }
+  }
+
+  await page.getByRole("textbox", { name: "Email address" }).click();
+  await page
+    .getByRole("textbox", { name: "Email address" })
+    .fill(process.env.TEST_EMAIL!);
+  await page.getByRole("textbox", { name: "Email address" }).press("Enter");
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("textbox", { name: "Password" }).click();
+  await page
+    .getByRole("textbox", { name: "Password" })
+    .fill(process.env.TEST_PASSWORD!);
+  await page.getByRole("button", { name: "Continue" }).click();
+}
+```
+
+## Running the test in CI 
+
+If you've haven't run Playwright in a GitHub action before, I recommend checking out this [post][1] first. 
+
+
+The first issue I ran into was saving the environment secrets. This is the error you see when the variables are not set:
+
+```bash 
+    Error: You need to set the CLERK_PUBLISHABLE_KEY environment variable.
+
+      30 |   }
+      31 |
+    > 32 |   await clerkSetup();
+         |                   ^
+      33 | });
+      34 |
+        at fetchEnvVars (/home/runner/work/janet/janet/node_modules/.pnpm/@clerk+testing@1.4.41_@playwright+test@1.52.0_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/@clerk/testing/src/common/setup.ts:34:11)
+        at h (/home/runner/work/janet/janet/node_modules/.pnpm/@clerk+testing@1.4.41_@playwright+test@1.52.0_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/@clerk/testing/src/playwright/setup.ts:17:53)
+        at /home/runner/work/janet/janet/apps/web/tests/global.setup.ts:32:19
+```
+
+Initially, I had saved the variables in the **production** environment which meant they were not visible to the Github action. After that, I re-added the variables to the **preview** environment and set the `environment` in the job and everything worked.
+
+```yaml 
+jobs:
+  test:
+    name: "Playwright Tests"
+    environment: preview
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' }}
+```
+
+Once the variables were set, I then ran into an issue where navigating to `/sign-in` would be empty. This was scary because connecting Clerk, Vercel, and Google SSO in the first place was stressful. The thought of adding additional support for preview branches was unpleasant!
+
+Fortunately, Clerk's development environment lets you continue to use the preview branches that you're already using without any changes on Google's side. This [doc][2] walks you through it, but it basically boils down to changing the two Clerk variables in GitHub and Vercel's Preview environment to point to the `development` clerk environment.
+
+Once that was set, there was one last issue. By default, Vercel has branch protection enabled which means you first have to log in to see the preview branches. Turning that off fixed the issue and after that the tests ran successfully.
+
+Writing it all down, makes it seem like it was not too bad, but many of these issues are hard to debug and google for, so I recommend going slowly and trying to find the relevant documentation. It also doesn't hurt to ask `Claude` for some advice as well, it's common to get confused with GitHub's workflow syntax and it's really great at working out some of those details.
+
+[1]: https://www.jlast.io/posts/2025-03-20-playwright
+[2]: https://clerk.com/docs/deployments/set-up-preview-environment

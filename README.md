@@ -34,3 +34,12 @@ This site draws inspiration from:
 - [ ] confirm ai did not re-write the content of the posts
 
 ---
+
+### Projects
+
+- [ ] Are we richer
+- [ ] Janet
+- [ ] Followers
+- [ ] ETF Diff
+
+...
