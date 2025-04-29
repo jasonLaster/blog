@@ -1,0 +1,103 @@
+/* app/components/ResearchTable.module.css */
+
+/* Apply basic prose-like styling */
+.container :global(h2) {
+  font-size: 1.5em; /* Approximation */
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+
+.container :global(p) {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.container :global(hr) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border-top: 1px solid #e5e7eb; /* Light gray border */
+}
+
+/* Basic table styling */
+/* The dynamicTable class is added in the component for dynamically sized columns */
+.container :global(table) {
+  width: min(1100px, 90vw);
+  margin-left: auto; /* Center the table */
+  margin-right: auto; /* Center the table */
+  border-collapse: collapse;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  font-size: 0.9em; /* Slightly smaller text in table */
+  table-layout: fixed; /* Help enforce widths */
+}
+
+.container :global(thead) {
+  border-bottom: 1px solid #d1d5db; /* Gray border */
+}
+
+.container :global(th) {
+  padding: 0.75em 1em;
+  text-align: left;
+  font-weight: 600;
+  background-color: #f9fafb; /* Light background for header */
+  white-space: normal; /* Ensure wrapping is allowed */
+}
+
+.container :global(tbody tr) {
+  border-bottom: 1px solid #e5e7eb; /* Light gray border between rows */
+}
+
+.container :global(td) {
+  padding: 0.75em 1em;
+  vertical-align: top;
+  white-space: normal; /* Ensure wrapping is allowed */
+}
+
+/* Removed hardcoded column widths - they are now injected dynamically */
+
+/* Basic link styling (can be refined) */
+.container :global(a) {
+  color: #2563eb; /* Blue link color */
+  text-decoration: none;
+}
+
+.container :global(a:hover) {
+  text-decoration: underline;
+}
+
+/* Basic styling for source links (formerly hidden pills) */
+.container :global(.ms-1.inline-flex) {
+  display: inline-block; /* Make them visible again */
+  vertical-align: middle; /* Align better with text */
+  margin-left: 0.25rem;
+}
+
+.container :global(.ms-1.inline-flex a) {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.75em;
+  background-color: #f3f4f6; /* Light gray background */
+  border-radius: 0.75rem; /* Rounded corners */
+  color: #4b5563; /* Gray text */
+  text-decoration: none;
+  white-space: nowrap; /* Keep source pills on one line */
+}
+
+.container :global(.ms-1.inline-flex a:hover) {
+  background-color: #e5e7eb;
+  text-decoration: none;
+}
+
+/* Hide the source favicons footer */
+.container :global(.absolute.h-\[60px\]) {
+  display: none;
+}
+.container :global(.h-\[60px\]:last-child) {
+  display: none;
+}
+
+div.group > span[data-state="closed"] > button {
+  display: none;
+}
