@@ -164,7 +164,7 @@ export const EBIDetailsUnavailableEmail = ({
   result,
 }: {
   errorMessage: string;
-  result: any;
+  result: object;
 }) => {
   return (
     <Html>
