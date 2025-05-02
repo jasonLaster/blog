@@ -1,9 +1,8 @@
 import { inngest } from "./client";
 import {
-  EBIResult,
   getEBIDetails,
-  sendDetailsUnavailable,
-  sendUpdate,
+  sendNetAssetsAlert,
+  sendPremiumDiscountAlert,
 } from "../ebi";
 
 export const helloWorld = inngest.createFunction(
@@ -24,51 +23,29 @@ export const getEBIDetail = inngest.createFunction(
     cron: "0 0 * * *",
   },
   async ({ step }) => {
-    const { data: ebiDetails, failed } = await step.run(
-      "get-ebi-detail",
-      async () => {
-        try {
-          const data = await getEBIDetails();
-          return { data, failed: false };
-        } catch (error) {
-          console.error("Error getting EBI details", error);
-          const emailResponse = await sendDetailsUnavailable(
-            error as Error,
-            "jason.laster.11@gmail.com"
-          );
-
-          return { data: emailResponse, failed: true };
-        }
-      }
+    const ebiDetails = await step.run("get-ebi-detail", async () =>
+      getEBIDetails()
     );
 
-    if (failed) {
-      return { message: "Failed to get EBI details" };
-    }
-
-    const emailResponse = await step.run("send-email", async () => {
+    const ebiAssertions = await step.run("ebi-assertions", async () => {
       if (!ebiDetails) {
         return { message: "No EBI details" };
       }
 
-      if (
-        ebiDetails &&
-        "premium_discount" in ebiDetails &&
-        typeof ebiDetails.premium_discount === "string"
-      ) {
-        if (parseFloat(ebiDetails.premium_discount) < -0.2) {
-          const email = await sendUpdate(
-            ebiDetails as EBIResult,
-            "jason.laster.11@gmail.com"
-          );
-
-          return { message: "Premium is low", email };
-        }
+      if (parseFloat(ebiDetails.premium_discount) < -0.2) {
+        const email = await sendPremiumDiscountAlert(ebiDetails);
+        return { message: "Premium is low", email };
       }
 
-      return { message: "Premium is fine" };
+      const netAssets = parseFloat(ebiDetails.net_assets.replace(/,/g, ""));
+      if (netAssets < 400_000_000) {
+        const email = await sendNetAssetsAlert(ebiDetails);
+        return { message: "Net assets are low", email };
+      }
+
+      return { message: "EBI is fine!" };
     });
 
-    return { emailResponse, ebiDetails };
+    return { ebiAssertions, ebiDetails };
   }
 );

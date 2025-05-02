@@ -16,7 +16,7 @@ import {
 } from "@react-email/components";
 import { CodeBlock, dracula } from "@react-email/components";
 
-export const EBIUpdate: React.FC<Readonly<EBIResult>> = ({
+export const EBIPremiumDiscountAlert: React.FC<Readonly<EBIResult>> = ({
   premium_discount,
   median_30_day_spread,
 }) => {
@@ -194,6 +194,35 @@ export const EBIDetailsUnavailableEmail = ({
                   theme={dracula}
                 />
               </div>
+            </Section>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  );
+};
+
+export const AlertEmail = ({
+  title,
+  message,
+}: {
+  title: string;
+  message: string;
+}) => {
+  return (
+    <Html>
+      <Head />
+      <Preview>Alert: {title}</Preview>
+      <Tailwind>
+        <Body className="bg-gray-100 font-sans py-[40px]">
+          <Container className="bg-white rounded-[8px] mx-auto p-[20px] max-w-[600px]">
+            <Section>
+              <Heading className="text-[24px] font-bold text-gray-800 my-[16px]">
+                Alert: {title}
+              </Heading>
+              <Text className="text-[16px] text-gray-600 mb-[24px]">
+                {message}
+              </Text>
             </Section>
           </Container>
         </Body>

@@ -1,7 +1,8 @@
 import { Hyperbrowser } from "@hyperbrowser/sdk";
 import {
-  EBIUpdate,
+  AlertEmail,
   EBIDetailsUnavailableEmail,
+  EBIPremiumDiscountAlert,
 } from "../components/emails/ebi";
 import { Resend } from "resend";
 import { neon } from "@neondatabase/serverless";
@@ -14,14 +15,17 @@ const hbClient = new Hyperbrowser({
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export type EBIResult = Partial<{
+const email = "jason.laster.11@gmail.com";
+
+export type EBIResult = {
   etf_ticker: string;
   exchange: string;
   cusip: string;
   premium_discount: string;
   median_30_day_spread: string;
   gross_expense_ratio: string;
-}>;
+  net_assets: string;
+};
 
 type Task = {
   id: number;
@@ -36,16 +40,16 @@ async function insertTask(data: EBIResult) {
   )}) RETURNING *`) as Task[];
 }
 
-export async function sendUpdate(data: EBIResult, email: string) {
+export async function sendPremiumDiscountAlert(data: EBIResult) {
   return resend.emails.send({
     from: "Notifications <notifications@jlast.io>",
     to: [email],
     subject: "EBI's Premium Discount is dangerously low",
-    react: await EBIUpdate(data),
+    react: await EBIPremiumDiscountAlert(data),
   });
 }
 
-export async function sendDetailsUnavailable(error: Error, email: string) {
+export async function sendDetailsUnavailable(error: Error) {
   const errorMessage = error instanceof Error ? error.message : "Unknown error";
 
   return resend.emails.send({
@@ -56,9 +60,23 @@ export async function sendDetailsUnavailable(error: Error, email: string) {
   });
 }
 
-export async function getEBIDetails(): Promise<EBIResult> {
-  const result = await hbClient.agents.browserUse.startAndWait({
-    task: `
+export async function sendNetAssetsAlert(data: EBIResult) {
+  return resend.emails.send({
+    from: "Notifications <notifications@jlast.io>",
+    to: [email],
+    subject: "EBI Net Assets are low",
+    react: await AlertEmail({
+      title: "EBI Net Assets are low",
+      message: `EBI has ${data.net_assets} net assets. This is below the threshold of 400 million.`,
+    }),
+  });
+}
+
+export async function getEBIDetails(): Promise<EBIResult | null> {
+  let result;
+  try {
+    result = await hbClient.agents.browserUse.startAndWait({
+      task: `
       What are the fund details for https://longviewresearchpartners.com/charts/
 
       Return the details as a JSON object. Do not include any other text.
@@ -81,29 +99,24 @@ export async function getEBIDetails(): Promise<EBIResult> {
           "gross_expense_ratio": "0.35%",
           "net_expense_ratio": "0.25%",
       }`,
-  });
+    });
 
-  let finalResult: EBIResult;
-  try {
-    finalResult = JSON.parse(result.data!.finalResult!) as EBIResult;
+    const finalResult: EBIResult = JSON.parse(
+      result.data!.finalResult!
+    ) as EBIResult;
+
+    if (!finalResult.premium_discount) {
+      console.error(
+        `No premium discount found: ${JSON.stringify(finalResult)}`
+      );
+      throw new Error("No premium discount found");
+    }
+
+    await insertTask(finalResult);
+    return finalResult;
   } catch (error) {
-    console.error(
-      `Failed to parse EBI details: ${(JSON.stringify(result), null, 2)} ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-    throw new Error(
-      `Failed to parse EBI details: ${JSON.stringify(result)} ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
-  }
+    await sendDetailsUnavailable(error as Error, "jason.laster.11@gmail.com");
 
-  if (!finalResult.premium_discount) {
-    console.error(`No premium discount found: ${JSON.stringify(finalResult)}`);
-    throw new Error("No premium discount found");
+    return null;
   }
-
-  await insertTask(finalResult);
-  return finalResult;
 }
