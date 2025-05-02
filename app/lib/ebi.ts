@@ -27,6 +27,16 @@ export type EBIResult = {
   net_assets: string;
 };
 
+// Define a more specific type for the Hyperbrowser result based on usage
+type HyperbrowserAgentResult = {
+  data?: {
+    // Make data optional
+    finalResult?: string; // Make finalResult optional
+    [key: string]: unknown; // Use unknown instead of any
+  } | null;
+  [key: string]: unknown; // Use unknown instead of any
+};
+
 type Task = {
   id: number;
   created_at: Date;
@@ -49,15 +59,18 @@ export async function sendPremiumDiscountAlert(data: EBIResult) {
   });
 }
 
-export async function sendDetailsUnavailable(error: Error, result: any) {
-  const errorMessage = error instanceof Error ? error.message : "Unknown error";
-
-  return resend.emails.send({
+export async function sendDetailsUnavailable(error: Error, result: object) {
+  const emailData = {
     from: "Notifications <notifications@jlast.io>",
     to: [email],
     subject: "EBI Details are not available",
-    react: await EBIDetailsUnavailableEmail({ errorMessage, result }),
-  });
+    react: await EBIDetailsUnavailableEmail({
+      errorMessage: error instanceof Error ? error.message : "Unknown error",
+      result,
+    }),
+  };
+
+  return resend.emails.send(emailData);
 }
 
 export async function sendNetAssetsAlert(data: EBIResult) {
@@ -73,10 +86,12 @@ export async function sendNetAssetsAlert(data: EBIResult) {
 }
 
 export async function getEBIDetails(): Promise<EBIResult | null> {
-  let result;
+  // Use the defined type and initialize
+  let result: HyperbrowserAgentResult | undefined = undefined;
   try {
     console.log("Starting EBI check");
-    result = await hbClient.agents.browserUse.startAndWait({
+    // Cast the result to the expected type via unknown
+    result = (await hbClient.agents.browserUse.startAndWait({
       task: `
       What are the fund details for https://longviewresearchpartners.com/charts/
 
@@ -100,13 +115,16 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
           "gross_expense_ratio": "0.35%",
           "net_expense_ratio": "0.25%",
       }`,
-    });
+    })) as unknown as HyperbrowserAgentResult;
 
     console.log("EBI check complete", result);
 
-    const finalResult: EBIResult = JSON.parse(
-      result.data!.finalResult!
-    ) as EBIResult;
+    if (!result?.data?.finalResult) {
+      console.error("Final result not found in response:", result);
+      throw new Error("Final result not found in Hyperbrowser response");
+    }
+
+    const finalResult = JSON.parse(result.data.finalResult) as EBIResult;
 
     if (!finalResult.premium_discount) {
       console.error(
@@ -119,7 +137,8 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
     return finalResult;
   } catch (error) {
     console.error("Error getting EBI details", error, result);
-    await sendDetailsUnavailable(error as Error, result);
+    // Pass result which might be undefined or the HyperbrowserAgentResult object
+    await sendDetailsUnavailable(error as Error, result || {});
 
     throw error;
   }
