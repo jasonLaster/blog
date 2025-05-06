@@ -1,0 +1,106 @@
+import { postMetadata } from "../../utils/metadata";
+import {Code} from "bright"
+import {Tabs} from "../../components/tabs"
+
+export const metadata = postMetadata({
+  title: "How I setup realtime monitoring for EBI.",
+  description: "This post walks through the steps for setting a browser agent that checks a website and emails us if a predicate matches.",
+  date: "2025-05-05",
+  note: true,
+  categories: ["JS"],
+});
+
+
+A couple of months ago I kicked off a 351 ETF conversion which let me exchange a bunch of my profitable stock holdings for a single broad-based ETF (EBI) without any tax implications. 
+
+On paper, it was a great outcome, but because the ETF is new and relatively unproven, there's always some minimal risk that the price will diverge from the net assets or for some reason will be sold off. 
+
+To help mitigate the risk, I setup a cron job that every night check's the ETF's assets under management and net assets value to ensure that everything is alright and if it's not send an alert to my inbox.
+
+In reality, there's nothing different about this check and any number of tasks you might want to automate in your own life and it's now super easy to set these up.
+
+## Setting up the Hyperbrowser agent
+
+The first step is to setup a [Hyperbrowser](https://www.hyperbrowser.ai/) agent and tell it what you want it to do. 
+
+In my case, I'm just asking it to go to the ETF's [Fund Data](https://longviewresearchpartners.com/charts/) page and return the details as a JSON object.
+
+
+
+```ts
+  let result: HyperbrowserAgentResult | undefined = undefined;
+  try {
+    console.log("Starting EBI check");
+    // Cast the result to the expected type via unknown
+    result = (await hbClient.agents.browserUse.startAndWait({
+      task: `
+      What are the fund details for https://longviewresearchpartners.com/charts/
+
+      Return the details as a JSON object. Do not include any other text.
+
+      {
+          "etf_ticker": "EBI",
+          "net_assets": "452,629,474.16",
+          "market_price": "45.72",
+          "premium_discount": "-0.03",
+          "median_30_day_spread": "0.14",
+      }`,
+    })) as unknown as HyperbrowserAgentResult;
+```
+
+Here's the [original code](https://github.com/jasonLaster/blog/blob/main/app/lib/ebi.ts#L127-L189).
+
+
+## Setting up a daily task
+
+Once you're able to run a one-off task, the next step is to run it on a schedule and conditionally send emails when something is off. 
+
+In my case, I chose to use [Inngest](https://www.inngest.com/) as the secheduling provider because they integrate well with Next.js and support retries if something goes wrong. 
+
+I also went with [Resend](https://resend.com/) as the email provider because they are easy to setup and [new.email](https://new.email/) makes it easy to design new emails.
+
+Here's what the automation looks like. There's a lot of code, but it boils down to:
+
+1. Get EBI's details
+2. Check to see if the `premium_discount` is below `-0.2%`
+3. Check to see if the assets under management is below 400m 
+
+```ts 
+export const getEBIDetail = inngest.createFunction(
+  {
+    id: "get-ebi-detail",
+    name: "Get EBI Detail",
+  },
+  {
+    cron: "0 0 * * *",
+  },
+  async ({ step }) => {
+    const ebiDetails = await step.run("get-ebi-detail", async () =>
+      getEBIDetails()
+    );
+
+    const ebiAssertions = await step.run("ebi-assertions", async () => {
+      if (!ebiDetails) {
+        return { message: "No EBI details" };
+      }
+
+      if (parseFloat(ebiDetails.premium_discount) < -0.2) {
+        const email = await sendPremiumDiscountAlert(ebiDetails);
+        return { message: "Premium is low", email };
+      }
+
+      const netAssets = parseFloat(ebiDetails.net_assets.replace(/,/g, ""));
+      if (netAssets < 400_000_000) {
+        const email = await sendNetAssetsAlert(ebiDetails);
+        return { message: "Net assets are low", email };
+      }
+
+      return { message: "EBI is fine!" };
+    });
+
+    return { ebiAssertions, ebiDetails };
+  }
+);
+```
+
+Here's the [original code](https://github.com/jasonLaster/blog/blob/main/app/lib/inngest/functions.ts#L18-L53)
