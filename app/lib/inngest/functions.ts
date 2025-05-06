@@ -9,6 +9,7 @@ export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
   { event: "test/hello.world" },
   async ({ event, step }) => {
+    console.log("[Inngest] Hello World");
     await step.sleep("wait-a-moment", "1s");
     return { message: `Hello ${event.data.email}!` };
   }
@@ -23,6 +24,7 @@ export const getEBIDetail = inngest.createFunction(
     cron: "0 0 * * *",
   },
   async ({ step }) => {
+    console.log("[Inngest] Getting EBI Detail");
     const ebiDetails = await step.run("get-ebi-detail", async () =>
       getEBIDetails()
     );
