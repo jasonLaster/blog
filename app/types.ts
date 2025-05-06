@@ -8,6 +8,7 @@ export type Metadata = {
   draft?: boolean;
   note?: boolean;
   description?: string;
+  ogImage?: string;
   openGraph?: {
     title?: string;
     description?: string;
