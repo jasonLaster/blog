@@ -1,0 +1,83 @@
+import {postMetadata} from "../../utils/metadata"
+
+
+export const metadata = postMetadata({
+  title: "Publishing ChatGPT Deep Research reports",
+  description:
+    "",
+  date: "2025-05-06",
+  note: true,
+  categories: ["JS"],
+});
+
+ChatGPT's Deep Research has recently become one of my favorite products. One limitation, however, is that features like citations are not supported in the API or JSON output, so it's fairly difficult to publish reports elsewhere.
+
+
+This post walks through the steps that I went through to support copy and pasting the HTML and formatting posts like [A survey of U.S. deportations](https://www.jlast.io/posts/2025-05-29-deportation) on my blog.
+
+
+### Step 1: Rendering the HTML
+
+The first step is to create a `ChatGPT` component that's able to render the report's html. 
+
+```ts
+<ChatGPT postPath='2025-05-29-deportation/research.html' />
+```
+
+
+```ts
+export default function ChatGPT({ postPath }: { postPath: string }) {
+  const filePath = path.join(process.cwd(), "app/posts/", postPath);
+  const htmlContent = fs.readFileSync(filePath, "utf8");
+  const containerClass = `${styles.container} ${styles.dynamicTable}`;
+  const containerSelector = `.${styles.dynamicTable}`; 
+
+  return (
+    <>
+      <div
+        className={containerClass}
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+      />
+      <TableWidthAdjuster containerSelector={containerSelector} />
+    </>
+  );
+}
+```
+
+Original file is [here](https://github.com/jasonLaster/blog/blob/main/app/components/ChatGPT/index.tsx).
+
+### Step 2: Styling the HTML 
+
+The second step is to style the report. This is fairly straight forward, but it's important to be mindful of inline elements like citations.
+
+
+```css
+
+/* Apply basic prose-like styling */
+.container :global(h2) {
+  font-size: 1.5em; /* Approximation */
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+
+.container :global(p) {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.container :global(hr) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border-top: 1px solid #e5e7eb; /* Light gray border */
+}
+```
+
+Orignal file is [here](https://github.com/jasonLaster/blog/blob/main/app/components/ChatGPT/index.module.css).
+
+### Step 3: Styling the table 
+
+The final step is styling the table so that the column widths are respected. ChatGPT uses `data-start` and `data-end` data attributes to specify the width of each column.
+
+We can use a [`TableWidthAdjuster`](https://github.com/jasonLaster/blog/blob/main/app/components/ChatGPT/TableWidthAdjuster.tsx) component to read these properties and manually resize the columns as well. 

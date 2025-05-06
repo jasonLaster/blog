@@ -69,7 +69,6 @@ table {
 
 .prose .anchor {
   @apply absolute invisible no-underline;
-  /* ... other styles ... */
 }
 
 .prose *:hover > .anchor {
