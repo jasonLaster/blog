@@ -37,17 +37,28 @@ type HyperbrowserAgentResult = {
   [key: string]: unknown; // Use unknown instead of any
 };
 
-type Task = {
-  id: number;
-  created_at: Date;
-  type: string;
-  data: unknown;
-};
+async function insertTask(rawData: HyperbrowserAgentResult): Promise<number> {
+  console.debug("Inserting pending task with raw data:", rawData);
+  const result =
+    (await sql`INSERT INTO tasks (type, raw, status) VALUES ('ebi', ${JSON.stringify(
+      rawData
+    )}, 'pending') RETURNING id`) as { id: number }[];
+  console.debug("Inserted task with ID:", result[0].id);
+  return result[0].id;
+}
 
-async function insertTask(data: EBIResult) {
-  return (await sql`INSERT INTO tasks (type, data) VALUES ('ebi', ${JSON.stringify(
+async function updateTaskSuccess(taskId: number, data: EBIResult) {
+  console.debug(`Updating task ${taskId} to successful with data:`, data);
+  await sql`UPDATE tasks SET status = 'successful', data = ${JSON.stringify(
     data
-  )}) RETURNING *`) as Task[];
+  )} WHERE id = ${taskId}`;
+  console.debug(`Task ${taskId} updated to successful.`);
+}
+
+async function updateTaskFailure(taskId: number, error: Error) {
+  console.debug(`Updating task ${taskId} to failed. Error:`, error.message);
+  await sql`UPDATE tasks SET status = 'failed', error = ${error.message}, data = NULL WHERE id = ${taskId}`;
+  console.debug(`Task ${taskId} updated to failed.`);
 }
 
 export async function sendPremiumDiscountAlert(data: EBIResult) {
@@ -88,6 +99,8 @@ export async function sendNetAssetsAlert(data: EBIResult) {
 export async function getEBIDetails(): Promise<EBIResult | null> {
   // Use the defined type and initialize
   let result: HyperbrowserAgentResult | undefined = undefined;
+  let taskId: number | undefined = undefined; // Declare taskId here
+
   try {
     console.log("Starting EBI check");
     // Cast the result to the expected type via unknown
@@ -118,6 +131,7 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
     })) as unknown as HyperbrowserAgentResult;
 
     console.log("EBI check complete", result);
+    taskId = await insertTask(result); // Assign taskId here
 
     if (!result?.data?.finalResult) {
       console.error("Final result not found in response:", result);
@@ -133,12 +147,23 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
       throw new Error("No premium discount found");
     }
 
-    await insertTask(finalResult);
+    await updateTaskSuccess(taskId, finalResult); // Use taskId here
     return finalResult;
   } catch (error) {
     console.error("Error getting EBI details", error, result);
-    // Pass result which might be undefined or the HyperbrowserAgentResult object
+    // Send email notification first
     await sendDetailsUnavailable(error as Error, result || {});
+
+    // Update task status to failed if taskId is available
+    if (taskId !== undefined) {
+      await updateTaskFailure(taskId, error as Error); // Check taskId before using
+    } else {
+      console.error(
+        "Task ID is undefined, cannot update task status to failed."
+      );
+      // Optionally, attempt to insert a failed task record here if needed
+      // await sql`INSERT INTO tasks (type, status, raw, data) VALUES ('ebi', 'failed', ${JSON.stringify(result || {})}, ${JSON.stringify({ errorMessage: (error as Error).message })})`;
+    }
 
     throw error;
   }
