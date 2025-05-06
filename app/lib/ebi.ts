@@ -35,16 +35,33 @@ type HyperbrowserAgentResult = {
     [key: string]: unknown; // Use unknown instead of any
   } | null;
   [key: string]: unknown; // Use unknown instead of any
+  status: string;
+  error?: string;
 };
 
-async function insertTask(rawData: HyperbrowserAgentResult): Promise<number> {
-  console.debug("Inserting pending task with raw data:", rawData);
+async function createInitialTask(): Promise<number> {
+  console.debug("Creating initial task with status 'starting'.");
   const result =
-    (await sql`INSERT INTO tasks (type, raw, status) VALUES ('ebi', ${JSON.stringify(
-      rawData
-    )}, 'pending') RETURNING id`) as { id: number }[];
-  console.debug("Inserted task with ID:", result[0].id);
-  return result[0].id;
+    (await sql`INSERT INTO tasks (type, status) VALUES ('ebi', 'starting') RETURNING id`) as {
+      id: number;
+    }[];
+  const taskId = result[0].id;
+  console.debug("Created initial task with ID:", taskId);
+  return taskId;
+}
+
+async function updateTaskWithRawData(
+  taskId: number,
+  rawData: HyperbrowserAgentResult
+) {
+  console.debug(
+    `Updating task ${taskId} with raw data and status 'pending':`,
+    rawData
+  );
+  await sql`UPDATE tasks SET raw = ${JSON.stringify(
+    rawData
+  )}, status = 'pending' WHERE id = ${taskId}`;
+  console.debug(`Task ${taskId} updated with raw data and status 'pending'.`);
 }
 
 async function updateTaskSuccess(taskId: number, data: EBIResult) {
@@ -55,9 +72,20 @@ async function updateTaskSuccess(taskId: number, data: EBIResult) {
   console.debug(`Task ${taskId} updated to successful.`);
 }
 
-async function updateTaskFailure(taskId: number, error: Error) {
-  console.debug(`Updating task ${taskId} to failed. Error:`, error.message);
-  await sql`UPDATE tasks SET status = 'failed', error = ${error.message}, data = NULL WHERE id = ${taskId}`;
+async function updateTaskFailure(
+  taskId: number,
+  error: Error,
+  rawData: HyperbrowserAgentResult | null = null
+) {
+  console.debug(
+    `Updating task ${taskId} to failed. Error:`,
+    error.message,
+    "Raw data:",
+    rawData
+  );
+  // Ensure raw data is stored even on failure, if available
+  const rawJson = rawData ? JSON.stringify(rawData) : null;
+  await sql`UPDATE tasks SET status = 'failed', error = ${error.message}, raw = ${rawJson}, data = NULL WHERE id = ${taskId}`;
   console.debug(`Task ${taskId} updated to failed.`);
 }
 
@@ -97,15 +125,17 @@ export async function sendNetAssetsAlert(data: EBIResult) {
 }
 
 export async function getEBIDetails(): Promise<EBIResult | null> {
-  // Use the defined type and initialize
+  let taskId: number | undefined = undefined;
   let result: HyperbrowserAgentResult | undefined = undefined;
-  let taskId: number | undefined = undefined; // Declare taskId here
 
   try {
     console.log("Starting EBI check");
-    // Cast the result to the expected type via unknown
-    result = (await hbClient.agents.browserUse.startAndWait({
-      task: `
+    taskId = await createInitialTask(); // Create task first
+
+    try {
+      // Cast the result to the expected type via unknown
+      result = (await hbClient.agents.browserUse.startAndWait({
+        task: `
       What are the fund details for https://longviewresearchpartners.com/charts/
 
       Return the details as a JSON object. Do not include any other text.
@@ -128,43 +158,98 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
           "gross_expense_ratio": "0.35%",
           "net_expense_ratio": "0.25%",
       }`,
-    })) as unknown as HyperbrowserAgentResult;
+      })) as unknown as HyperbrowserAgentResult;
 
-    console.log("EBI check complete", result);
-    taskId = await insertTask(result); // Assign taskId here
-
-    if (!result?.data?.finalResult) {
-      console.error("Final result not found in response:", result);
-      throw new Error("Final result not found in Hyperbrowser response");
+      console.log("EBI check complete", result);
+      // Update task with raw data and 'pending' status
+      await updateTaskWithRawData(taskId, result);
+    } catch (hbError) {
+      // Handle Hyperbrowser client error specifically
+      console.error("Error during Hyperbrowser call", hbError);
+      if (taskId !== undefined) {
+        // Pass null for rawData as the call failed
+        await updateTaskFailure(taskId, hbError as Error, null);
+      } else {
+        // This case should ideally not happen if createInitialTask succeeded
+        console.error("Task ID is undefined after Hyperbrowser call failure.");
+      }
+      // Send generic failure email
+      await sendDetailsUnavailable(hbError as Error, {});
+      throw hbError; // Re-throw to be caught by the outer catch
     }
 
-    const finalResult = JSON.parse(result.data.finalResult) as EBIResult;
+    // --- Parsing and Validation ---
+    let finalResult: EBIResult;
+    try {
+      if (!result?.data?.finalResult) {
+        console.error("Final result not found in response:", result);
+        throw new Error("Final result not found in Hyperbrowser response");
+      }
 
-    if (!finalResult.premium_discount) {
+      finalResult = JSON.parse(result.data.finalResult) as EBIResult;
+
+      if (!finalResult.premium_discount) {
+        console.error(
+          `No premium discount found: ${JSON.stringify(finalResult)}`
+        );
+        throw new Error("No premium discount found");
+      }
+    } catch (parseError) {
       console.error(
-        `No premium discount found: ${JSON.stringify(finalResult)}`
+        "Error parsing or validating EBI details",
+        parseError,
+        result
       );
-      throw new Error("No premium discount found");
+      // Update task status to failed, passing the raw result received
+      if (taskId !== undefined) {
+        await updateTaskFailure(taskId, parseError as Error, result);
+      } else {
+        console.error("Task ID is undefined during parsing failure.");
+      }
+      // Send specific failure email with potentially available raw data
+      await sendDetailsUnavailable(parseError as Error, result || {});
+      throw parseError; // Re-throw to be caught by outer catch
     }
 
-    await updateTaskSuccess(taskId, finalResult); // Use taskId here
+    // --- Success ---
+    await updateTaskSuccess(taskId, finalResult); // Update task to successful
+    console.debug("Task successfully completed and updated.");
     return finalResult;
   } catch (error) {
-    console.error("Error getting EBI details", error, result);
-    // Send email notification first
-    await sendDetailsUnavailable(error as Error, result || {});
+    // This outer catch handles errors re-thrown from inner blocks
+    // or any unexpected errors before/after the main logic.
+    console.error("Overall error in getEBIDetails", error);
 
-    // Update task status to failed if taskId is available
+    // Attempt to update task failure one last time if taskId exists and it wasn't handled
+    // This might be redundant if inner catches worked, but acts as a safety net.
     if (taskId !== undefined) {
-      await updateTaskFailure(taskId, error as Error); // Check taskId before using
+      try {
+        // Check current status before potentially overwriting
+        const taskStatusResult =
+          await sql`SELECT status FROM tasks WHERE id = ${taskId}`;
+        if (
+          taskStatusResult.length > 0 &&
+          taskStatusResult[0].status !== "failed"
+        ) {
+          console.warn(
+            `Task ${taskId} status was ${taskStatusResult[0].status}, updating to failed in outer catch.`
+          );
+          // Pass the raw result if available, otherwise null
+          await updateTaskFailure(taskId, error as Error, result);
+        }
+      } catch (updateError) {
+        console.error(
+          `Failed to update task ${taskId} to failed in outer catch block:`,
+          updateError
+        );
+      }
     } else {
-      console.error(
-        "Task ID is undefined, cannot update task status to failed."
-      );
-      // Optionally, attempt to insert a failed task record here if needed
-      // await sql`INSERT INTO tasks (type, status, raw, data) VALUES ('ebi', 'failed', ${JSON.stringify(result || {})}, ${JSON.stringify({ errorMessage: (error as Error).message })})`;
+      console.error("Task ID is undefined in outer catch block.");
+      // Potentially insert a minimal failure record if task creation itself failed
+      // await sql`INSERT INTO tasks (type, status, error) VALUES ('ebi', 'failed', ${(error as Error).message})`;
     }
 
-    throw error;
+    // No need to send email here as inner catches should have handled it.
+    throw error; // Re-throw the original error
   }
 }
