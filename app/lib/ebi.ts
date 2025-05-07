@@ -124,6 +124,18 @@ export async function sendNetAssetsAlert(data: EBIResult) {
   });
 }
 
+function extractJsonFromString(resultString: string): any {
+  const match = resultString.match(/\{[\s\S]*?\}/m);
+  if (!match) {
+    throw new Error("No JSON object found in Hyperbrowser result");
+  }
+  try {
+    return JSON.parse(match[0]);
+  } catch (err) {
+    throw new Error("Failed to parse JSON from Hyperbrowser result: " + err);
+  }
+}
+
 export async function getEBIDetails(): Promise<EBIResult | null> {
   let taskId: number | undefined = undefined;
   let result: HyperbrowserAgentResult | undefined = undefined;
@@ -163,13 +175,9 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
     // Update task with raw data and 'pending' status
     await updateTaskWithRawData(taskId, result);
 
-    // --- Parsing and Validation ---
-    if (!result?.data?.finalResult) {
-      console.error("Final result not found in response:", result);
-      throw new Error("Final result not found in Hyperbrowser response");
-    }
-
-    const finalResult: EBIResult = JSON.parse(result.data.finalResult);
+    const finalResult: EBIResult = extractJsonFromString(
+      result.data!.finalResult!
+    );
 
     if (!finalResult.premium_discount) {
       console.error(
@@ -220,7 +228,7 @@ export async function maybeSendEbiPerformanceAlert(
   }
   const { ebi_iwv, ebi_vti } = ebiApiResult.performanceDeltas;
   console.debug("[EBI] ebi_iwv:", ebi_iwv, "ebi_vti:", ebi_vti);
-  let alertEmailResult = null;
+  let result = null;
 
   const iwvAtRisk = typeof ebi_iwv === "number" && ebi_iwv < -2.5;
   const vtiAtRisk = typeof ebi_vti === "number" && ebi_vti < -2.5;
@@ -242,7 +250,7 @@ export async function maybeSendEbiPerformanceAlert(
 
     console.debug("[EBI] Sending alert email", { subject, title, message });
 
-    alertEmailResult = await resend.emails.send({
+    result = await resend.emails.send({
       from: "Notifications <notifications@jlast.io>",
       to: [email],
       subject,
@@ -251,7 +259,9 @@ export async function maybeSendEbiPerformanceAlert(
         message,
       }),
     });
+  } else {
+    result = `EBI's performance is fine.`;
   }
 
-  return alertEmailResult;
+  return result;
 }
