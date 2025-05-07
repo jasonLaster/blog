@@ -3,7 +3,10 @@ import {
   getEBIDetails,
   sendNetAssetsAlert,
   sendPremiumDiscountAlert,
+  fetchEbiApiResult,
+  maybeSendEbiPerformanceAlert,
 } from "../ebi";
+import { Resend } from "resend";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },
@@ -29,6 +32,15 @@ export const getEBIDetail = inngest.createFunction(
       getEBIDetails()
     );
 
+    const ebiApiResult = await step.run("fetch-ebi-api", async () =>
+      fetchEbiApiResult()
+    );
+
+    const ebiPerformanceAlertEmail = await step.run(
+      "ebi-performance-alert",
+      async () => maybeSendEbiPerformanceAlert(ebiApiResult)
+    );
+
     const ebiAssertions = await step.run("ebi-assertions", async () => {
       if (!ebiDetails) {
         return { message: "No EBI details" };
@@ -48,6 +60,11 @@ export const getEBIDetail = inngest.createFunction(
       return { message: "EBI is fine!" };
     });
 
-    return { ebiAssertions, ebiDetails };
+    return {
+      ebiAssertions,
+      ebiDetails,
+      ebiPerformanceAlertEmail,
+      ebiApiResult,
+    };
   }
 );
