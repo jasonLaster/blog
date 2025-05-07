@@ -155,26 +155,19 @@ export interface EbiApiPerformance {
 }
 
 export async function fetchEbiApiResult(): Promise<EbiApiPerformance | null> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const url = `${baseUrl}/api/ebi`;
-    console.debug("[EBI] Fetching /api/ebi endpoint", url);
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error(
-        "[EBI] Failed to fetch /api/ebi",
-        res.status,
-        res.statusText
-      );
-      return null;
-    }
-    const data = (await res.json()) as EbiApiPerformance;
-    console.debug("[EBI] /api/ebi response", data);
-    return data;
-  } catch (err) {
-    console.error("[EBI] Exception fetching /api/ebi", err);
-    return null;
+  console.log(`Fetching EBI API results`);
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const url = `${baseUrl}/api/ebi`;
+  console.debug("[EBI] Fetching /api/ebi endpoint", url);
+  const res = await fetch(url);
+  if (!res.ok) {
+    console.error("[EBI] Failed to fetch /api/ebi", res.status, res.statusText);
+    throw new Error(`Failed to fetch ${url}`);
   }
+  const data = (await res.json()) as EbiApiPerformance;
+  console.debug("[EBI] /api/ebi response", data);
+  return data;
 }
 
 export async function maybeSendEbiPerformanceAlert(
@@ -214,6 +207,7 @@ export async function maybeSendEbiPerformanceAlert(
       }),
     });
   }
+
   return alertEmailResult;
 }
 
