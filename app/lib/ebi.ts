@@ -124,16 +124,97 @@ export async function sendNetAssetsAlert(data: EBIResult) {
   });
 }
 
-function extractJsonFromString(resultString: string): any {
-  const match = resultString.match(/\{[\s\S]*?\}/m);
+export function extractEbiJson(resultString: string): EBIResult {
+  const match = resultString.match(/{[\s\S]*}/);
   if (!match) {
+    console.error(
+      "[EBI] No JSON object found in Hyperbrowser result",
+      resultString
+    );
     throw new Error("No JSON object found in Hyperbrowser result");
   }
   try {
-    return JSON.parse(match[0]);
+    return JSON.parse(match[0]) as EBIResult;
   } catch (err) {
+    console.error(
+      "[EBI] Failed to parse JSON from Hyperbrowser result",
+      err,
+      match[0]
+    );
     throw new Error("Failed to parse JSON from Hyperbrowser result: " + err);
   }
+}
+
+// Define the type for the /api/ebi endpoint response
+export interface EbiApiPerformance {
+  dateRange: { startDate: string; endDate: string };
+  individualPerformance: Record<string, unknown>;
+  performanceDeltas: { ebi_vti?: number; ebi_iwv?: number; vti_iwv?: number };
+  historicalPrices: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+export async function fetchEbiApiResult(): Promise<EbiApiPerformance | null> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const url = `${baseUrl}/api/ebi`;
+    console.debug("[EBI] Fetching /api/ebi endpoint", url);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(
+        "[EBI] Failed to fetch /api/ebi",
+        res.status,
+        res.statusText
+      );
+      return null;
+    }
+    const data = (await res.json()) as EbiApiPerformance;
+    console.debug("[EBI] /api/ebi response", data);
+    return data;
+  } catch (err) {
+    console.error("[EBI] Exception fetching /api/ebi", err);
+    return null;
+  }
+}
+
+export async function maybeSendEbiPerformanceAlert(
+  ebiApiResult: EbiApiPerformance | null
+): Promise<unknown | null> {
+  if (!ebiApiResult || !ebiApiResult.performanceDeltas) {
+    console.debug("[EBI] No performanceDeltas in ebiApiResult");
+    return null;
+  }
+  const { ebi_iwv, ebi_vti } = ebiApiResult.performanceDeltas;
+  console.debug("[EBI] ebi_iwv:", ebi_iwv, "ebi_vti:", ebi_vti);
+  let alertEmailResult: unknown = null;
+  const iwvAtRisk = typeof ebi_iwv === "number" && ebi_iwv < -2.5;
+  const vtiAtRisk = typeof ebi_vti === "number" && ebi_vti < -2.5;
+  if (iwvAtRisk || vtiAtRisk) {
+    const subject =
+      iwvAtRisk && vtiAtRisk
+        ? "EBI Alert: Underperforming both IWV and VTI"
+        : iwvAtRisk
+        ? "EBI Alert: Underperforming IWV"
+        : "EBI Alert: Underperforming VTI";
+    const title = "EBI Performance Alert";
+    const message = [
+      iwvAtRisk && `EBI vs IWV delta: ${ebi_iwv}% (below -2.5% threshold)`,
+      vtiAtRisk && `EBI vs VTI delta: ${ebi_vti}% (below -2.5% threshold)`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+    console.debug("[EBI] Sending alert email", { subject, title, message });
+    alertEmailResult = await resend.emails.send({
+      from: "Notifications <notifications@jlast.io>",
+      to: [email],
+      subject,
+      react: AlertEmail({
+        title,
+        message,
+      }),
+    });
+  }
+  return alertEmailResult;
 }
 
 export async function getEBIDetails(): Promise<EBIResult | null> {
@@ -175,9 +256,12 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
     // Update task with raw data and 'pending' status
     await updateTaskWithRawData(taskId, result);
 
-    const finalResult: EBIResult = extractJsonFromString(
-      result.data!.finalResult!
-    );
+    if (!result?.data?.finalResult) {
+      console.error("Final result not found in response:", result);
+      throw new Error("Final result not found in Hyperbrowser response");
+    }
+
+    const finalResult: EBIResult = extractEbiJson(result.data.finalResult);
 
     if (!finalResult.premium_discount) {
       console.error(
@@ -190,78 +274,7 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
     return finalResult;
   } catch (error) {
     console.error("Overall error in getEBIDetails", error);
-
     await updateTaskFailure(taskId!, error as Error, result);
     throw error; // Re-throw the original error
   }
-}
-
-export async function fetchEbiApiResult(): Promise<any | null> {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const url = `${baseUrl}/api/ebi`;
-    console.debug("[EBI] Fetching /api/ebi endpoint", url);
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error(
-        "[EBI] Failed to fetch /api/ebi",
-        res.status,
-        res.statusText
-      );
-      return null;
-    }
-    const data = await res.json();
-    console.debug("[EBI] /api/ebi response", data);
-    return data;
-  } catch (err) {
-    console.error("[EBI] Exception fetching /api/ebi", err);
-    return null;
-  }
-}
-
-export async function maybeSendEbiPerformanceAlert(
-  ebiApiResult: any
-): Promise<any | null> {
-  if (!ebiApiResult || !ebiApiResult.performanceDeltas) {
-    console.debug("[EBI] No performanceDeltas in ebiApiResult");
-    return null;
-  }
-  const { ebi_iwv, ebi_vti } = ebiApiResult.performanceDeltas;
-  console.debug("[EBI] ebi_iwv:", ebi_iwv, "ebi_vti:", ebi_vti);
-  let result = null;
-
-  const iwvAtRisk = typeof ebi_iwv === "number" && ebi_iwv < -2.5;
-  const vtiAtRisk = typeof ebi_vti === "number" && ebi_vti < -2.5;
-
-  if (iwvAtRisk || vtiAtRisk) {
-    const subject =
-      iwvAtRisk && vtiAtRisk
-        ? "EBI Alert: Underperforming both IWV and VTI"
-        : iwvAtRisk
-        ? "EBI Alert: Underperforming IWV"
-        : "EBI Alert: Underperforming VTI";
-    const title = "EBI Performance Alert";
-    const message = [
-      iwvAtRisk && `EBI vs IWV delta: ${ebi_iwv}% (below -2.5% threshold)`,
-      vtiAtRisk && `EBI vs VTI delta: ${ebi_vti}% (below -2.5% threshold)`,
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    console.debug("[EBI] Sending alert email", { subject, title, message });
-
-    result = await resend.emails.send({
-      from: "Notifications <notifications@jlast.io>",
-      to: [email],
-      subject,
-      react: AlertEmail({
-        title,
-        message,
-      }),
-    });
-  } else {
-    result = `EBI's performance is fine.`;
-  }
-
-  return result;
 }

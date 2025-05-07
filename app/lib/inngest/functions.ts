@@ -6,7 +6,6 @@ import {
   fetchEbiApiResult,
   maybeSendEbiPerformanceAlert,
 } from "../ebi";
-import { Resend } from "resend";
 
 export const helloWorld = inngest.createFunction(
   { id: "hello-world" },

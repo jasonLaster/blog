@@ -57,7 +57,7 @@ async function getHistoricalData(
       );
       return [];
     }
-    const data = await response.json();
+    const data: { historical?: HistoricalPriceData[] } = await response.json();
     if (data && Array.isArray(data.historical)) {
       // FMP returns data in reverse chronological order, so reverse it.
       return data.historical.sort(
@@ -69,7 +69,7 @@ async function getHistoricalData(
       `[EBI API] No historical data found for ${symbol} or unexpected format.`
     );
     return [];
-  } catch (error: any) {
+  } catch (error) {
     console.error(
       `[EBI API] Exception fetching historical data for ${symbol}:`,
       error
@@ -81,8 +81,7 @@ async function getHistoricalData(
 function calculatePerformance(
   symbol: string,
   data: HistoricalPriceData[],
-  targetStartDate: string,
-  targetEndDate: string
+  targetStartDate: string
 ): PerformanceResult {
   if (!data || data.length === 0) {
     return { symbol, error: "No data available" };
@@ -90,7 +89,7 @@ function calculatePerformance(
 
   const requestedStartDate = new Date(targetStartDate);
 
-  let startRecord: HistoricalPriceData | undefined = data.find((d) => {
+  const startRecord: HistoricalPriceData | undefined = data.find((d) => {
     const recordDate = new Date(d.date);
     return (
       !isNaN(recordDate.getTime()) &&
@@ -174,8 +173,7 @@ export async function GET() {
       const performanceData = calculatePerformance(
         symbol,
         historicalDataArray,
-        startDateStr,
-        endDateStr
+        startDateStr
       );
       results.push(performanceData);
       console.log(`[EBI API] Performance for ${symbol}:`, performanceData);
