@@ -187,3 +187,71 @@ export async function getEBIDetails(): Promise<EBIResult | null> {
     throw error; // Re-throw the original error
   }
 }
+
+export async function fetchEbiApiResult(): Promise<any | null> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const url = `${baseUrl}/api/ebi`;
+    console.debug("[EBI] Fetching /api/ebi endpoint", url);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error(
+        "[EBI] Failed to fetch /api/ebi",
+        res.status,
+        res.statusText
+      );
+      return null;
+    }
+    const data = await res.json();
+    console.debug("[EBI] /api/ebi response", data);
+    return data;
+  } catch (err) {
+    console.error("[EBI] Exception fetching /api/ebi", err);
+    return null;
+  }
+}
+
+export async function maybeSendEbiPerformanceAlert(
+  ebiApiResult: any
+): Promise<any | null> {
+  if (!ebiApiResult || !ebiApiResult.performanceDeltas) {
+    console.debug("[EBI] No performanceDeltas in ebiApiResult");
+    return null;
+  }
+  const { ebi_iwv, ebi_vti } = ebiApiResult.performanceDeltas;
+  console.debug("[EBI] ebi_iwv:", ebi_iwv, "ebi_vti:", ebi_vti);
+  let alertEmailResult = null;
+
+  const iwvAtRisk = typeof ebi_iwv === "number" && ebi_iwv < -2.5;
+  const vtiAtRisk = typeof ebi_vti === "number" && ebi_vti < -2.5;
+
+  if (iwvAtRisk || vtiAtRisk) {
+    const subject =
+      iwvAtRisk && vtiAtRisk
+        ? "EBI Alert: Underperforming both IWV and VTI"
+        : iwvAtRisk
+        ? "EBI Alert: Underperforming IWV"
+        : "EBI Alert: Underperforming VTI";
+    const title = "EBI Performance Alert";
+    const message = [
+      iwvAtRisk && `EBI vs IWV delta: ${ebi_iwv}% (below -2.5% threshold)`,
+      vtiAtRisk && `EBI vs VTI delta: ${ebi_vti}% (below -2.5% threshold)`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    console.debug("[EBI] Sending alert email", { subject, title, message });
+
+    alertEmailResult = await resend.emails.send({
+      from: "Notifications <notifications@jlast.io>",
+      to: [email],
+      subject,
+      react: AlertEmail({
+        title,
+        message,
+      }),
+    });
+  }
+
+  return alertEmailResult;
+}
