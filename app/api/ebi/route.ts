@@ -150,7 +150,7 @@ export async function GET() {
     );
   }
 
-  const symbolsToCompare = ["EBI", "VTI", "IWV"];
+  const symbolsToCompare = ["EBI", "VTI", "IWV", "IWN", "VTV"];
   const startDateStr = "2025-03-01";
   const endDateStr = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
 
@@ -192,6 +192,8 @@ export async function GET() {
   const resEBI = results.find((r) => r.symbol === "EBI");
   const resVTI = results.find((r) => r.symbol === "VTI");
   const resIWV = results.find((r) => r.symbol === "IWV");
+  const resIWN = results.find((r) => r.symbol === "IWN");
+  const resVTV = results.find((r) => r.symbol === "VTV");
 
   const comparisonDeltas: { [key: string]: string | number } = {};
 
@@ -211,12 +213,68 @@ export async function GET() {
     comparisonDeltas["ebi_iwv"] = "N/A (missing performance data)";
   }
 
+  if (resEBI?.performance !== undefined && resIWN?.performance !== undefined) {
+    comparisonDeltas["ebi_iwn"] = parseFloat(
+      (resEBI.performance - resIWN.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["ebi_iwn"] = "N/A (missing performance data)";
+  }
+
+  if (resEBI?.performance !== undefined && resVTV?.performance !== undefined) {
+    comparisonDeltas["ebi_vtv"] = parseFloat(
+      (resEBI.performance - resVTV.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["ebi_vtv"] = "N/A (missing performance data)";
+  }
+
   if (resVTI?.performance !== undefined && resIWV?.performance !== undefined) {
     comparisonDeltas["vti_iwv"] = parseFloat(
       (resVTI.performance - resIWV.performance).toFixed(2)
     );
   } else {
     comparisonDeltas["vti_iwv"] = "N/A (missing performance data)";
+  }
+
+  if (resVTI?.performance !== undefined && resIWN?.performance !== undefined) {
+    comparisonDeltas["vti_iwn"] = parseFloat(
+      (resVTI.performance - resIWN.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["vti_iwn"] = "N/A (missing performance data)";
+  }
+
+  if (resVTI?.performance !== undefined && resVTV?.performance !== undefined) {
+    comparisonDeltas["vti_vtv"] = parseFloat(
+      (resVTI.performance - resVTV.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["vti_vtv"] = "N/A (missing performance data)";
+  }
+
+  if (resIWV?.performance !== undefined && resIWN?.performance !== undefined) {
+    comparisonDeltas["iwv_iwn"] = parseFloat(
+      (resIWV.performance - resIWN.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["iwv_iwn"] = "N/A (missing performance data)";
+  }
+
+  if (resIWV?.performance !== undefined && resVTV?.performance !== undefined) {
+    comparisonDeltas["iwv_vtv"] = parseFloat(
+      (resIWV.performance - resVTV.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["iwv_vtv"] = "N/A (missing performance data)";
+  }
+
+  if (resIWN?.performance !== undefined && resVTV?.performance !== undefined) {
+    comparisonDeltas["iwn_vtv"] = parseFloat(
+      (resIWN.performance - resVTV.performance).toFixed(2)
+    );
+  } else {
+    comparisonDeltas["iwn_vtv"] = "N/A (missing performance data)";
   }
 
   const finalJsonOutput = {
@@ -251,6 +309,24 @@ export async function GET() {
             endDate: resIWV?.endDate,
             endPrice: resIWV?.endPrice,
             performance: resIWV?.performance?.toFixed(2) + "%",
+          },
+      iwn: resIWN?.error
+        ? { error: resIWN.error }
+        : {
+            startDate: resIWN?.startDate,
+            startPrice: resIWN?.startPrice,
+            endDate: resIWN?.endDate,
+            endPrice: resIWN?.endPrice,
+            performance: resIWN?.performance?.toFixed(2) + "%",
+          },
+      vtv: resVTV?.error
+        ? { error: resVTV.error }
+        : {
+            startDate: resVTV?.startDate,
+            startPrice: resVTV?.startPrice,
+            endDate: resVTV?.endDate,
+            endPrice: resVTV?.endPrice,
+            performance: resVTV?.performance?.toFixed(2) + "%",
           },
     },
     performanceDeltas: comparisonDeltas,
