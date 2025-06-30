@@ -128,3 +128,8 @@ p > code {
     @apply text-zinc-100;
   }
 }
+
+/* Hide tweet actions/metadata in react-tweet embeds */
+.tweet-actions_actions__0vuqK {
+  display: none !important;
+}
