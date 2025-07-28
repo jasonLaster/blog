@@ -44,10 +44,8 @@ export const metadata: Metadata = {
 
 
 async function Header() {
-  const posts = (await getBlogPosts()).map((post) => ({
-    metadata: post.metadata,
-    slug: post.slug,
-  }));
+  // Load all blog posts so the command menu can search across them
+  const posts = await getBlogPosts();
 
   return (
     <div className="flex flex-col gap-4 mb-8">
