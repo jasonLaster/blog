@@ -7,6 +7,8 @@ import { Metadata } from "next";
 import { Footer } from "@/app/components/Footer";
 import { themeEffect } from "@/app/theme-effect";
 import { ThemeToggle } from "@/app/theme-toggle";
+import CommandMenu from "./components/command-menu";
+import { getBlogPosts } from "./utils/post";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,7 +42,11 @@ export const metadata: Metadata = {
   },
 };
 
-function Header() {
+
+async function Header() {
+  // Load all blog posts so the command menu can search across them
+  const posts = await getBlogPosts();
+
   return (
     <div className="flex flex-col gap-4 mb-8">
       <div className="flex  justify-between gap-4">
@@ -66,6 +72,7 @@ function Header() {
           </Link>
         </div>
       </div>
+      <CommandMenu posts={posts} />
     </div>
   );
 }
