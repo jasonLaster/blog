@@ -1,0 +1,19 @@
+name: Vercel preview url
+
+on:
+  deployment_status:
+
+jobs:
+  preview:
+    if: ${{ github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.git.sha || github.event.deployment.ref || github.ref }}
+
+      - name: Vercel preview url
+        id: preview-url
+        run: |
+          echo "Testing against Vercel Preview URL: ${{ github.event.deployment_status.target_url }}"
