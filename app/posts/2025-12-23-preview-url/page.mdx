@@ -1,0 +1,40 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Getting Vercel preview urls",
+  description: "How to get a Vercel preview url from inside a GitHub Action",
+  date: "2025-12-23",
+  draft: false,
+  note: true,
+  categories: ["JS"],
+});
+
+This is probably documented in a million other places, but for whatever reason I can never find it, so here's the easiest way that I know of to get a Vercel preview branch url from within a GitHub Action.
+
+Steps:
+
+1. The action should listen for the `deployment_status` event
+2. The job should check to ensure the `deployment_status.status` is `success`
+3. The step should pull the URL from the `github.event.deployment_status.target_url`
+
+```yaml
+name: Vercel preview url
+
+on:
+  deployment_status:
+
+jobs:
+  preview:
+    if: ${{ github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.git.sha || github.event.deployment.ref || github.ref }}
+
+      - name: Vercel preview url
+        id: preview-url
+        run: |
+          echo "Testing against Vercel Preview URL: ${{ github.event.deployment_status.target_url }}"
+```
