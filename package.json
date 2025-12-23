@@ -4,12 +4,15 @@
   "private": true,
   "packageManager": "bun@1.2.13",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "bun run --bun next dev",
+    "build": "bun run --bun next build",
     "start": "next start",
     "lint": "next lint",
     "inngest": "bunx inngest-cli@latest dev",
-    "draft": "bun scripts/draft.ts"
+    "draft": "bun scripts/draft.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
     "@hyperbrowser/sdk": "^0.46.0",
@@ -37,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

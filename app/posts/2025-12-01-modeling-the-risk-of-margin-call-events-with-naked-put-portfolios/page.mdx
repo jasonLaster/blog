@@ -1,0 +1,149 @@
+import { postMetadata } from "../../utils/metadata";
+import { Tabs } from "../../components/tabs";
+
+import Image from "next/image";
+import Inputs from "./inputs.png";
+import Outputs from "./outputs.png";
+import Summary from "./summary.png";
+import Companies from "./companies.png";
+import Fidelity from "./fidelity.png";
+
+export const metadata = postMetadata({
+  title: "How do you model the risk of a naked put portfolio.",
+  description: "",
+  date: "2025-12-01",
+  draft: true,
+  categories: ["finance"],
+});
+
+Over the past couple of weeks I've been trying to better understand how naked puts work and what would happen in the event of a correction.
+
+At a high level, naked puts serve as an insurance product. If you believe in a company or simply think it will go up in the short term, you can sell a put on it where you promise to buy it if it falls over the next couple of days and get paid a premium.
+
+To take a real example, Broadcomm is currently trading at $386 and the $300 two week put is trading at $1. If you believe Broadcomm will stay above $300 over the next two weeks or would be happy to buy it at $300 if it falls, you can sell the contract and get paid $100 ($1 x 100 shares).
+
+Sounds pretty great, you're getting paid $100 and Broadcomm would have to fall at least 30% for you to be obligated to do anything... Well, this is where naked puts begin to look like selling hurricane insurance and you've got to ask yourself, how comfortable are you if it begins to get windy and wet.
+
+There are two risks we need to factor in. The first is obvious, if you sell the $300 Broadcomm put and it falls below $300 (strike price), you're on the hook to buy the 100 shares at $300. This can get pricey fast ($300 x 100 = $30,000).
+
+The other is less obvious, if you sold a bunch of other positions and some of the puts have fallen, but are still above the strike price, you're not out of the woods.
+
+## What are naked puts
+
+- hurricane insurance analogy
+- how do they work? `AVGO 2025-12-19 300 PUT`
+- how risky are they
+- two forms of risk: Exercise ITM. Margin call
+
+## How do you model the cost?
+
+- Inputs:
+
+  - current stock price,
+  - option quantity, implied volatility, current price
+  - a scenario date, stock price movements
+
+- outputs
+  - new strike price
+  - new option implied volatility and option price
+
+### Inputs
+
+<Image src={Inputs} />
+
+### Outputs
+
+<Image src={Outputs} />
+
+### Summary
+
+<Image width={400} src={Summary} />
+
+### Companies
+
+<Image width={400} src={Companies} />
+
+## How do you compute the intermediate values?
+
+### Notional exposure
+
+### Cost to close
+
+```js
+=ref('option quantity') * ref('option price') * 100
+```
+
+### New implied volatility
+
+- Example: 0.3 (30%) drawdown = 2x base vol, 0.6 (60%) drawdown = 3x base vol
+  \*/
+
+```js
+=ref('option volatility') * (1 + ref('position drawdown') / 0.3)
+```
+
+### New option price
+
+<Tabs>
+```js
+//title black-scholes.js
+(
+    stockPrice: number,
+    strike: number,
+    timeYears: number,
+    riskFreeRate: number,
+    volatility: number
+  ): number => {
+    if (volatility <= 0 || timeYears <= 0) return 0;
+    const sqrtT = Math.sqrt(timeYears);
+    const day1 =
+      (Math.log(stockPrice / strike) +
+        (riskFreeRate + 0.5 * volatility * volatility) * timeYears) /
+      (volatility * sqrtT);
+    const day2 = day1 - volatility * sqrtT;
+
+    // Using error function approximation for normal CDF
+    return (
+      strike * Math.exp(-riskFreeRate * timeYears) * normCDF(-day2) -
+      stockPrice * normCDF(-day1)
+    );
+
+},
+
+````
+
+```js
+// title black-scholes.xlsx
+=LET(
+  dte, MAX(0, DAYS(${ref("Expiration Date", row)}, TODAY())),
+  IF(dte <= 0, "Expired", LET(
+    spot, ${ref("Scenario Stock Price", row)},
+    strike, ${ref("Strike Price", row)},
+    time, dte / 365,
+    rate, ${RISK_FREE_RATE_CELL},
+    vol, IF(OR(${ref("Scenario IV", row)} = 0, ${ref(
+      "Scenario IV",
+      row
+    )} = ""), ${FALLBACK_VOLATILITY_CELL}, ${ref("Scenario IV", row)}),
+    sqrtTime, SQRT(time),
+    dOne, (LN(spot / strike) + (rate + 0.5 * vol * vol) * time) / (vol * sqrtTime),
+    dTwo, dOne - vol * sqrtTime,
+    strike * EXP(-rate * time) * NORM.DIST(-dTwo, 0, 1, TRUE)
+      - spot * NORM.DIST(-dOne, 0, 1, TRUE)
+  )))`
+````
+
+</Tabs>
+
+### The two ways fidelity assess margin risk?
+
+```js
+=MAX(
+  0.25 * ref('stock price') - MAX(ref('stock price') - ref('strike price'), 0) + ref('scenario option price'),
+  0.15 * ref('strike price') + ref('scenario option price')
+) * ref('option quantity') * 100
+```
+
+## How do you review the overall risk
+
+<Image src={Fidelity} width={400} />
