@@ -4,8 +4,8 @@
   "private": true,
   "packageManager": "bun@1.2.13",
   "scripts": {
-    "dev": "bun run --bun next dev",
-    "build": "bun run --bun next build",
+    "dev": "next dev --turbopack",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "inngest": "bunx inngest-cli@latest dev",
