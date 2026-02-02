@@ -1,0 +1,251 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Running Multiple Dev Servers with Git Worktrees",
+  description: "A set of bash scripts for running multiple dev servers in parallel across git worktrees without port conflicts.",
+  date: "2026-02-02",
+  draft: true,
+  categories: ["DX", "Bash"],
+});
+
+
+Running multiple coding agents with their own worktrees and dev servers is great. Getting it working is not.
+
+
+
+Here are a couple of short-term hacks. 
+
+- Copy `.env.local`
+- Find available ports for Next.js + Inngest
+- Create a new db branch
+- Install dependencies 
+
+
+Hopefully these hacks help while the frameworks + agents will improve this setup.
+
+
+## The solution
+
+Three scripts that compose together:
+
+1. **`dev.sh`** - The entry point that orchestrates everything
+2. **`worktree-setup.sh`** - Bootstraps new worktrees automatically
+3. **`find-ports.sh`** - Finds available ports and configures the environment
+
+### dev.sh
+
+The main script is dead simple. It runs worktree setup, finds ports, and starts the dev server:
+
+```bash
+#!/bin/bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_DIR"
+
+# Run worktree setup if needed
+bash scripts/worktree-setup.sh
+
+# Find available ports and start dev server
+eval "$(bash scripts/find-ports.sh)"
+turbo run dev:app dev:inngest --parallel
+```
+
+The `eval` trick is key. `find-ports.sh` prints `export` statements to stdout, so `eval` captures them into the current shell's environment before turbo starts.
+
+### worktree-setup.sh
+
+When you create a new worktree, it's missing `node_modules`, `.env.local`, and a database branch. This script detects that and handles it:
+
+```bash
+#!/bin/bash
+set -e
+
+# Resolve the main worktree directory
+MAIN_WORKTREE="${CIRCUIT_DIR:-$(git worktree list --porcelain | head -1 | cut -d' ' -f2)}"
+CURRENT_DIR=$(pwd)
+
+# Only run setup if we're in a worktree and missing .env.local
+if [ "$MAIN_WORKTREE" = "$CURRENT_DIR" ]; then
+  exit 0
+fi
+
+if [ -f .env.local ]; then
+  echo "Worktree already set up (.env.local exists), skipping."
+  exit 0
+fi
+
+echo "Setting up worktree from main: $MAIN_WORKTREE"
+echo ""
+
+echo "Installing dependencies..."
+pnpm i
+
+echo ""
+echo "Copying .env.local from main worktree..."
+cp "$MAIN_WORKTREE/.env.local" .env.local
+
+echo ""
+echo "Creating database branch..."
+pnpm db:create
+
+echo ""
+echo "Worktree setup complete!"
+```
+
+The detection logic: if the current directory matches the main worktree, we're not in a secondary worktree, so skip. If `.env.local` already exists, we've already been set up, so skip. Otherwise, install deps, copy the env file from main, and create a database branch.
+
+The `CIRCUIT_DIR` env var is an escape hatch for when the git detection doesn't work (e.g., in Docker containers).
+
+### find-ports.sh
+
+This is where the interesting part lives. It needs to find 5 available ports that don't conflict with any running dev servers:
+
+```bash
+#!/bin/bash
+# Usage: eval "$(bash scripts/find-ports.sh)" && turbo run dev:app dev:inngest --parallel
+
+set -e
+
+# Check if a port is in use
+is_port_available() {
+  local port=$1
+  ! lsof -ti:$port >/dev/null 2>&1
+}
+
+# Check if all required ports for a given base are available
+check_port_range() {
+  local next_port=$1
+  local inngest_base=$2
+  local inngest_gateway=$((inngest_base + 1))
+  local inngest_gateway_grpc=$((inngest_base + 100))
+  local inngest_executor_grpc=$((inngest_base + 101))
+
+  is_port_available $next_port && \
+  is_port_available $inngest_base && \
+  is_port_available $inngest_gateway && \
+  is_port_available $inngest_gateway_grpc && \
+  is_port_available $inngest_executor_grpc
+}
+
+# Find available port range
+find_available_ports() {
+  local base_next_port=${PORT:-4000}
+  local base_inngest_port=${INNGEST_PORT:-8288}
+
+  # Check if default ports are available
+  if check_port_range $base_next_port $base_inngest_port; then
+    PORT=$base_next_port
+    INNGEST_PORT=$base_inngest_port
+    INNGEST_GATEWAY_PORT=$((base_inngest_port + 1))
+    INNGEST_GATEWAY_GRPC_PORT=$((base_inngest_port + 100))
+    INNGEST_EXECUTOR_GRPC_PORT=$((base_inngest_port + 101))
+    >&2 echo "✓ Using default ports:"
+    return 0
+  fi
+
+  # Try to find available ports (try up to 20 combinations)
+  >&2 echo "⚠ Default ports are in use, searching for available ports..."
+  for i in {1..20}; do
+    local try_next_port=$((base_next_port + i))
+    local try_inngest_port=$((base_inngest_port + i * 2))
+
+    if check_port_range $try_next_port $try_inngest_port; then
+      PORT=$try_next_port
+      INNGEST_PORT=$try_inngest_port
+      INNGEST_GATEWAY_PORT=$((try_inngest_port + 1))
+      INNGEST_GATEWAY_GRPC_PORT=$((try_inngest_port + 100))
+      INNGEST_EXECUTOR_GRPC_PORT=$((try_inngest_port + 101))
+      >&2 echo "✓ Found available ports:"
+      return 0
+    fi
+  done
+
+  >&2 echo "✗ Could not find available port range after 20 attempts"
+  >&2 echo "  Please manually stop some processes or specify custom ports:"
+  >&2 echo "  PORT=XXXX INNGEST_PORT=YYYY pnpm dev"
+  return 1
+}
+
+# Main execution
+if find_available_ports; then
+  # Output to stderr so it doesn't interfere with eval
+  >&2 echo "  Next.js: $PORT"
+  >&2 echo "  Inngest Main API: $INNGEST_PORT"
+  >&2 echo "  Inngest Gateway: $INNGEST_GATEWAY_PORT"
+  >&2 echo "  Inngest Gateway gRPC: $INNGEST_GATEWAY_GRPC_PORT"
+  >&2 echo "  Inngest Executor gRPC: $INNGEST_EXECUTOR_GRPC_PORT"
+  >&2 echo ""
+
+  # Write to .env.local so other tools (Playwright, etc.) can use these ports
+  if [ -f .env.local ]; then
+    # Remove old port entries if they exist
+    grep -v '^PORT=' .env.local | grep -v '^INNGEST_PORT=' | \
+      grep -v '^INNGEST_GATEWAY_PORT=' | grep -v '^INNGEST_GATEWAY_GRPC_PORT=' | \
+      grep -v '^INNGEST_EXECUTOR_GRPC_PORT=' > .env.local.tmp || true
+    mv .env.local.tmp .env.local
+  fi
+
+  # Append new port configuration
+  cat >> .env.local << EOF
+# Auto-configured ports (updated by scripts/find-ports.sh)
+PORT=$PORT
+INNGEST_PORT=$INNGEST_PORT
+INNGEST_GATEWAY_PORT=$INNGEST_GATEWAY_PORT
+INNGEST_GATEWAY_GRPC_PORT=$INNGEST_GATEWAY_GRPC_PORT
+INNGEST_EXECUTOR_GRPC_PORT=$INNGEST_EXECUTOR_GRPC_PORT
+EOF
+
+  # Output export statements to stdout for eval
+  echo "export PORT=$PORT"
+  echo "export INNGEST_PORT=$INNGEST_PORT"
+  echo "export INNGEST_GATEWAY_PORT=$INNGEST_GATEWAY_PORT"
+  echo "export INNGEST_GATEWAY_GRPC_PORT=$INNGEST_GATEWAY_GRPC_PORT"
+  echo "export INNGEST_EXECUTOR_GRPC_PORT=$INNGEST_EXECUTOR_GRPC_PORT"
+else
+  exit 1
+fi
+```
+
+A few design decisions worth calling out:
+
+**Stderr for human output, stdout for machine output.** All the status messages (`>&2 echo`) go to stderr. The only thing on stdout is the `export` statements. This means you can `eval` the output without capturing the log messages.
+
+**Atomic port checking.** `check_port_range` verifies all 5 ports are available before claiming any of them. No partial allocations.
+
+**Persistence to `.env.local`.** The found ports are written to `.env.local` so that other tools like Playwright tests can discover which port the dev server is running on. Old port entries are stripped first to avoid duplicates.
+
+**Incremental search.** If the defaults are taken, it walks up from the base ports: `4001/8290`, `4002/8292`, `4003/8294`, etc. The Inngest port increments by 2 each step to leave room for the gateway port at `base + 1`.
+
+## Usage
+
+In `package.json`:
+
+```json
+{
+  "scripts": {
+    "dev": "bash scripts/dev.sh"
+  }
+}
+```
+
+Then in any worktree:
+
+```bash
+pnpm dev
+```
+
+First run in a new worktree installs deps, copies env, and creates a DB branch. Every run finds available ports. You get output like:
+
+```
+✓ Found available ports:
+  Next.js: 4002
+  Inngest Main API: 8292
+  Inngest Gateway: 8293
+  Inngest Gateway gRPC: 8392
+  Inngest Executor gRPC: 8393
+```
+
+No conflicts, no manual port juggling. Just `pnpm dev` and it works.
