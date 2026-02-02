@@ -1,0 +1,315 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "What Happens When You Let AI Agents Build a Browser Engine",
+  description: "Analyzing FastRender, a browser engine built by coding agents, to understand how much complexity AI can handle versus delegate",
+  date: "2026-01-15",
+  draft: false,
+  categories: ["AI", "Rust", "Browsers"],
+});
+
+We've been hearing a lot about AI coding agents lately. "They can build entire applications!" "They're replacing developers!" But talk is cheap. What happens when you actually point them at something genuinely hard?
+
+I recently got access to **FastRender**, a browser engine that was largely built by AI coding agents as a proof of concept. Not a toy renderer—a real engine with layout, styling, painting, and even its own JavaScript VM. 1.9 million lines of Rust.
+
+The question I wanted to answer: **How much of the hard stuff did the agents actually build versus punt to third-party libraries?**
+
+The answer surprised me.
+
+## The Numbers
+
+| Subsystem | Lines | Built by Agents? | What's Delegated |
+|-----------|-------|------------------|------------------|
+| **Layout** | ~300K | Yes | Flex/grid math to Taffy |
+| **Paint** | ~220K | Yes | Path rasterization to tiny-skia |
+| **Style/CSS** | ~200K | Yes | Tokenization to cssparser |
+| **JavaScript** | ~1.3M | Yes (!) | Nothing—full custom VM |
+| **Text** | ~56K | Yes | Glyph shaping to rustybuzz |
+| **DOM** | ~35K | Yes | HTML tokenization to html5ever |
+
+That's **~95% first-party code**. The agents didn't just glue libraries together—they implemented the actual rendering pipeline.
+
+<Mermaid chart={`
+flowchart TB
+    subgraph third["Third-Party Primitives"]
+        cssparser["cssparser<br/>CSS tokens"]
+        html5ever["html5ever<br/>HTML tokens"]
+        rustybuzz["rustybuzz<br/>glyph shaping"]
+        tinyskia["tiny-skia<br/>path rasterization"]
+        taffy["taffy<br/>flex/grid math"]
+        selectors["selectors<br/>selector matching"]
+    end
+
+    subgraph first["Agent-Built Pipeline"]
+        css["CSS Parser<br/>34K lines"]
+        styling["Style System<br/>155K lines"]
+        dom["DOM<br/>35K lines"]
+        layoutEng["Layout Engine<br/>300K lines"]
+        textPipe["Text Pipeline<br/>56K lines"]
+        paint["Paint System<br/>220K lines"]
+        js["JavaScript VM<br/>1.3M lines"]
+    end
+
+    cssparser --> css
+    html5ever --> dom
+    selectors --> styling
+    css --> styling
+    dom --> styling
+    styling --> layoutEng
+    taffy --> layoutEng
+    rustybuzz --> textPipe
+    textPipe --> layoutEng
+    layoutEng --> paint
+    tinyskia --> paint
+    js --> dom
+`} />
+
+## What This Tells Us About Agent Capabilities
+
+The agents made interesting choices about what to build versus delegate. Let's break it down.
+
+### What They Delegated (Smart Choices)
+
+**Tokenization** — Both `cssparser` and `html5ever` handle breaking input into tokens. These are spec-compliant implementations of tedious standards work. The agents correctly identified this as "solved problems with good libraries."
+
+**Text Shaping** — HarfBuzz (via `rustybuzz`) handles the nightmarish complexity of Unicode text rendering. This represents decades of accumulated knowledge about scripts, ligatures, and edge cases. Smart to delegate.
+
+**Codec Implementations** — Image decoding, video codecs, compression. These are commodity problems with battle-tested solutions.
+
+### What They Built (Impressive)
+
+**The Entire CSS Cascade** — 189,000 lines of custom code. Not just parsing—full cascade implementation with layers, scope, specificity, inheritance, and CSS variables with cycle detection.
+
+**A Complete Layout Engine** — Block, inline, flexbox, grid, tables, floats, fragmentation. They only delegated the flex/grid *constraint solving* to Taffy; all the orchestration is custom.
+
+**Their Own JavaScript Runtime** — This is wild. Instead of embedding V8 or SpiderMonkey, they built `ecma-rs`—a JIT-compiled JavaScript engine from scratch. Over a million lines.
+
+## Deep Dive: The CSS System
+
+Let's look closer at one subsystem to understand the agent's approach.
+
+The style system has two parts:
+- `src/css/` — 34,000 lines (parsing)
+- `src/style/` — 155,000 lines (computation)
+
+### What cssparser Actually Provides
+
+Here's what the agents delegated:
+
+```css
+.card { background: linear-gradient(red, blue); }
+```
+
+cssparser turns this into:
+
+```
+Delim('.'), Ident("card"), WhiteSpace, CurlyBracketBlock, ...
+```
+
+That's it. Tokenization. It doesn't know what `.card` means or how to parse gradients.
+
+### What The Agents Built
+
+Everything else:
+
+<Mermaid chart={`
+flowchart TB
+    subgraph input["CSS Input"]
+        raw["Raw CSS String"]
+    end
+
+    subgraph third["Delegated: Tokenization"]
+        pi["cssparser::ParserInput"]
+        parser["cssparser::Parser"]
+        tokens["Token Stream"]
+        pi --> parser --> tokens
+    end
+
+    subgraph parsing["Agent-Built: CSS Parsing<br/>34K lines"]
+        rules["Rule Parser<br/>@media, @container, @supports<br/>@keyframes, @font-face, @layer"]
+        props["Property Parser<br/>All 200+ CSS properties"]
+        vals["Value Parser<br/>Colors, lengths, gradients"]
+    end
+
+    subgraph cascade["Agent-Built: Style Computation<br/>155K lines"]
+        casc["Cascade Algorithm<br/>Origin, layer, specificity"]
+        inh["Inheritance"]
+        vars["Variable Resolution<br/>var substitution"]
+        comp["Computed Values"]
+    end
+
+    raw --> pi
+    tokens --> rules
+    tokens --> props
+    tokens --> vals
+    rules --> casc
+    props --> casc
+    vals --> casc
+    casc --> inh --> vars --> comp
+`} />
+
+The parsing code in `src/css/parser.rs` includes custom implementations for every CSS at-rule:
+
+```rust
+parse_import_rule()           // @import
+parse_media_rule()            // @media
+parse_container_rule()        // @container
+parse_supports_rule()         // @supports
+parse_scope_rule()            // @scope
+parse_keyframes_rule()        // @keyframes
+parse_font_face_rule()        // @font-face
+parse_layer_rule()            // @layer
+parse_property_rule()         // @property
+// ... and many more
+```
+
+The cascade algorithm handles the full complexity of modern CSS:
+
+<Mermaid chart={`
+flowchart TB
+    subgraph cascade["CSS Cascade - All Agent-Built"]
+        origins["1. Origin Sorting<br/>UA then User then Author"]
+        layers["2. Layer Ordering<br/>@layer declarations"]
+        scope["3. Scope Proximity<br/>@scope distance"]
+        spec["4. Specificity<br/>ID then class then element"]
+        order["5. Source Order<br/>Later wins"]
+        important["6. !important<br/>Inverts all above"]
+    end
+
+    origins --> layers --> scope --> spec --> order --> important
+    important --> winner["Winning Declaration"]
+`} />
+
+Property application in `src/style/properties.rs` is nearly **40,000 lines**. That's a lot of agent-written code for one file.
+
+### Selector Integration
+
+The agents vendored Servo's `selectors` crate for selector matching, but still had to implement all the semantics:
+
+<Mermaid chart={`
+flowchart LR
+    subgraph delegated["Delegated to selectors crate"]
+        grammar["Selector Grammar"]
+        matching["matches_selector fn"]
+        combinators["Combinator Logic"]
+    end
+
+    subgraph agentBuilt["Agent-Built Semantics"]
+        impl["FastRenderSelectorImpl"]
+        pseudo_class["50+ Pseudo-classes<br/>:hover, :has, :nth-child"]
+        pseudo_elem["Pseudo-elements<br/>::before, ::after, ::part"]
+        shadow["Shadow DOM Context"]
+    end
+
+    grammar --> impl
+    matching --> impl
+    impl --> pseudo_class
+    impl --> pseudo_elem
+    impl --> shadow
+`} />
+
+Every pseudo-class—`:hover`, `:valid`, `:has()`, `:nth-child()`—has agent-written semantics. Over 50 variants:
+
+```rust
+pub enum PseudoClass {
+    Has(Box<[RelativeSelector<...>]>),
+    Host(Option<SelectorList<...>>),
+    Root, Defined, FirstChild, LastChild,
+    NthChild(i32, i32, Option<SelectorList<...>>),
+    Hover, Active, Focus, FocusWithin, FocusVisible,
+    Valid, Invalid, UserValid, UserInvalid,
+    // ... 50+ variants
+}
+```
+
+## Why Build a JavaScript Engine?
+
+The most surprising choice: building their own JS runtime instead of embedding V8.
+
+<Mermaid chart={`
+flowchart TB
+    subgraph ecmars["ecma-rs: Agent-Built JS Runtime<br/>1M+ lines"]
+        parse["parse-js<br/>JS Parser"]
+        vm["vm-js<br/>JIT VM"]
+        opt["optimize-js"]
+        webidl["webidl<br/>Binding Generator"]
+    end
+
+    subgraph integration["Agent-Built Integration"]
+        bindings["WebIDL Bindings<br/>DOM, Window, Events"]
+        loop["Event Loop"]
+        fetch["Fetch API"]
+    end
+
+    parse --> vm
+    opt --> vm
+    webidl --> bindings
+    vm --> bindings
+    bindings --> loop
+    bindings --> fetch
+`} />
+
+The reasoning appears to be security. A custom JS engine can be compiled *without system call capabilities*. The renderer process can execute JavaScript but literally cannot make network requests—that capability doesn't exist in the binary. Resources come through IPC from a separate process.
+
+This is an architectural choice that would be impossible with embedded V8.
+
+## The Code Distribution
+
+<Mermaid chart={`
+pie title CSS and Style System Code
+    "Agent-Built Parsing" : 34
+    "Agent-Built Computation" : 155
+    "Delegated cssparser" : 5
+    "Delegated selectors" : 9
+`} />
+
+For CSS alone: **~93% agent-built code**.
+
+## What This Means for AI Capabilities
+
+A few observations:
+
+**Agents can handle genuine complexity.** This isn't CRUD app generation. The CSS cascade, layout algorithms, and a JIT-compiled JS engine are legitimately hard problems. The agents produced working implementations.
+
+**They make reasonable build-vs-buy decisions.** Delegating tokenization and text shaping while building the cascade and layout engine shows judgment, not just code generation.
+
+**They don't shy away from scale.** 40,000 lines in a single properties file. 1.3M lines for the JS engine. These aren't toy implementations.
+
+**Architecture emerges.** The multiprocess security model, the feature-gating, the caching strategies—these show architectural thinking, not just function-by-function implementation.
+
+## The Takeaway
+
+<Mermaid chart={`
+flowchart LR
+    subgraph primitives["Primitives - Delegated"]
+        t1["Tokens"]
+        t2["Shaped Glyphs"]
+        t3["Rasterized Paths"]
+        t4["Decoded Images"]
+    end
+
+    subgraph pipeline["Pipeline - Agent-Built"]
+        p1["Parsing"]
+        p2["DOM"]
+        p3["Styling"]
+        p4["Layout"]
+        p5["Paint"]
+    end
+
+    t1 --> p1
+    p1 --> p2
+    p2 --> p3
+    t2 --> p4
+    p3 --> p4
+    p4 --> p5
+    t3 --> p5
+    t4 --> p5
+`} />
+
+The agents built a browser engine. Not a wrapper around WebKit. Not a thin layer over Chromium. A ground-up implementation with custom layout, styling, painting, and JavaScript execution.
+
+They made smart choices about what to delegate—tokenization, text shaping, path rasterization—while taking on the hard architectural work themselves.
+
+Is this the future? I don't know. But it's a data point. When someone says AI can only handle simple tasks, point them at 1.9 million lines of working browser engine.
+
+The interesting question isn't whether agents *can* build complex systems. Apparently they can. The question is what this means for how we build software—and who (or what) does the building.

@@ -2,6 +2,7 @@ import React, { ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import { Tweet } from "react-tweet";
 import { Code } from "bright";
+import { Mermaid } from "./app/components/mermaid";
 
 type ParagraphProps = ComponentPropsWithoutRef<"p">;
 type ListProps = ComponentPropsWithoutRef<"ul">;
@@ -60,6 +61,7 @@ function createHeading(level: number) {
 
 const components = {
   Tweet,
+  Mermaid,
   h1: createHeading(1),
   h2: createHeading(2),
   h3: createHeading(3),
