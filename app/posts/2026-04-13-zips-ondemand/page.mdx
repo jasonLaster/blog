@@ -1,0 +1,138 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Streaming zips on demand",
+  description: "How I handle uploading PDFs and serving knowledge base downloads on Vercel — streaming, caching, and surviving the slow path.",
+  date: "2026-04-13",
+  categories: ["Software"],
+});
+
+We've been building a private knowledge base for a small team. It started as an Obsidian vault — markdown notes, PDFs, meeting notes — and eventually became a shared web app so everyone can access it anywhere. The app is built on Next.js and Convex, hosted on Vercel.
+
+When the vault was small, the download story was embarrassingly simple. A build-time script would walk the directory, stuff everything into JSZip, write the markdown-only zip to `public/`, upload the full zip to Vercel Blob, and that was it. `next build` handled the whole thing. The download route was essentially a redirect.
+
+```ts
+// The whole thing — walk the dir, zip it, done
+const fullBuffer = await buildZip();
+await put("wiki-full.zip", fullBuffer, { access: "private", token });
+```
+
+That worked fine right up until it didn't.
+
+## Where it breaks down
+
+The first crack was git. PDFs don't belong in a git repo — they're binary, they're large, and git history will happily bloat to gigabytes if you let it. Git LFS exists, but Vercel doesn't support LFS during builds. So the PDFs couldn't live in the repo at all. They needed somewhere else.
+
+That somewhere else was Vercel Blob. PDFs get uploaded to Blob during the build (`bun scripts/ingest-pdfs.ts`), with their paths and URLs tracked in Convex. Markdown gets ingested into Convex. The build container never sees a PDF file — it just records where they live.
+
+The second crack was build time. Even after moving PDFs out, the zip script was still running during `next build`. It was reading from the local filesystem in dev, but in production it had to fetch from Blob and assemble everything in memory. A build that took two minutes started taking five, then eight. Worse, if anything downstream failed — a type error, a Convex deploy hiccup — you'd already burned that time for nothing.
+
+The third crack was memory. JSZip builds the entire archive in memory as a `Buffer` before you can do anything with it. The full vault — all the PDFs, all the markdown — had to fit in the function's heap at once. At a few hundred megabytes, that's fine. As the vault grew, it started bumping into Vercel's function memory limits and the builds started crashing.
+
+Switching to `archiver` (a streaming zip library) helped. Instead of materializing the whole zip in memory, it pipes data through as it goes — each file gets compressed and flushed before the next one loads. Peak memory dropped significantly.
+
+But streaming alone wasn't enough. The upload step was still materializing the entire zip into a buffer before calling `put()`. You'd traded one memory cliff for another, just further down the pipeline.
+
+The fourth crack was the Blob access model. The original script uploaded the full zip as `private`, which means you can't serve it via redirect — you have to proxy it through a function. A 300 MB zip being proxied through a serverless function is not a great situation. Timeout pressure, memory pressure, and you're paying for function compute time on what should be a dumb file transfer.
+
+## The design goals
+
+Once I decided to rip this out, I had three goals:
+
+**Fast deploys.** The build should not touch the zip. Ingest the content, build the app, ship it. The zip is a runtime concern.
+
+**Fast downloads.** A redirect to a CDN-hosted public Blob file. No function invocation, no proxying — just a 307 that lets the CDN do the work.
+
+**A working slow path.** When the cache is cold — first request after a new deployment — the download still has to work. Not "come back later," not a 503. Stream the zip on demand, build the cache in the background for next time.
+
+## How the cache works
+
+Every deployment gets a new `VERCEL_DEPLOYMENT_ID`. I store the cached zip URL in Convex (as a key-value entry in a `meta` table) alongside the deployment ID it was built for. On each request, the route checks:
+
+1. Is there a cached URL?
+2. Does it match the current deployment ID?
+3. Is the URL a public blob (not a private one, which can't be served via redirect)?
+
+If all three pass, respond with a 307 to the Blob CDN URL. The user gets the file directly from the edge, the function exits in milliseconds, and I'm not paying for function time on what's essentially a static file.
+
+If the cache is stale or missing, fall through to the slow path.
+
+## The streaming architecture
+
+The slow path builds the zip on demand. For the full download, that means:
+
+1. Fetch the list of PDF assets from Convex
+2. Pull each PDF from Vercel Blob in parallel batches of 20
+3. Paginate through all markdown documents from Convex (50 at a time)
+4. Feed everything into `archiver`, stream the output to the client
+
+The key implementation detail here is how you connect `archiver` to the response. `archiver` is a Node.js Transform stream — it takes files in, emits zip bytes out. The naive approach is `Readable.toWeb(arc)`, converting it to a Web `ReadableStream` for the Response body. This works in some situations but has a subtle timing problem: if you `await` all the async setup (fetching from blob, paginating Convex) before calling `Readable.toWeb`, the archiver may have already emitted some or all of its data before you start consuming. Depending on the Node.js version and how backpressure plays out, you can get an empty or truncated zip.
+
+The fix is to wrap the whole thing in a `ReadableStream` constructor and do the async work inside `start()`:
+
+```ts
+function archiverToStream(
+  fill: (arc: archiver.Archiver) => void
+): ReadableStream<Uint8Array> {
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      const arc = archiver("zip", { zlib: { level: 1 } });
+      arc.on("data", (chunk: Buffer) => controller.enqueue(chunk));
+      arc.on("end", () => controller.close());
+      arc.on("error", (err) => controller.error(err));
+      Promise.resolve(fill(arc)).catch((err) => controller.error(err));
+    },
+  });
+}
+```
+
+This keeps the stream unlocked until the consumer calls `getReader()`, which is what you need when passing it as a `Response` body or a multipart upload body. The stream stays hot the whole time — data flows as it's generated rather than being buffered and replayed.
+
+## Uploading to Blob with multipart
+
+After the slow-path response finishes streaming to the client, I kick off a background job (via Next.js `after()`) to upload the same zip to Vercel Blob so the next request hits the fast path.
+
+The zip can be large — and the whole point was to avoid holding it all in memory. The multipart upload API is the answer: instead of buffering the full zip before uploading, you flush to Blob in chunks as the stream comes in. Blob's multipart minimum is 5 MB per part, so I buffer at 10 MB to stay well clear of that:
+
+```ts
+const PART_SIZE = 10 * 1024 * 1024;
+
+const uploader = await createMultipartUploader("wiki-full.zip", {
+  access: "public",
+  token,
+  allowOverwrite: true,
+});
+
+// ... read stream in chunks, flush at PART_SIZE, complete
+const result = await uploader.complete(parts);
+```
+
+The upload runs entirely in the background after the user's request has already finished. No latency impact on the download.
+
+## Markdown-only download
+
+The full zip includes PDFs, which makes it heavy. I also wanted a markdown-only download for cases where someone just wants the notes — no papers, no binaries. This uses the same mechanism but skips the PDF fetch entirely and only paginates through Convex documents:
+
+```ts
+function buildMarkdownArchiveStream(): ReadableStream<Uint8Array> {
+  return archiverToStream(async (arc) => {
+    const { fetchQuery, api } = await getConvexApi();
+    await appendMarkdownToArchive(arc, fetchQuery, api);
+    arc.finalize();
+  });
+}
+```
+
+Separate cache key in Convex, separate blob file. Same 307-on-cache-hit, same stream-on-cold-path behavior.
+
+## What I'd do differently
+
+The cold path for the full download is slow. Fetching hundreds of PDFs from Blob, even in parallel batches, takes time. On Vercel, you have 300 seconds before the function dies — that's usually enough, but it's not a guarantee if the vault grows further. The right answer is probably to trigger the cache build as part of the deployment pipeline rather than lazily on first request. I haven't wired that up yet.
+
+The other limitation is that Vercel functions aren't great at long-running streaming responses under heavy load. For the fast path, this doesn't matter — we bypass the function entirely with the CDN redirect. But the cold path is still a function, and a function that streams for minutes is using compute the whole time. For a small team the cold path fires occasionally and the 300s window is almost always enough. For something with heavier traffic, you'd want to treat the cold-path hit as a trigger to kick off an async job and serve a "building, check back in a moment" response instead.
+
+## The punchline
+
+The thing I like most about this architecture is that the fast path and slow path compose cleanly. A 307 redirect to a CDN-hosted file is faster than anything you can build in a serverless function. But you still need the slow path to work — otherwise cold starts are broken downloads, and that's not acceptable.
+
+The `ReadableStream` constructor pattern, the `after()` background job, and the Convex cache entry for the blob URL are the three pieces that make it work. None of them are particularly novel on their own. But put together, you get something that's fast when warm, correct when cold, and self-healing after every deployment.
