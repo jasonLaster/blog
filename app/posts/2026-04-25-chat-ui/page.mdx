@@ -1,0 +1,170 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "15 Chat UI Best Practices",
+  description: "What Claude Code learned from vercel/ai, tanstack/ai, shadcn/ui, t3code, and openai/codex — and how it changed our chat from the wire format up to the DOM.",
+  date: "2026-04-25",
+  categories: ["AI"],
+});
+
+
+Over the past month, I've been working on a web frontend for an Obsidian knowledge base with approximately three thousand pages and nine million words, so at some point adding a chat ui made sense. It's also 2026, so not having a chat ui felt wrong :) 
+
+The V1 worked fine. It just didn't feel right. Tokens arrived in bursts. Refreshing mid-stream lost the response. Tool calls flickered. Assistant messages were duplicated. None of these were dramatic bugs. There were just too many of them.
+
+Instead of fixing each issue or pulling in an open source package, it felt better to simply have Claude read five codebases and see what was missing. 
+
+- `vercel/ai` — the AI SDK source, plus the `examples/next` chatbot
+- `tanstack/ai` — the headless AI client + thin React adapter
+- `shadcn/ui` — the registry, especially the new ai-elements primitives
+- `t3code` — Theo's coding agent, dual-stream + event-sourced
+- `openai/codex` — the Codex CLI, with its TUI architecture
+
+Claude wrote everything down as it went as set of spec files, with cross-repo citations and concrete code. 
+
+## The patterns
+
+If you only read one thing, read [the overview](/posts/2026-04-25-chat-ui/chat-patterns/00-overview). The rest are deep dives:
+
+- [Streaming architecture](/posts/2026-04-25-chat-ui/chat-patterns/01-streaming-architecture) — transports, chunking, smoothing, throttling
+- [Message parts model](/posts/2026-04-25-chat-ui/chat-patterns/02-message-parts-model) — typed parts, discriminated unions, multimodal
+- [Tool calling UX](/posts/2026-04-25-chat-ui/chat-patterns/03-tool-calling-ux) — input-streaming → output-available state machine
+- [Agent loop](/posts/2026-04-25-chat-ui/chat-patterns/04-agent-loop) — stopWhen, prepareStep, multi-step, ToolLoopAgent
+- [Rendering performance](/posts/2026-04-25-chat-ui/chat-patterns/05-rendering-performance) — memoized prior list + streaming tail
+- [Composer input](/posts/2026-04-25-chat-ui/chat-patterns/06-composer-input) — IME, autosize, attachments, slash commands
+- [Scroll pin](/posts/2026-04-25-chat-ui/chat-patterns/07-scroll-pin) — stick-to-bottom, escape lock, pill UX
+- [Markdown rendering](/posts/2026-04-25-chat-ui/chat-patterns/08-markdown-rendering) — incremental parse, partial fences, code blocks, math
+- [Persistence + resumption](/posts/2026-04-25-chat-ui/chat-patterns/09-persistence-resumption) — navigation resilience, resumable streams, replay
+- [Error + abort](/posts/2026-04-25-chat-ui/chat-patterns/10-error-abort) — error vs abort vs disconnect, recovery, retries
+- [Approval workflow](/posts/2026-04-25-chat-ui/chat-patterns/11-approval-workflow) — first-class approval state, callId pairing
+- [Multi-tab / cross-window](/posts/2026-04-25-chat-ui/chat-patterns/12-multi-tab-cross-window) — Convex mirror, dual streams, conflict-free sync
+- [Component composition](/posts/2026-04-25-chat-ui/chat-patterns/13-component-composition) — shadcn primitives, asChild, data-slot
+- [Accessibility](/posts/2026-04-25-chat-ui/chat-patterns/14-accessibility) — role=log, aria-live, motion-reduce, focus rings
+- [Event sourcing + projections](/posts/2026-04-25-chat-ui/chat-patterns/15-event-sourcing-projections) — event log + read models
+- [Audit](/posts/2026-04-25-chat-ui/chat-patterns/AUDIT) — what our chat already does vs each pattern, and what's missing
+- [Improvements plan](/posts/2026-04-25-chat-ui/chat-patterns/IMPROVEMENTS) — the prioritized work that came out of the audit
+
+The rest of this post is the high-level story.
+
+## Seven things every reference repo agreed on
+
+The most useful thing Claude found was the set of patterns where every codebase had landed in the same place. Where five teams independently converge, the answer is settled.
+
+**1. The server runs to completion, independent of the client.** The route handler does not stop when the user navigates away. The work survives in a mirror — Convex, Postgres, an event log, a server-buffered SSE — and is re-readable. Codex's `thread_id` replay, vercel/ai's `createResumableStreamContext`, and t3code's event log all enforce this. For a knowledge-base chat where answers can take twenty seconds and tabs get swapped constantly, this was non-negotiable for me.
+
+**2. Discriminated parts, not flat content.** A message is a list of typed parts: `text`, `reasoning`, `tool-<name>`, `source`, `data-<name>`, `file`. Each part carries its own state machine. Vercel's `UIMessage<META, DATA, TOOLS>` and TanStack's `MessagePart` discriminated union both pivot on this. A flat `content: string` is a dead end the moment your model can call tools.
+
+**3. Throttle the DOM, never the stream.** Tokens arrive at provider speed. UI commits batch to ≤20Hz via `experimental_throttle: 50`. Server cadence smoothing (`smoothStream({ delayInMs: 25, chunking: 'word' })`) is a separate, independent layer.
+
+**4. Memoize the prior list, render the tail live.** Every reference repo splits the message list into "committed" (memoized, never re-renders during streaming) and "active" (re-renders per token). Codex calls these `transcript` + `active_cell`. Vercel splits `messages.slice(0, -1)` from `messages[length-1]`. The tail is the entire per-token render budget. Everything else is paid for once.
+
+**5. Approval is a first-class state.** TanStack and Codex both model it as an event with a `call_id` that pairs request and response. The agent loop pauses, the UI shows a confirmation, the response resumes the loop. Don't bolt approval onto tool execution — separate them.
+
+**6. Event-sourced server, projected reads.** t3code stores immutable events; the sidebar is a "shell stream" projection, a single conversation is a "detail stream" projection. Two streams, no conflicts, replayable. Convex's reactive queries already approximate it for us.
+
+**7. Composition over configuration.** shadcn's `asChild` + `data-slot` + Slot pattern is what makes the `Conversation` / `Message` / `PromptInput` compound API in ai-elements work. You do not write a `<Chat>` component. You write small primitives.
+
+## The four streaming layers
+
+The single most useful realization was that streaming has four independent layers, each with its own cadence knob.
+
+```
+model.tokens()
+   │
+   ▼ (provider stream, raw cadence)
+streamText() ── experimental_transform: smoothStream(...) ── server cadence smoother
+   │
+   ▼ (UI message stream protocol)
+toUIMessageStreamResponse() ── SSE wire (text/event-stream)
+   │
+   ▼ (transport)
+DefaultChatTransport.processResponseStream() ── ReadableStream<UIMessageChunk>
+   │
+   ▼ (state machine)
+processUIMessageStream() ── reducer that mutates Chat.messages
+   │
+   ▼ (subscriptions)
+useChat({ experimental_throttle }) ── DOM-update throttler
+   │
+   ▼
+React commit
+```
+
+`smoothStream` smooths the server output so the client receives words at a controlled rate. `experimental_throttle` batches DOM commits so React doesn't render at 200Hz when tokens arrive at 200Hz. They look similar in effect; they are not the same lever. I had been treating them as alternatives. They aren't.
+
+Claude landed on `smoothStream({ delayInMs: 25, chunking: 'word' })` on the server and `experimental_throttle: 50` on the client. The server emits roughly two words per "burst"; the client commits them at 20Hz. Even on a fast model, the text appears as if a person is typing.
+
+## What each repo was best at
+
+**`vercel/ai`** is the canonical implementation. The `useChat` v6 transport API is what I ultimately conformed to. The `ToolLoopAgent`, `prepareStep`, and `stopWhen` primitives compose cleanly into multi-step agents. The thing that changed our route the most was `consumeSseStream`. It's a callback that receives a tee'd copy of the SSE stream, runs in parallel with the response, and survives client disconnect when paired with `waitUntil(after)`. Combined with `createResumableStreamContext`, it means a reconnecting tab can replay the exact tokens it missed instead of reading a 250ms-stale Convex snapshot.
+
+**`tanstack/ai`** is the headless version. The most useful thing it gave me was the wire format. TanStack's chunked SSE protocol treats every chunk as a typed JSON object — `TEXT_MESSAGE_CONTENT`, `TOOL_CALL_START`, `TOOL_CALL_ARGS`, `TOOL_CALL_END`, `THINKING_START`, `RUN_FINISHED` — discriminated from the start. AI SDK's `UIMessageChunk` is more expressive but harder to extend with provider-specific signals. I didn't switch to the TanStack protocol, but it's the one I mentally fall back on when reasoning about the wire independent of any framework.
+
+**`shadcn/ui`** is the composition layer. The `asChild` pattern (Radix's Slot) plus `data-slot` plus the Field / Sidebar / cmdk / Sonner primitives are what let ai-elements build a `Conversation` component you compose rather than configure. It's also where the OKLCH-based theming via CSS variables comes from, which I stole wholesale.
+
+**`t3code`** is where I learned about dual-stream architecture and event sourcing. Theo's agent has a "shell stream" (the sidebar of conversations) and a "detail stream" (one conversation's messages). They're separate projections of the same event log. They don't fight each other; they don't deadlock; either one can drop without affecting the other. Two strong patterns survive even without going full event-sourced: structural equality on store updates (drop no-op writes before they cause a render) and projections over the same store.
+
+**`openai/codex`** is the most foreign-looking codebase to a web developer because it's a TUI written in Rust, but the architecture transfers almost completely. Codex uses a bidirectional submission queue / event queue model: the client submits `Op::UserTurn`, `Op::ExecApproval`, `Op::Shutdown`; the server emits `EventMsg::TurnStarted`, `AgentMessageDelta`, `ExecCommandBegin`, `TurnComplete`, `TurnAborted`. Every event is strictly typed. Backpressure is a first-class signal — if the client falls behind, the server emits `Lagged { skipped: usize }` instead of silently buffering.
+
+The two biggest takeaways from Codex were:
+
+1. The active-cell + transcript split. The TUI renders the transcript (immutable, committed messages) once and only repaints the active cell on each delta. The transcript is paid for once. The active cell is the per-token budget. This is the same pattern as React's memoized prior list + streaming tail. It's just stated more clearly in a TUI than in a DOM, because there's no virtual DOM to hide it.
+
+2. Frame batching. Codex doesn't repaint per delta. It marks "needs redraw" and the next frame tick (~16ms) renders whatever the buffers say. Multiple deltas in one frame are coalesced. Once you see Codex doing it explicitly with a `schedule_frame` flag, the React equivalent stops feeling like an optimization and starts feeling like the actual contract.
+
+## Server-side resilience: the part I cared about most
+
+The user's hard constraint was: a person can submit a question, navigate to another wiki page, navigate back, and see the assistant message that landed while they were away.
+
+The previous architecture half-supported this. We had a Convex flusher that wrote a `streamingParts` mirror to the database during `onChunk`, so navigating away and coming back showed something. But the server's `streamText` was bound to the request lifecycle. When the client disconnected, the response stream closed, and the runtime killed the function. The model halted halfway. The flusher persisted whatever fragment we had at the moment of disconnect.
+
+Three changes fix this end-to-end:
+
+**Decouple the abort signal from `req.signal`.** Pass an explicit `AbortController` to `streamText`. Use `req.signal` only as one composable input via `AbortSignal.any([req.signal, userStopSignal.signal])`, plus a separate "user explicitly canceled" signal driven by a Convex `canceledAt` column polled every chunk. Stop button writes `canceledAt`; the route reads it (throttled to 1Hz) and aborts the model. Disconnects don't kill the model unless the user actually pressed Stop.
+
+**`waitUntil(after)` to keep the function alive past the response.** When the SSE response closes, the runtime would normally tear down the function. `waitUntil` says no, hold on, this work isn't done. The model finishes; the flusher writes; `onFinish` saves the assistant message; the streaming row clears.
+
+**`createResumableStreamContext` to make the SSE stream itself replayable.** This is the part I'd been missing. The server tees the SSE stream into a buffered, server-side replayable channel keyed by a `streamId`. A reconnecting client hits a GET endpoint, reads the active stream id from the conversation, and asks the resumable context for that stream's replay. The client sees the exact bytes from where it left off, not a 250ms-stale snapshot.
+
+Claude added an `activeRunId` column on the `conversations` table for the same problem at a different layer: every streaming write carries a `runId`, and Convex mutations reject writes whose `runId` doesn't match the current active run. A stale flush from a turn that was aborted thirty seconds ago can never clobber a new turn that's currently running. Without this, the symptom was hard to debug — sometimes the new response would briefly show fragments of the old one before being overwritten.
+
+The Convex mirror is still the durability layer for "the model finished, what did it say?" — it's how we hydrate on cold load. The resumable context is the durability layer for "the model is still running, what is it saying right now?" — it's how a reconnecting tab picks up the live stream.
+
+## Rendering: only one component re-renders per token
+
+ReactMarkdown re-parses the entire message string on each render. Add syntax highlighting and katex, and a single token landing causes O(message length) work. With a 200-message thread streaming at 80 tok/s, this is exactly where the page starts to feel sluggish.
+
+The discipline is straightforward but worth stating: only one component re-renders per token. The prior message list is wrapped in `React.memo` with a custom equality check that bails out unless the array length changed or the trailing message id changed. useChat's append-only updates keep prior message references stable, so a `lastA === lastB` check is a safe O(1) comparison. The streaming tail is not memoized. Inside the tail, each part renderer (text, reasoning, tool call, source link) is individually memoized so unchanged parts bail out even within the active message.
+
+Claude swapped ReactMarkdown for [Streamdown](https://github.com/vercel/ai/tree/main/packages/streamdown). It parses incrementally and caches per-block. Same component shape, drop-in replacement. The win is most visible mid-stream on long responses with code blocks: the prior code blocks don't re-tokenize when the trailing paragraph gains another word.
+
+For chat specifically, Streamdown gets two important flags. `mode="streaming"` while a message is active gives us the typewriter caret and tells Streamdown to expect partial markdown (incomplete fences, half-tables). `mode="static"` once the message is done freezes it — no more animation hooks, no more partial-parse logic. Claude also disabled `rehype-raw` for the chat path and enabled `skipHtml`: model output that includes raw HTML should render as text, not as an HTML fragment. The wiki rendering path keeps `rehype-raw` because that content is trusted.
+
+## What the codebase looks like now
+
+The end state is a chat page that's roughly fifty lines of JSX, composed from `<Conversation>`, `<PromptInput>`, our `<PriorMessages>` and `<StreamingMessage>`. Behind it:
+
+- `streamText` + `smoothStream({ delayInMs: 25, chunking: 'word' })` for server cadence
+- `experimental_throttle: 50` on `useChat` for DOM batching
+- `consumeSseStream` + `waitUntil(after)` for navigation resilience
+- `AbortSignal.any` composing `req.signal` and an explicit user-stop signal driven by Convex `canceledAt`
+- `runId` guard on every Convex write so stale flushes can't corrupt new runs
+- `activeRunId` + `streamingParts` (typed array, not stringified) on the conversation row
+- Server-generated `messageId` so `saveMessages` is idempotent under retries
+- Streamdown with `mode={isStreaming ? "streaming" : "static"}`, `skipHtml`, `controls={false}`
+- `<PriorMessages>` with `(length, last id)` equality + per-part `React.memo`
+- A 30-second stale-stream watchdog for the case where the server actually died
+
+Cross-tab works because both tabs subscribe to the same Convex query. The active-runner tab drives the stream; the passive tab renders the mirror. Hand off is automatic: when the active tab unmounts, the next mount picks up the resumable stream and becomes the renderer. Two tabs streaming simultaneously is impossible by construction (the runId prevents it).
+
+## What I didn't do
+
+I didn't add virtualization. None of the reference repos virtualize the message list by default; it's brittle with variable-height messages, and at our scale (50–100 messages per thread) the memoized prior list is fast enough.
+
+I didn't adopt event sourcing. t3code's pattern is the most robust persistence model Claude read, and it's also the heaviest. Convex approximates it well enough for now.
+
+I didn't switch to TanStack's chunked SSE protocol. The AI SDK's UI message stream is the right surface for this stack — `originalMessages`, `consumeSseStream`, `generateMessageId`, and the v6 transport API come for free.
+
+## What I learned
+
+Agentic coding a couple of years ago was glorified tab complete. Today, Claude Code can synthesize best practices and re-architect a full stack chat experience in about 5 hours. I'd say it was one shot, but my only intervention was to suggest that it re-read the five codebases when it finished, revisit the specs, and ensure that it's solution was comprehensive. Honestly, I'm not sure how much that second pass offered.

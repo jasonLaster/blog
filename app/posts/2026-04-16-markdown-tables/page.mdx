@@ -1,0 +1,214 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "Rewriting our markdown tables, twice",
+  description: "What it took to make a wiki full of dense markdown tables stop fighting itself — wikilink-pipe collisions, CSS oscillation, a manual width directive that became a build gate, and finally a content-aware layout solver clean enough to ship as an OSS package.",
+  date: "2026-04-16",
+  draft: true,
+  categories: ["UI"],
+});
+
+
+The wiki this app is wrapped around has roughly three thousand markdown pages and a heavy population of tables — paper catalogs with fifteen columns, genomics overviews, comparison matrices, week-by-week treatment dashboards. Tables are how we keep dense source-of-truth content navigable. They are also the single hardest layout problem in the app.
+
+The path to where we are now took two rewrites and a fairly long stretch of CSS, build pipeline, and content tooling fights in between. This post is mostly about why each previous version was wrong, because that's the part that changed how I think about prose-heavy tables. The end of the road is a published package with a layout-adapter pattern; the start of the road was much less dignified.
+
+## Pain point #1: Obsidian's pipe collides with the table delimiter
+
+Before any of the layout work, there was a content problem. The wiki source is an Obsidian vault. Obsidian's link syntax is `[[path|label]]`. Markdown's table syntax is `| col | col |`. These two pipes are the same character.
+
+```markdown
+| Source | Type | Key Content |
+|--------|------|-------------|
+| [[OCTO-vc - Noetik]] | Technical report | OCTO-vc: virtual cell foundation model... |
+```
+
+That table renders perfectly inside Obsidian, because Obsidian parses wikilinks before the table grammar. It renders catastrophically in any standard markdown renderer, because the grammar sees `[[OCTO-vc - Noetik]] ` followed by a column boundary. The moment a wikilink wanted a display label — `[[path|OCTO-vc]]` — the whole row's column count desynced. We had thirty-something pages where every "Title" column was actually two columns and every "Description" was wrong.
+
+The fix that landed on April 7 — [`Fix Noetik index: use standard markdown links in tables` (7befcf20)](https://github.com/jasonLaster/diana-tnbc/commit/7befcf20) — was to convert every wikilink inside a table to a plain markdown link with URL-encoded spaces. Then [`Document table link convention`](https://github.com/jasonLaster/diana-tnbc/commit/5a4554c8) added it to the writing guide. Then [`Add wikilinks-in-tables check to lint skill` (49e10ce9)](https://github.com/jasonLaster/diana-tnbc/commit/49e10ce9) added a build-time grep that would flag any `|.*[[.*|.*]].*|` pattern. Then [`Fix wikilinks in tables and update stale biopsy dates across 15 wiki pages` (18eacd7d)](https://github.com/jasonLaster/diana-tnbc/commit/18eacd7d) batch-converted the rest.
+
+This was a five-commit week, and not a single one of those commits touched the layout code. Long before tables had a layout problem, they had a *content* problem: the markdown that rendered correctly in the editor I was writing in did not render correctly on the web. There was no library I could install to make this stop. The lint check is the fix; the lint check is also why tables started to feel less like a feature and more like a substrate that needed scaffolding around it.
+
+## Pain point #2: every CSS knob fights every other knob
+
+Once the content was at least syntactically valid, the styling ran through about eight increasingly contradictory states.
+
+```
+Apr 11  display: block; overflow-x: auto; min-width: max-content;
+        + scroll-wrapper with gradient fade
+Apr 13  td { white-space: normal; max-width: 40ch }
+        th { white-space: nowrap }
+Apr 13  display: block; ... → display: table
+        (lets the table calculate width from content, but breaks horizontal scroll;
+         scroll-wrapper now has to be SSR-emitted to avoid a flash)
+Apr 14  table { width: 100% }
+        (otherwise narrow tables shrunk to min-content and floated awkwardly)
+Apr 14  scroll-wrapper:not([data-scrollable]) table[style*="table-layout"]
+            { margin: 0 auto }
+        (now non-overflowing fixed-width tables center themselves)
+Apr 16  th { white-space: normal }
+        (wide column titles were forcing the whole table wider than they had to)
+```
+
+Every single one of those changes was a real bug fix that immediately created a new bug. `display: block; overflow-x: auto` is the canonical way to make a markdown table scroll horizontally on mobile, and it works. It also disables the browser's `<table>` layout algorithm, which means cells no longer share width, which means columns stop aligning. Reverting to `display: table` restores alignment but breaks horizontal scroll, so you wrap the table in a `<div>` with the overflow on the wrapper — fine, except the wrapper has to exist in the SSR output, otherwise the page paints a non-scrolling table briefly before JS hydrates and inserts a wrapper around it. Adding `width: 100%` makes wide tables look right and narrow tables look wrong. Capping `td { max-width: 40ch }` makes long prose wrap and short numeric columns look tortured. None of these knobs is wrong. They just don't compose.
+
+The lesson I kept refusing to learn was that the browser's default `<table>` layout was never going to be enough on its own. It allocates width based on cell content with no concept of column *kind*. Numeric cells and prose cells fight for the same horizontal real estate, and the prose always loses, because the algorithm rewards short content. Catalog tables — the tables that actually mattered — came out unreadable: short numeric columns ate width, long prose columns wrapped into towers, and the user had to reach for the horizontal scrollbar to read a single row.
+
+## Why this isn't a solved problem in the OSS world
+
+It's tempting at this point to assume there must be a library. There isn't, and the reason there isn't is structural.
+
+Every popular OSS table library is built around a **column definition**. You hand TanStack Table or AG Grid or Material UI Table or any of the dozen others a `columns: ColumnDef<Row>[]` and a `data: Row[]` and they render a data grid with sort, filter, virtualization, and width control. They are all excellent at what they do. None of them speaks markdown.
+
+Markdown tables have no column definitions. There is no "column" in any data-modeling sense. There is `| Name | Description |` syntax that gets parsed into `<th>` and `<td>` elements with already-rendered prose, links, footnote references, inline code, and HTML inside them. The cell isn't a `string` or a `number` or a `Date` — it's an arbitrary fragment of rendered HTML. The page might have ten such tables, no two with the same shape, none of them under React's control because the markdown was rendered to HTML on the server.
+
+That is the gap:
+
+- **Data-grid libraries** assume column definitions and React-rendered cells. They cannot operate on a `<table>` element that already exists in the DOM.
+- **Markdown renderers** (`react-markdown`, `marked`, `remark`/`rehype`) emit raw `<table>` HTML with no opinion about how it should size itself.
+- **Component libraries** like shadcn/ui ship a `<Table>` shell with consistent borders and padding but stop at "your markdown content fits inside this." They have nothing to say about which columns should be wider or what to do when the table doesn't fit.
+- **Resize-handle micro-libraries** add column drag handles and end at the column drag handle — no content-aware widths, no expansion.
+
+What's actually missing is a layer that walks an already-rendered HTML table, reasons about the *kinds* of content in each column, and assigns widths from that reasoning. Plus an expansion strategy that knows about the host app's layout, since prose tables nest inside articles that nest inside multi-column workspace UIs. None of that is hard to build once you decide to build it. It's just nobody else's job, because nobody else's product is "render three thousand markdown pages where the tables have to stay readable."
+
+## Pain point #3: a manual directive that became a build gate
+
+Before I admitted that this needed a layout solver, I tried the cheaper version: let the human declare the widths.
+
+```markdown
+<!-- table-cols: 260, 120, 55, 130, 200, 50, 80, 70, 90, 220, 70, 130, 110, 110, 180 -->
+
+| Title | Authors | Year | Journal | Diana Relevance | ... |
+```
+
+A pre-pass over the markdown stripped the comment, remembered the table ordinal it preceded, and injected a `<colgroup>` into the rendered HTML. This landed in [`feat: table-cols directive for per-column min-widths` (703c77b8)](https://github.com/jasonLaster/diana-tnbc/commit/703c77b8). The first version of the implementation tried to walk the AST for the comment and discovered a small surprise: HTML comments are stripped by the remark/rehype pipeline before any post-processor can see them. The fix in [`fix: inject table colgroups from pre-scanned markdown directives` (b8cb57ce)](https://github.com/jasonLaster/diana-tnbc/commit/b8cb57ce) was to scan the *raw* markdown for directives, strip them from the source, and inject `<colgroup>` into the rendered HTML by matching ordinals.
+
+I added a [lint check for tables ≥5 columns missing a directive](https://github.com/jasonLaster/diana-tnbc/commit/374f2490). Then I [lowered the threshold to 5+ columns](https://github.com/jasonLaster/diana-tnbc/commit/0724d06a) and that flagged thirty tables. Then I added [auto-expand on overflow only](https://github.com/jasonLaster/diana-tnbc/commit/71bdd402) because "auto-expand on 5+ columns" was triggering for tables that already fit. Then I added a [blank-line-required convention](https://github.com/jasonLaster/diana-tnbc/commit/0b1f3cfc) and updated the writing skills to teach future ingest sessions about all of it.
+
+The fundamental problem was that hand-tuned widths don't compose. The same fifteen columns rendered differently depending on the actual content: one paper-catalog section had short titles, the next had paragraph-length titles. The directive was a single source of truth, but the cells weren't. Adding a column meant editing every table that used that section. Splitting one big section into two meant re-deriving the widths. New tables came in faster than I could hand-tune them, and the lint check turned an absent directive into a CI failure.
+
+The lint check was the moment I realized this had to go. We had reached the point where a tool was enforcing a manual workaround for a layout problem that should have been the layout engine's job. The directive era was a load-bearing workaround that we kept extending until the build started failing on absence.
+
+## What "content-aware" actually means
+
+The rewrite landed on April 16 in [`Build smart prose table expansion and QA coverage` (#3, e9f38aac)](https://github.com/jasonLaster/diana-tnbc/commit/e9f38aac). The body of the change is `smart-table-layout.ts`, an 846-line client-side layout solver that assigns widths based on what's actually in the cells.
+
+The solver runs in three stages:
+
+**1. Classify each column.** A column is `numeric` if at least 70% of its non-empty cells match `[\d\s,.%$€£()+\-/:]+`, `compact` if the average string length is under sixteen characters, and `text` otherwise. The class determines its width bounds: numeric (72px–160px), compact (96px–240px), text (144px–420px). This is the single most important judgment the engine makes, because it is what tells the rest of the system that "DOI" should not be allowed to win width pressure against "Diana Relevance".
+
+**2. Build a column model.** For each column we measure the no-wrap width of every cell with the column's actual font and padding, the longest single token (so the cell is at least wide enough not to split a word), and a couple of derived statistics. The minimum width is bounded below by the longest token. The preferred width comes from the 74th-percentile cell (for prose) or the 82nd-percentile cell (for compact and numeric). Both are clamped to the class bounds. Then we generate four candidate widths between min and preferred at the steps `[0, 0.38, 0.72, 1]`.
+
+**3. Greedy cost-minimization.** Start every column at its minimum width. At each step, for every column that has a wider candidate available, simulate growing it one step and compute the table's cost. Cost is `total wrapped height + width-pressure penalty + variance×0.35`. Pick the column whose next step gives the best ratio of cost-decrease to width-spent. Stop when no remaining step improves cost by more than 0.05. Then distribute any leftover available width by `flexWeight`, which favors prose columns over compact ones.
+
+The variance term is the unintuitive piece. Without it, the solver has no opinion about a layout where one column is 400px wide and another is 80px wide versus two columns each at 240px — both fit, both cost the same in height. But the two-at-240px version reads better on most tables. The `√variance × 0.35` penalty pulls the solver toward balanced layouts only when balanced doesn't cost more in wrapped lines.
+
+There's an escape hatch for the trivial cases: `shouldPreserveNativeAutoLayout` checks whether the table is two columns or fewer with short cells and isn't already overflowing. If so, the solver bails and lets the browser do its own thing. The solver is only worth running when the browser would do badly.
+
+Manual column resize is grafted on top: drag any header's right edge and the solver locks. The widths get persisted to `sessionStorage` keyed by the table's persistence key, restored on remount, and survive sidebar-driven rerenders. Once the user has a manual layout, the solver gets out of the way and stays out of the way.
+
+## Pretext for natural width
+
+The first version of the engine measured text widths with `canvas.measureText`. That worked, but canvas measurement and CSS line-breaking diverge enough that a 300px-wide cell measured by canvas could wrap in the actual DOM, and vice versa. The fix was switching to [`@chenglou/pretext`](https://github.com/chenglou/pretext), which segments text once, then computes natural widths and line counts from font intrinsics in a way that tracks the browser's layout much more closely than canvas does.
+
+```ts
+const prepared = getPreparedText(renderedText, metrics);
+const contentWidth = Math.max(1, roundWidth(width - metrics.paddingX));
+const { lineCount } = measureLineStats(prepared, contentWidth);
+measured = Math.ceil(lineCount * metrics.lineHeight + metrics.paddingY);
+```
+
+The canvas path is still the fallback for cells with `letter-spacing`, since pretext measures font intrinsics rather than CSS spacing. But for the 99% of cells that are normal prose, every height the engine reasons about is now the same height the browser would render, which means the cost function is reasoning about real wrapped lines, not approximations.
+
+`prepareWithSegments` is also memoized per `(font, text)` pair. The segmentation pass is the expensive part; once a string has been segmented, cycling through candidate widths is essentially free.
+
+## Why "expand" had to be rewritten
+
+The shadcn-era expand button used negative margins to bleed the wrapper outside the prose column. This was fine until the app grew sidebars. The desktop layout has a left navigation rail (256px expanded, 48px collapsed) and a right comments rail (variable, can be present or absent). A negative-margin bleed cannot see either of them.
+
+Two specific failures pushed the rewrite:
+
+1. With the left rail collapsed, expanded tables still started near the article column, leaving the released space empty.
+2. With the right rail open, expanded tables happily slid underneath it.
+
+The replacement is rail-to-rail geometry, attached to `document.body` as an out-of-flow overlay layer. The math is straightforward once you stop trying to clamp it to the prose box:
+
+```ts
+left  = leftRail  ? leftRail.right  + gutter : contentLeft
+right = rightRail ? rightRail.left  - gutter : contentRight
+width = right - left
+top   = shellRect.top + shellOffsetTop
+```
+
+The `shell` is the in-flow wrapper that owns the toggle and reserves height. The `wrapper` is the actual horizontal scroll container. On expand, the wrapper gets reparented into the overlay layer; the shell stays in place and reserves enough height to keep the article from collapsing. On collapse, the wrapper goes back into the shell.
+
+The piece that's easy to get wrong is the height reservation. An expanded table is often *shorter* than its collapsed version — the wider lane reduces wrapping. So the reservation has to be:
+
+```ts
+shell.minHeight = shellOffsetTop + expandedWrapperHeight
+```
+
+not the collapsed shell's height. Using the collapsed height is what makes the article leave a stale empty rectangle behind a now-shorter table. This was a real bug we shipped before the spec doc made it explicit.
+
+The QA matrix was the other thing the spec forced. Four sidebar combinations × the standard expand/collapse cycle is sixteen visual states, and we had been visually checking maybe four of them. [`table-expansion.spec.ts`](https://github.com/jasonLaster/diana-tnbc/blob/main/web/e2e/table-expansion.spec.ts) now drives all of them in Playwright, plus cases like "wheel scrolling over an expanded table moves the page underneath, not the table," "manual column widths survive a sidebar-driven rerender," and "full page refresh returns to a collapsed state with no orphaned overlay." The width assertions alone were never enough to catch the regressions we kept shipping.
+
+A handful of follow-up commits hardened the corners: the [overflow fade](https://github.com/jasonLaster/diana-tnbc/commit/88fc983d) needs to live on the wrapper inside the overlay layer, not on the shell, or it stays pinned to the prose width while the table expands past it; the [narrow-viewport fallback](https://github.com/jasonLaster/diana-tnbc/commit/0e30f905) collapses the toggle entirely below 1024px instead of showing an expansion control that has nowhere good to go; the [first-paint pass](https://github.com/jasonLaster/diana-tnbc/commit/35f08306) injects the wrapper, shell, and class names into the server-rendered HTML so the table is already styled before hydration runs.
+
+## Progressive enhancement, not React rendering
+
+The tables come from markdown. Markdown is rendered to HTML on the server. The smart-table machinery is client-side. The link between them is `SmartTableEnhancer`, a hidden sentinel component that runs `useLayoutEffect`, walks every `<table>` under its parent, and attaches the layout solver, resize handles, and expansion controls.
+
+This was deliberate. A React `<Table>` component would force every page to flow markdown through React rather than through the existing remark/rehype pipeline that produces server-rendered HTML for crawlers, RSS, and the no-JS path. The enhancer leaves the SSR HTML alone and progressively upgrades it after hydration. The server emits `<div data-smart-table-shell><div data-smart-table-wrapper><table data-smart-table>...</table></div></div>`, the CSS handles the basic styling, and JS only adds resize handles, content-aware widths, and the expansion overlay.
+
+The Playwright suite now includes [`table-examples.spec.ts`](https://github.com/jasonLaster/diana-tnbc/blob/main/web/e2e/table-examples.spec.ts) that asserts the no-JS path renders correctly — same shell, same fade, same toggle slot — even when JavaScript is disabled. This caught one real regression where the OSS extraction briefly broke server-side class injection.
+
+## Extracting the package
+
+The extraction happened in two passes. The first ([`d9a5f799`](https://github.com/jasonLaster/diana-tnbc/commit/d9a5f799)) just moved files into `packages/smart-table/` with a `bun` workspace import. Same code, same Tailwind classes, same hard-coded sidebar selectors — it was a workspace package, not a publishable one.
+
+The second pass — [`Generalize smart-table package for OSS use` (#4, 9928607e)](https://github.com/jasonLaster/diana-tnbc/commit/9928607e) — actually made it portable. Three things had to change:
+
+**1. CSS, not Tailwind.** The package shipped its own `styles.css` with class names like `.smart-table-shell` and `.smart-table-wrapper` and CSS variables (`--smart-table-surface`, `--smart-table-border-color`, `--smart-table-brand`, etc.) so a host app does not need to add `node_modules/@diana-tnbc/smart-table` to its Tailwind content scan. The `cn.ts` helper went away. The host app overrides theme by setting variables; everything else is named CSS.
+
+**2. The layout adapter.** All the rail-aware geometry that made the expansion overlay work on our app is *not* the package's job. It got hoisted into a `SmartTableLayoutAdapter` interface with five methods: `shouldUseOverlay`, `getVerticalScrollContainer`, `getOverlayLayout`, `getExpandedBleed`, `observeOverlayLayout`. The package ships a default viewport-padding adapter that does the simple thing on desktop. Our app implements its own adapter that knows about the navigation rail and the comments rail and observes their resize events. The same package now works for an app with no sidebars and for an app with two of them, without the package knowing which.
+
+```ts
+const adapter: SmartTableLayoutAdapter = {
+  shouldUseOverlay: () =>
+    window.matchMedia("(min-width: 1024px)").matches,
+  getOverlayLayout: ({ shell, shellOffsetTop }) => {
+    const left  = leftRail  ? leftRail.right  + 20 : 24;
+    const right = rightRail ? rightRail.left  - 20 : window.innerWidth - 24;
+    return { parent: document.body, left, top: shellRect.top + shellOffsetTop, width: right - left };
+  },
+  observeOverlayLayout: ({ onLayout }) => {
+    /* subscribe to rail resize, comments-pane open/close, etc. */
+  },
+};
+```
+
+**3. Examples as a corpus.** The package exports an `/examples` subpath with seven fixture tables — dense comparison, long prose, numeric monitoring, compact codes, overflow landscape, legacy directive cleanup, and a couple of edge cases. The host app's `/table-examples` route renders them; the package's own unit tests assert against the same definitions. When somebody else picks up the package, the examples are the QA suite they inherit.
+
+The published surface is two entry points: the components (`SmartTable*` plus `SmartTableEnhancer`) and the layout adapter types and helpers. The README is 200 lines, mostly worked examples. The `package.json` lists `@chenglou/pretext` as the only runtime dep and `react` / `react-dom` as peer deps. The `dist` build comes out of `tsup` with separate entry points and a `/styles.css` export.
+
+## What I'd tell anyone else doing this
+
+A few things I'd save you from learning the hard way:
+
+**Markdown that renders correctly in Obsidian does not render correctly on the web.** Wikilink pipes inside table cells are a silent column-count bug that won't show up until somebody loads the page. A grep-based lint check is worth the ten minutes it takes to write.
+
+**The CSS knobs do not compose.** Every fix to `display`, `white-space`, `min-width`, `max-width`, or `width` is going to immediately introduce a new failure mode somewhere else. If you find yourself oscillating between two settings on consecutive commits, that's the signal to stop chasing the CSS and start looking for a layout strategy that doesn't depend on the browser's `<table>` algorithm doing the right thing.
+
+**Don't make humans tune column widths.** It feels small until you're maintaining it across thirty tables. The directive era was a load-bearing workaround that we kept extending until the lint check turned it into a build failure. The signal that it had to die was the lint check, not the typing fatigue.
+
+**Measure with the engine your browser actually uses.** Canvas `measureText` is right within a few percent and wrong in exactly the cases that matter — the cells right at the wrap boundary. Pretext (or any equivalent that does real CSS line-breaking) is the difference between a solver that picks widths the browser then disagrees with and a solver whose chosen widths the browser respects.
+
+**Reserve the right height.** The expanded shell's height is not the collapsed shell's height. If your spec doesn't say this in plain English, somebody — possibly you — will ship the bug.
+
+**Keep the expansion lane aware of every rail in the layout.** Negative-margin bleed is a fine starting point and a terrible end state. The moment your app grows a second sidebar, the bleed math is wrong. The fix isn't "add another constant" — it's to ask the host app where the lane actually is.
+
+**Progressive enhancement is the right default for content-rendered tables.** A React component that owns the table forces every other content path through React. An enhancer that walks the existing DOM lets server rendering, RSS, no-JS browsing, and view-source all keep working unchanged.
+
+**The OSS extraction is mostly removing assumptions.** The actual layout engine didn't change much between the in-app version and the published package. What changed was every place we assumed Tailwind was scanning, every place we assumed our specific sidebars existed, and every place we hard-coded a selector that meant something only inside this codebase. Those assumptions are easy to add and easy to miss until somebody outside the repo tries to use the code.
+
+The package is at [`@diana-tnbc/smart-table`](https://github.com/jasonLaster/diana-tnbc/tree/main/packages/smart-table). The specs that drove the rewrite — [`table-expansion.md`](https://github.com/jasonLaster/diana-tnbc/blob/main/web/specs/table-expansion.md), [`table-expansion-qa.md`](https://github.com/jasonLaster/diana-tnbc/blob/main/web/specs/table-expansion-qa.md), [`table-expansion-testing.md`](https://github.com/jasonLaster/diana-tnbc/blob/main/web/specs/table-expansion-testing.md) — are the documents I'd hand somebody who wanted to understand why the second version of the code looks the way it does. The first version was a UI component fighting a content problem. The second version is a layout problem with a UI on top of it. That reframing — and the realization that nobody else in the OSS ecosystem was going to do it for us, because nobody else had thirty wikilink-broken tables to motivate it — is the whole post.
