@@ -8,11 +8,9 @@ export const metadata = postMetadata({
 });
 
 
-Over the past month, I've been working on a web frontend for an Obsidian knowledge base with approximately three thousand pages and nine million words, so at some point adding a chat ui made sense. It's also 2026, so not having a chat ui felt wrong :) 
+Building a bad full stack chat interface is not too hard. Making sure that the tokens arrive smoothly, esuring that responses are resilient across page refreshes, and that tool calls and other formatted blocks aren't janky as hell is another question.
 
-The V1 worked fine. It just didn't feel right. Tokens arrived in bursts. Refreshing mid-stream lost the response. Tool calls flickered. Assistant messages were duplicated. None of these were dramatic bugs. There were just too many of them.
-
-Instead of fixing each issue or pulling in an open source package, it felt better to simply have Claude read five codebases and see what was missing. 
+Fortunately, lots of smart people have worked on these problems and were generous enough to open source their solutions.
 
 - `vercel/ai` — the AI SDK source, plus the `examples/next` chatbot
 - `tanstack/ai` — the headless AI client + thin React adapter
@@ -20,7 +18,7 @@ Instead of fixing each issue or pulling in an open source package, it felt bette
 - `t3code` — Theo's coding agent, dual-stream + event-sourced
 - `openai/codex` — the Codex CLI, with its TUI architecture
 
-Claude wrote everything down as it went as set of spec files, with cross-repo citations and concrete code. 
+This post is a summary of the 15 best practices that Claude Code distilled after reading all five repos. Full disclosure, this post was also largely drafted by Claude Code as well, so take it with a grain of salt.
 
 ## The patterns
 
@@ -157,7 +155,7 @@ The end state is a chat page that's roughly fifty lines of JSX, composed from `<
 
 Cross-tab works because both tabs subscribe to the same Convex query. The active-runner tab drives the stream; the passive tab renders the mirror. Hand off is automatic: when the active tab unmounts, the next mount picks up the resumable stream and becomes the renderer. Two tabs streaming simultaneously is impossible by construction (the runId prevents it).
 
-## What I didn't do
+## What's not added
 
 I didn't add virtualization. None of the reference repos virtualize the message list by default; it's brittle with variable-height messages, and at our scale (50–100 messages per thread) the memoized prior list is fast enough.
 
@@ -167,4 +165,6 @@ I didn't switch to TanStack's chunked SSE protocol. The AI SDK's UI message stre
 
 ## What I learned
 
-Agentic coding a couple of years ago was glorified tab complete. Today, Claude Code can synthesize best practices and re-architect a full stack chat experience in about 5 hours. I'd say it was one shot, but my only intervention was to suggest that it re-read the five codebases when it finished, revisit the specs, and ensure that it's solution was comprehensive. Honestly, I'm not sure how much that second pass offered.
+Agentic coding a couple of years ago was glorified tab complete. Today, Claude Code can synthesize best practices and re-architect a full stack chat experience in about 5 hours. 
+
+I'd say the solution was one shot, but that's not quite true. I also asked Claude and Codex to re-read the five repos, revisit the specs, and ensure that it's solution was comprehensive. Honestly, I'm not sure how much that second pass offered.
