@@ -1,0 +1,118 @@
+import { postMetadata } from "../../utils/metadata";
+import {
+  VisualEssay,
+  VisualEssayGallery,
+  VisualEssayHero,
+  VisualEssayIntro,
+  VisualEssayProcess,
+  VisualEssayResult,
+  VisualEssayStep,
+  VisualEssaySteps,
+} from "../../components/visual-essay";
+import {
+  boardImages,
+  finishImage,
+  heroImage,
+  joineryImage,
+  jointImages,
+  millingImage,
+  processSteps,
+  sketchImage,
+  surfaceImages,
+} from "./essay-data";
+
+export const metadata = postMetadata({
+  title: "Making the dining table",
+  description:
+    "A draft visual essay prototype for a step-by-step dining table build.",
+  date: "2026-07-05",
+  categories: ["Woodworking"],
+  draft: true,
+});
+
+<VisualEssay>
+  <VisualEssayIntro>
+    I wanted the walkthrough to feel like a build log rather than a tutorial:
+    enough detail to remember the decisions, enough photos to feel the material
+    changing, and enough restraint that the writing still does the work.
+  </VisualEssayIntro>
+
+  <VisualEssayHero image={heroImage} />
+
+  <VisualEssayProcess steps={processSteps}>
+    <VisualEssaySteps>
+      <VisualEssayStep number="01" title="Sketch" image={sketchImage}>
+        The first pass was just proportions. I kept coming back to a simple
+        trestle base because it made the table feel sturdy without turning the
+        underside into a maze of aprons.
+      </VisualEssayStep>
+
+      <VisualEssayStep
+        number="02"
+        title="Mill"
+        image={millingImage}
+        imageFirst
+      >
+        The rough boards looked close at first, then immediately reminded me
+        that wood keeps its own schedule. I oversized the parts, let them move,
+        and came back for the final passes.
+      </VisualEssayStep>
+
+      <VisualEssayStep number="03" title="Join" image={joineryImage}>
+        Most of the build came down to quiet alignment work: marking faces,
+        keeping reference edges straight, and making sure each joint had a
+        little forgiveness before glue made everything permanent.
+      </VisualEssayStep>
+
+      <VisualEssayStep
+        number="04"
+        title="Finish"
+        image={finishImage}
+        imageFirst
+      >
+        The finish was the first moment the table stopped feeling like parts.
+        The grain got deeper, the surface softened, and all of the sanding
+        suddenly seemed worth it.
+      </VisualEssayStep>
+    </VisualEssaySteps>
+
+    <VisualEssayGallery
+      title="The boards had their own opinion"
+      images={boardImages}
+      previewLimit={5}
+    >
+      The early photos are useful because they show the project before it looked
+      inevitable. Every board had a different bow, cup, or twist, and the whole
+      design had to make room for the stock I actually had instead of the table
+      I had drawn.
+    </VisualEssayGallery>
+
+    <VisualEssayGallery
+      eyebrow="Along the way 02"
+      title="The joints were the real project"
+      images={jointImages}
+    >
+      The table only reads as simple because the fussy parts are hidden
+      underneath. I wanted this section to slow down and show the joinery tests,
+      layout marks, clamps, and underside, because that is where most of the
+      confidence came from.
+    </VisualEssayGallery>
+
+    <VisualEssayGallery
+      eyebrow="Along the way 03"
+      title="The surface changed everything"
+      images={surfaceImages}
+    >
+      By the time the table was assembled, the shape was decided but the feeling
+      was not. The last stretch was all touch: easing edges, chasing sanding
+      marks, wiping on oil, waiting, then deciding whether the surface felt
+      honest enough to stop.
+    </VisualEssayGallery>
+
+    <VisualEssayResult title="The result" image={heroImage}>
+      The table ended up plain in the way I hoped: useful first, warm second,
+      and only a little proud of itself. The visual essay format should let the
+      finished post keep that same energy.
+    </VisualEssayResult>
+  </VisualEssayProcess>
+</VisualEssay>
