@@ -115,7 +115,11 @@ export function extractMetadata(filePath: string): Metadata {
   };
 }
 
-async function getMDXData(dir: string) {
+type GetBlogPostsOptions = {
+  includeDrafts?: boolean;
+};
+
+async function getMDXData(dir: string, options: GetBlogPostsOptions = {}) {
   const mdxDirs = getMDXFiles(dir);
 
   const posts = await Promise.all(
@@ -127,7 +131,11 @@ async function getMDXData(dir: string) {
         // Use importMetadata instead of extractMetadata
         // const metadata = await importMetadata(filePath);
         const metadata = extractMetadata(filePath);
-        if (process.env.NODE_ENV === "production" && metadata.draft) {
+        if (
+          process.env.NODE_ENV === "production" &&
+          metadata.draft &&
+          !options.includeDrafts
+        ) {
           return null;
         }
 
@@ -159,6 +167,6 @@ async function getMDXData(dir: string) {
   return posts.filter((post) => post !== null);
 }
 
-export async function getBlogPosts() {
-  return getMDXData(path.join(process.cwd(), "app", "posts"));
+export async function getBlogPosts(options: GetBlogPostsOptions = {}) {
+  return getMDXData(path.join(process.cwd(), "app", "posts"), options);
 }

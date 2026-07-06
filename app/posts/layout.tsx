@@ -6,7 +6,7 @@ export default async function BlogLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const posts = (await getBlogPosts()).map((post) => ({
+  const posts = (await getBlogPosts({ includeDrafts: true })).map((post) => ({
     metadata: post.metadata,
     slug: post.slug,
   }));
