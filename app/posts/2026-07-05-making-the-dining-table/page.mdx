@@ -1,5 +1,25 @@
 import { postMetadata } from "../../utils/metadata";
-import { VisualEssay } from "../../components/VisualEssay";
+import {
+  VisualEssay,
+  VisualEssayGallery,
+  VisualEssayHero,
+  VisualEssayIntro,
+  VisualEssayProcess,
+  VisualEssayResult,
+  VisualEssayStep,
+  VisualEssaySteps,
+} from "../../components/visual-essay";
+import {
+  boardImages,
+  finishImage,
+  heroImage,
+  joineryImage,
+  jointImages,
+  millingImage,
+  processSteps,
+  sketchImage,
+  surfaceImages,
+} from "./essay-data";
 
 export const metadata = postMetadata({
   title: "Making the dining table",
@@ -10,159 +30,89 @@ export const metadata = postMetadata({
   draft: true,
 });
 
-<VisualEssay
-  intro="I wanted the walkthrough to feel like a build log rather than a tutorial: enough detail to remember the decisions, enough photos to feel the material changing, and enough restraint that the writing still does the work."
-  hero={{
-    src: "/dining-table/hero.jpg",
-    alt: "A finished handmade walnut dining table in a warm dining room",
-    caption:
-      "The finished table, a few weeks after the first rough boards came home.",
-  }}
-  chapters={[
-    {
-      number: "01",
-      title: "Sketch",
-      body: "The first pass was just proportions. I kept coming back to a simple trestle base because it made the table feel sturdy without turning the underside into a maze of aprons.",
-      image: {
-        src: "/dining-table/01-sketch.jpg",
-        alt: "Notebook sketch of a trestle dining table",
-      },
-    },
-    {
-      number: "02",
-      title: "Mill",
-      body: "The rough boards looked close at first, then immediately reminded me that wood keeps its own schedule. I oversized the parts, let them move, and came back for the final passes.",
-      image: {
-        src: "/dining-table/03-planing.jpg",
-        alt: "A walnut board being flattened on a jointer",
-      },
-    },
-    {
-      number: "03",
-      title: "Join",
-      body: "Most of the build came down to quiet alignment work: marking faces, keeping reference edges straight, and making sure each joint had a little forgiveness before glue made everything permanent.",
-      image: {
-        src: "/dining-table/06-tenon-layout.jpg",
-        alt: "Loose tenon layout marks on a walnut board",
-      },
-    },
-    {
-      number: "04",
-      title: "Finish",
-      body: "The finish was the first moment the table stopped feeling like parts. The grain got deeper, the surface softened, and all of the sanding suddenly seemed worth it.",
-      image: {
-        src: "/dining-table/10-oil-finish.jpg",
-        alt: "Oil being wiped onto a walnut tabletop",
-      },
-    },
-  ]}
-  alongSections={[
-    {
-      title: "The boards had their own opinion",
-      body: "The early photos are useful because they show the project before it looked inevitable. Every board had a different bow, cup, or twist, and the whole design had to make room for the stock I actually had instead of the table I had drawn.",
-      previewLimit: 5,
-      images: [
-        {
-          src: "/dining-table/02-rough-boards.jpg",
-          alt: "A stack of rough walnut boards on a workbench",
-        },
-        {
-          src: "/dining-table/04-table-saw.jpg",
-          alt: "A walnut board being ripped on a table saw",
-        },
-        {
-          src: "/dining-table/03-planing.jpg",
-          alt: "A walnut board on a jointer with shavings nearby",
-        },
-        {
-          src: "/dining-table/12-grain-closeup.jpg",
-          alt: "Close-up of walnut grain",
-        },
-        {
-          src: "/dining-table/01-sketch.jpg",
-          alt: "A notebook sketch of the dining table",
-        },
-        {
-          src: "/dining-table/05-joinery-test.jpg",
-          alt: "A test-fit walnut joint with a loose tenon",
-        },
-        {
-          src: "/dining-table/06-tenon-layout.jpg",
-          alt: "Tenon layout marks on walnut boards",
-        },
-        {
-          src: "/dining-table/07-glue-up.jpg",
-          alt: "Walnut tabletop glue-up held with long clamps",
-        },
-        {
-          src: "/dining-table/08-sanding.jpg",
-          alt: "A random orbit sander smoothing a walnut tabletop",
-        },
-        {
-          src: "/dining-table/09-edge-detail.jpg",
-          alt: "Close-up of an eased walnut tabletop edge",
-        },
-        {
-          src: "/dining-table/10-oil-finish.jpg",
-          alt: "Oil finish being wiped onto a walnut tabletop",
-        },
-        {
-          src: "/dining-table/11-base-assembly.jpg",
-          alt: "The underside and base assembly of the dining table",
-        },
-      ],
-    },
-    {
-      title: "The joints were the real project",
-      body: "The table only reads as simple because the fussy parts are hidden underneath. I wanted this section to slow down and show the joinery tests, layout marks, clamps, and underside, because that is where most of the confidence came from.",
-      images: [
-        {
-          src: "/dining-table/05-joinery-test.jpg",
-          alt: "A test-fit walnut joint with a loose tenon",
-        },
-        {
-          src: "/dining-table/06-tenon-layout.jpg",
-          alt: "Tenon layout marks on walnut boards",
-        },
-        {
-          src: "/dining-table/07-glue-up.jpg",
-          alt: "Walnut tabletop glue-up held with long clamps",
-        },
-        {
-          src: "/dining-table/11-base-assembly.jpg",
-          alt: "The underside and base assembly of the dining table",
-        },
-      ],
-    },
-    {
-      title: "The surface changed everything",
-      body: "By the time the table was assembled, the shape was decided but the feeling was not. The last stretch was all touch: easing edges, chasing sanding marks, wiping on oil, waiting, then deciding whether the surface felt honest enough to stop.",
-      images: [
-        {
-          src: "/dining-table/08-sanding.jpg",
-          alt: "A random orbit sander smoothing a walnut tabletop",
-        },
-        {
-          src: "/dining-table/09-edge-detail.jpg",
-          alt: "Close-up of an eased walnut tabletop edge",
-        },
-        {
-          src: "/dining-table/10-oil-finish.jpg",
-          alt: "Oil finish being wiped onto a walnut tabletop",
-        },
-        {
-          src: "/dining-table/12-grain-closeup.jpg",
-          alt: "Finished walnut grain close-up",
-        },
-      ],
-    },
-  ]}
-  result={{
-    title: "The result",
-    body: "The table ended up plain in the way I hoped: useful first, warm second, and only a little proud of itself. The visual essay format should let the finished post keep that same energy.",
-    image: {
-      src: "/dining-table/hero.jpg",
-      alt: "The finished handmade walnut dining table",
-    },
-  }}
-/>
+<VisualEssay>
+  <VisualEssayIntro>
+    I wanted the walkthrough to feel like a build log rather than a tutorial:
+    enough detail to remember the decisions, enough photos to feel the material
+    changing, and enough restraint that the writing still does the work.
+  </VisualEssayIntro>
+
+  <VisualEssayHero image={heroImage} />
+
+  <VisualEssayProcess steps={processSteps}>
+    <VisualEssaySteps>
+      <VisualEssayStep number="01" title="Sketch" image={sketchImage}>
+        The first pass was just proportions. I kept coming back to a simple
+        trestle base because it made the table feel sturdy without turning the
+        underside into a maze of aprons.
+      </VisualEssayStep>
+
+      <VisualEssayStep
+        number="02"
+        title="Mill"
+        image={millingImage}
+        imageFirst
+      >
+        The rough boards looked close at first, then immediately reminded me
+        that wood keeps its own schedule. I oversized the parts, let them move,
+        and came back for the final passes.
+      </VisualEssayStep>
+
+      <VisualEssayStep number="03" title="Join" image={joineryImage}>
+        Most of the build came down to quiet alignment work: marking faces,
+        keeping reference edges straight, and making sure each joint had a
+        little forgiveness before glue made everything permanent.
+      </VisualEssayStep>
+
+      <VisualEssayStep
+        number="04"
+        title="Finish"
+        image={finishImage}
+        imageFirst
+      >
+        The finish was the first moment the table stopped feeling like parts.
+        The grain got deeper, the surface softened, and all of the sanding
+        suddenly seemed worth it.
+      </VisualEssayStep>
+    </VisualEssaySteps>
+
+    <VisualEssayGallery
+      title="The boards had their own opinion"
+      images={boardImages}
+      previewLimit={5}
+    >
+      The early photos are useful because they show the project before it looked
+      inevitable. Every board had a different bow, cup, or twist, and the whole
+      design had to make room for the stock I actually had instead of the table
+      I had drawn.
+    </VisualEssayGallery>
+
+    <VisualEssayGallery
+      eyebrow="Along the way 02"
+      title="The joints were the real project"
+      images={jointImages}
+    >
+      The table only reads as simple because the fussy parts are hidden
+      underneath. I wanted this section to slow down and show the joinery tests,
+      layout marks, clamps, and underside, because that is where most of the
+      confidence came from.
+    </VisualEssayGallery>
+
+    <VisualEssayGallery
+      eyebrow="Along the way 03"
+      title="The surface changed everything"
+      images={surfaceImages}
+    >
+      By the time the table was assembled, the shape was decided but the feeling
+      was not. The last stretch was all touch: easing edges, chasing sanding
+      marks, wiping on oil, waiting, then deciding whether the surface felt
+      honest enough to stop.
+    </VisualEssayGallery>
+
+    <VisualEssayResult title="The result" image={heroImage}>
+      The table ended up plain in the way I hoped: useful first, warm second,
+      and only a little proud of itself. The visual essay format should let the
+      finished post keep that same energy.
+    </VisualEssayResult>
+  </VisualEssayProcess>
+</VisualEssay>
