@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Metadata } from "next";
 import { Footer } from "@/app/components/Footer";
+import { isProjectsPageEnabled } from "@/app/lib/feature-flags";
 import { themeEffect } from "@/app/theme-effect";
 import { ThemeToggle } from "@/app/theme-toggle";
 
@@ -41,6 +42,8 @@ export const metadata: Metadata = {
 };
 
 function Header() {
+  const projectsPageEnabled = isProjectsPageEnabled();
+
   return (
     <div className="flex flex-col gap-4 mb-8">
       <div className="flex  justify-between gap-4">
@@ -58,6 +61,14 @@ function Header() {
           >
             Posts
           </Link>
+          {projectsPageEnabled && (
+            <Link
+              className="hover:text-zinc-700 dark:hover:text-zinc-300"
+              href="/projects"
+            >
+              Projects
+            </Link>
+          )}
           <Link
             className="hover:text-zinc-700 dark:hover:text-zinc-300"
             href="/posts?notes=true"

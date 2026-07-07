@@ -1,4 +1,5 @@
 import { getBlogPosts } from './utils/post';
+import { isProjectsPageEnabled } from './lib/feature-flags';
 
 const otherUrls = [
   {
@@ -16,6 +17,14 @@ export default async function sitemap() {
     url: `https://jasonlaster.com/posts/${post.slug}`,
     lastModified: new Date(post.metadata.publishedAt).toISOString(),
   }));
+  const projectUrls = isProjectsPageEnabled()
+    ? [
+        {
+          url: 'https://jasonlaster.com/projects',
+          lastModified: new Date().toISOString(),
+        },
+      ]
+    : [];
 
-  return [...postUrls, ...otherUrls];
+  return [...postUrls, ...otherUrls, ...projectUrls];
 }
