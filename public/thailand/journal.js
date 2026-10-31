@@ -40,6 +40,19 @@ function inlineGallery(photos,place,all=photos,compact=false,videos=[]){
  const top=el('div','gallery-heading');top.append(el('span','',photos.length+' '+(photos.length===1?'photograph':'photographs')+(videos.length?' · '+videos.length+' '+(videos.length===1?'video':'videos'):'')),el('span','',videos.length?'Photos enlarge · videos play here':'Tap any image to enlarge ↗'));section.append(top);
  const grid=el('div','gallery-grid');let vi=0;photos.forEach((p,i)=>{grid.append(photoFigure(p,all,place,compact||i>2));if(videos.length&&i>=2&&i%2===0&&vi<videos.length)grid.append(videoFigure(videos[vi++]));});while(vi<videos.length)grid.append(videoFigure(videos[vi++]));section.append(grid);if(videos.length)section.classList.add('mixed-media');return section;
 }
+// Keep original public posts in their provider's frame, with attribution intact.
+function referenceEmbeds(refs,place){
+ const collection=el('div','reference-embeds');collection.setAttribute('aria-label',place+' reference photographs');
+ refs.forEach(ref=>{const figure=el('figure','reference-embed');const frame=el('iframe');frame.src=ref.embedUrl;frame.title='Reference photograph: '+ref.caption+' · '+ref.author;frame.loading='lazy';frame.referrerPolicy='strict-origin-when-cross-origin';frame.height='620';frame.setAttribute('allowfullscreen','');
+ const caption=el('figcaption');caption.append(el('span','','Reference · '+ref.caption),outbound(ref.author+' · original post',ref.source));figure.append(frame,caption);collection.append(figure);});return collection;
+}
+window.addEventListener('message',event=>{
+ if(event.origin!=='https://www.instagram.com')return;
+ let message;try{message=JSON.parse(event.data);}catch{return;}
+ if(message?.type!=='MEASURE')return;
+ const height=message.details?.height;if(!Number.isFinite(height)||height<200||height>2000)return;
+ for(const frame of document.querySelectorAll('.reference-embed iframe'))if(frame.contentWindow===event.source){frame.height=String(Math.ceil(height));break;}
+});
 function storyDetails(stop){
  const details=el('details','story-details');details.id='story-'+stop.id;details.append(el('summary','','Read the story & sources'));const prose=el('div','stop-prose');stop.paragraphs.forEach(p=>prose.append(el('p','',p)));if(stop.note)prose.append(el('p','evidence-note',stop.note));
  if(stop.sources?.length){const links=el('div','story-sources');stop.sources.forEach(s=>links.append(outbound(s.label,s.url)));prose.append(links);}details.append(prose);return details;
@@ -56,6 +69,7 @@ function renderStop(stop,photoIndex,venues){
  if(compact){intro.append(text,links);section.append(intro);if(all.length){const ordered=[hero,...all.filter(p=>p!==hero)],g=inlineGallery(ordered,stop.title,ordered,true,stop.videos||[]);g.id='gallery-'+stop.id;section.append(g);}}
  else {section.append(intro);const caption=el('div','stop-caption');caption.append(text,links);section.append(caption);if(all.length){const first=[hero];for(const id of stop.mosaicLead||[]){const p=all.find(x=>x.id===id||x.src===id);if(p&&!first.includes(p))first.push(p);}const ordered=[...first,...all.filter(p=>!first.includes(p))];const g=inlineGallery(ordered,stop.title,ordered,false,stop.videos||[]);g.id='gallery-'+stop.id;g.classList.add('image-collection',all.length<3?'paired-collection':'mosaic-collection');if(stop.layout==='landscape-led')g.classList.add('landscape-led');g.querySelector('figure')?.classList.add('lead-photo');if(stop.imagePosition)g.querySelector('img').style.objectPosition=stop.imagePosition;section.append(g);}}
 
+ if(v?.embeds?.length)section.append(referenceEmbeds(v.embeds,stop.title));
  section.append(storyDetails(stop));return section;
 }
 function renderDay(day,index,photoIndex,venues,continuation=false){
@@ -80,7 +94,7 @@ async function start(){
  if(data.namedNote){const n=data.namedNote,box=$('#named-note');box.append(el('p','eyebrow',n.label));const h=el('h2','',n.title);h.id='named-note-title';box.append(h,el('p','named-note-short',n.short));const details=el('details','story-details');details.append(el('summary','','Read more'));const prose=el('div','stop-prose');n.paragraphs.forEach(p=>prose.append(el('p','',p)));details.append(prose);box.append(details);const links=el('div','stop-links');n.links.forEach(l=>links.append(outbound(l.label,l.url)));box.append(links);}else $('#named-note').hidden=true;
  if(data.visualDetails){const detailPhotos=data.visualDetails.photoIds.map(id=>photoIndex.get(id));$('#visual-details-description').textContent=data.visualDetails.description;const g=inlineGallery(detailPhotos,data.visualDetails.title);g.id='gallery-visual-details';g.classList.add('detail-collection');$('#visual-details-gallery').append(g);}else $('#visual-details').hidden=true;data.unplaced.forEach(group=>{const photos=group.photoIds.map(id=>photoIndex.get(id));const heading=el('h3','unplaced-day-title',group.title);const g=inlineGallery(photos,group.title);g.id='unplaced-'+group.day;$('#unplaced-galleries').append(heading,g);});if(!data.unplaced.length)$('#unplaced').hidden=true;
  const contextDetails=$('#context');let loaded=false;contextDetails.addEventListener('toggle',()=>{if(contextDetails.open&&!loaded){const views=(data.context||[]).map((c,i)=>referencePhoto(c,{id:'context',title:'The wider view'},i));views.forEach(p=>$('#context-grid').append(photoFigure(p,views,'The wider view')));loaded=true;}});
- Object.values(data.venues).forEach(v=>(v.references||[]).forEach(r=>creditReference(r,v.title)));(data.context||[]).forEach(c=>creditReference(c,c.caption));
+ Object.values(data.venues).forEach(v=>{(v.references||[]).forEach(r=>creditReference(r,v.title));(v.embeds||[]).forEach(r=>{const p=el('p');p.append(document.createTextNode(v.title+' reference photograph — '+r.author+'. '),outbound('Original post',r.source),document.createTextNode('. Shown through the original Instagram embed; copyright remains with the creator.'));$('#credit-list').append(p);});});(data.context||[]).forEach(c=>creditReference(c,c.caption));
  if(location.hash){const target=document.getElementById(location.hash.slice(1));if(target?.tagName==='DETAILS')target.open=true;requestAnimationFrame(()=>target?.scrollIntoView({behavior:'instant'}));}
  const navLinks=[...$('#day-nav').querySelectorAll('a')],logDays=[...document.querySelectorAll('.log-day')];let navPending=false;const updateNav=()=>{let active=logDays[0];for(const day of logDays)if(day.getBoundingClientRect().top<=140)active=day;navLinks.forEach(a=>{if(a.hash==='#'+active.id.replace('-chiangmai',''))a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');});navPending=false;};window.addEventListener('scroll',()=>{if(!navPending){navPending=true;requestAnimationFrame(updateNav);}},{passive:true});updateNav();
 }

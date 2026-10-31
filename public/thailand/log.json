@@ -432,7 +432,7 @@
           "prominence": "primary",
           "headerPhoto": "photo_110",
           "imagePosition": "50% 0%",
-          "headerRatio": 1.0,
+          "headerRatio": 1,
           "mobileHeaderRatio": 0.85,
           "category": "sight",
           "mosaicLead": [
@@ -1781,7 +1781,23 @@
       "region": "Tha Phae · Chang Moi",
       "map": "https://www.google.com/maps/search/?api=1&query=%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B9%81%E0%B8%9E%20Rong%20Leuy%20Thapae%2063%20Tha%20Phae%20Road%20Chiang%20Mai",
       "official": "https://www.facebook.com/profile.php?id=100089227944249",
-      "references": []
+      "references": [],
+      "embeds": [
+        {
+          "embedUrl": "https://www.instagram.com/p/CpaBnCTvzLf/embed/",
+          "source": "https://www.instagram.com/p/CpaBnGXPt6Y/?img_index=2",
+          "caption": "The bar interior and its large red candle",
+          "author": "@thanyaluxs",
+          "rights": "Original public Instagram photo, displayed through its provider embed. Copyright remains with the creator."
+        },
+        {
+          "embedUrl": "https://www.instagram.com/p/CpaBnCLvutF/embed/",
+          "source": "https://www.instagram.com/p/CpaBnGXPt6Y/?img_index=4",
+          "caption": "Timber shelves, old machinery and the stairway",
+          "author": "@thanyaluxs",
+          "rights": "Original public Instagram photo, displayed through its provider embed. Copyright remains with the creator."
+        }
+      ]
     },
     "thipmanee-house": {
       "id": "thipmanee-house",
@@ -1840,6 +1856,32 @@
           "rights": null,
           "width": 2000,
           "height": 1125
+        },
+        {
+          "src": "/thailand/assets/reference-wat-pha-lat-chedi.webp",
+          "thumb": "/thailand/assets/reference-wat-pha-lat-chedi-thumb.webp",
+          "width": 1280,
+          "height": 720,
+          "caption": "Moss and carved stone around the chedi · reference photograph, 2015",
+          "alt": "A weathered chedi with moss-covered brick courses and carved figures at Wat Pha Lat. Reference photograph from 2015, not from this trip.",
+          "author": "Visions of Domino",
+          "source": "https://commons.wikimedia.org/wiki/File:Chiang_Mai_-_Wat_Palad_(23869618024).jpg",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop. "
+        },
+        {
+          "src": "/thailand/assets/reference-wat-pha-lat-city-view.webp",
+          "thumb": "/thailand/assets/reference-wat-pha-lat-city-view-thumb.webp",
+          "width": 1280,
+          "height": 720,
+          "caption": "A seated Buddha looking toward Chiang Mai · reference photograph, 2015",
+          "alt": "The back of a seated Buddha statue amid tropical greenery, looking toward the city from Wat Pha Lat. Reference photograph from 2015, not from this trip.",
+          "author": "Visions of Domino",
+          "source": "https://commons.wikimedia.org/wiki/File:Chiang_Mai_-_Wat_Palad_(24130015719).jpg",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop. "
         }
       ]
     },
@@ -1862,6 +1904,19 @@
           "rights": null,
           "width": 2000,
           "height": 1333
+        },
+        {
+          "src": "/thailand/assets/reference-doi-suthep-naga-stairs.webp",
+          "thumb": "/thailand/assets/reference-doi-suthep-naga-stairs-thumb.webp",
+          "width": 1280,
+          "height": 581,
+          "caption": "The naga-lined stairway · reference photograph, 2023",
+          "alt": "The long stairway to Wat Phra That Doi Suthep between colourful naga balustrades beneath trees. Reference photograph from 2023, not from this trip.",
+          "author": "Bienvenue en Thaïlande",
+          "source": "https://commons.wikimedia.org/wiki/File:Escalier_monumental_aux_nagas_2.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
         }
       ]
     },
@@ -1906,6 +1961,19 @@
           "source": "https://commons.wikimedia.org/wiki/File:Building_at_Jim_Thompson_House_photo_Don_Ramey_Logan.jpg",
           "license": "CC BY-SA 3.0",
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+        },
+        {
+          "src": "/thailand/assets/reference-jim-thompson-sitting-room.webp",
+          "thumb": "/thailand/assets/reference-jim-thompson-sitting-room-thumb.webp",
+          "width": 1200,
+          "height": 1600,
+          "caption": "The sitting room · reference photograph, 2024",
+          "alt": "A timber sitting room with a sofa, lamps, a rug and sculptures in wall niches at Jim Thompson House. Reference photograph from 2024, not from this trip.",
+          "author": "Abogomazova",
+          "source": "https://commons.wikimedia.org/wiki/File:Jim_Thompson_House_interiors-001.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop. "
         }
       ]
     },
@@ -1983,7 +2051,23 @@
       "region": "Tha Phae · 1888 teak mansion",
       "map": "https://www.google.com/maps/search/?api=1&query=Kiti+Panit+19+Tha+Phae+Road+Chiang+Mai",
       "official": "https://www.kitipanit.com/",
-      "references": []
+      "references": [],
+      "embeds": [
+        {
+          "embedUrl": "https://www.instagram.com/p/C9gggZlv1RM/embed/",
+          "source": "https://www.instagram.com/p/C9gggZlv1RM/",
+          "caption": "The restored teak facade at dusk",
+          "author": "Kiti Panit · @kitipanit",
+          "rights": "Original public Instagram post, displayed through its provider embed. Copyright remains with the creator."
+        },
+        {
+          "embedUrl": "https://www.instagram.com/p/C-ce4xSygxK/embed/",
+          "source": "https://www.instagram.com/p/C-ce4xSygxK/",
+          "caption": "The courtyard, balcony and evening lights",
+          "author": "Kiti Panit · @kitipanit",
+          "rights": "Original public Instagram post, displayed through its provider embed. Copyright remains with the creator."
+        }
+      ]
     },
     "dao-handmade": {
       "id": "dao-handmade",
