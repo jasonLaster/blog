@@ -18,11 +18,31 @@ $('#next-photo').addEventListener('click',()=>showPhoto(activeIndex+1));
 dialog.addEventListener('keydown',e=>{if(e.key==='Tab'){const buttons=[...dialog.querySelectorAll('button')].filter(b=>!b.hidden);const first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();showPhoto(activeIndex+(e.key==='ArrowRight'?1:-1));}});
 let touchStart=null;dialog.addEventListener('touchstart',e=>{touchStart=e.changedTouches[0].clientX;},{passive:true});dialog.addEventListener('touchend',e=>{const delta=e.changedTouches[0].clientX-touchStart;if(touchStart!==null&&Math.abs(delta)>70)showPhoto(activeIndex+(delta<0?1:-1));touchStart=null;},{passive:true});
 function outbound(text,url,cls=''){const a=el('a',cls,text+' ↗');a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
-function referencePhoto(ref,venue,index){return {id:'reference-'+venue.id+'-'+index,src:ref.src,thumb:ref.thumb||ref.src,alt:ref.alt||venue.title+' — reference photograph',caption:'Reference · '+(ref.caption||venue.title)+(ref.author?' · '+ref.author:''),href:ref.source,width:ref.width,height:ref.height,reference:true};}
+function referencePhoto(ref,venue,index){return {id:'reference-'+venue.id+'-'+index,src:ref.src,thumb:ref.thumb||ref.src,alt:ref.alt||venue.title+' — reference photograph',caption:'Reference · '+(ref.caption||venue.title)+(ref.author?' · '+ref.author:''),href:ref.source,width:ref.width,height:ref.height,crop:ref.crop,reference:true};}
+// Position the selected subject in the thumbnail rather than the image centre.
+// Recalculate against the actual tile shape so portrait and landscape mosaics
+// retain the same subject as their dimensions change.
+const thumbnailCrops=new WeakMap();
+const cropBreakpoint=window.matchMedia('(max-width: 800px)');
+function cropThumbnail(img){
+ const photo=thumbnailCrops.get(img),crop=photo?.crop;if(!crop)return;
+ const mobile=cropBreakpoint.matches;
+ const [x,y]=(mobile&&crop.mobileFocus)||crop.focus;
+ const fit=(mobile&&crop.mobileFit)||crop.fit||'cover';img.style.objectFit=fit;
+ if(fit==='contain'){img.style.objectPosition='50% 50%';return;}
+ const w=photo.width||img.naturalWidth,h=photo.height||img.naturalHeight;
+ const boxW=img.clientWidth,boxH=img.clientHeight;if(!w||!h||!boxW||!boxH)return;
+ const scale=Math.max(boxW/w,boxH/h),overflowX=w*scale-boxW,overflowY=h*scale-boxH;
+ const position=(focus,size,box,overflow)=>overflow>0.5?Math.max(0,Math.min(100,(size*focus/100-box/2)/overflow*100)):50;
+ img.style.objectPosition=position(x,w*scale,boxW,overflowX)+'% '+position(y,h*scale,boxH,overflowY)+'%';
+}
+const thumbnailObserver=new ResizeObserver(entries=>entries.forEach(({target})=>cropThumbnail(target)));
+cropBreakpoint.addEventListener('change',()=>document.querySelectorAll('.photo-button img').forEach(cropThumbnail));
 function photoFigure(photo,photos,place,thumbnail=false){
  const figure=el('figure');const button=el('button','photo-button');button.type='button';button.setAttribute('aria-label','Open photograph: '+photo.alt);
  const img=el('img');img.src=thumbnail?(photo.thumb||photo.src):photo.src;img.alt=photo.alt;img.loading='lazy';img.decoding='async';
  if(photo.width&&photo.height){img.width=photo.width;img.height=photo.height;}
+ if(photo.crop){thumbnailCrops.set(img,photo);img.dataset.cropReviewed='true';img.addEventListener('load',()=>cropThumbnail(img));thumbnailObserver.observe(img);}
  if(!thumbnail&&photo.thumb&&photo.width>600){img.srcset=photo.thumb+' '+Math.min(600,Math.round(600*photo.width/photo.height))+'w, '+photo.src+' '+photo.width+'w';img.sizes='(max-width: 800px) 88vw, 89vw';}
  button.append(img);const expand=el('span','expand-symbol','↗');expand.setAttribute('aria-hidden','true');button.append(expand);
  if(photo.reference)button.append(el('span','reference-badge','Reference'));
@@ -67,7 +87,7 @@ function renderStop(stop,photoIndex,venues){
  const intro=el('div','stop-intro');intro.append(head);const text=el('p','stop-summary',stop.short||stop.paragraphs[0]);
  const links=el('div','stop-links');if(v?.map)links.append(outbound('Location',v.map));if(v?.official)links.append(outbound('Website',v.official));
  if(compact){intro.append(text,links);section.append(intro);if(all.length){const ordered=[hero,...all.filter(p=>p!==hero)],g=inlineGallery(ordered,stop.title,ordered,true,stop.videos||[]);g.id='gallery-'+stop.id;section.append(g);}}
- else {section.append(intro);const caption=el('div','stop-caption');caption.append(text,links);section.append(caption);if(all.length){const first=[hero];for(const id of stop.mosaicLead||[]){const p=all.find(x=>x.id===id||x.src===id);if(p&&!first.includes(p))first.push(p);}const ordered=[...first,...all.filter(p=>!first.includes(p))];const g=inlineGallery(ordered,stop.title,ordered,false,stop.videos||[]);g.id='gallery-'+stop.id;g.classList.add('image-collection',all.length<3?'paired-collection':'mosaic-collection');if(stop.layout==='landscape-led')g.classList.add('landscape-led');g.querySelector('figure')?.classList.add('lead-photo');if(stop.imagePosition)g.querySelector('img').style.objectPosition=stop.imagePosition;section.append(g);}}
+ else {section.append(intro);const caption=el('div','stop-caption');caption.append(text,links);section.append(caption);if(all.length){const first=[hero];for(const id of stop.mosaicLead||[]){const p=all.find(x=>x.id===id||x.src===id);if(p&&!first.includes(p))first.push(p);}const ordered=[...first,...all.filter(p=>!first.includes(p))];const g=inlineGallery(ordered,stop.title,ordered,false,stop.videos||[]);g.id='gallery-'+stop.id;g.classList.add('image-collection',all.length<3?'paired-collection':'mosaic-collection');if(stop.layout==='landscape-led')g.classList.add('landscape-led');g.querySelector('figure')?.classList.add('lead-photo');section.append(g);}}
 
  if(v?.embeds?.length)section.append(referenceEmbeds(v.embeds,stop.title));
  section.append(storyDetails(stop));return section;

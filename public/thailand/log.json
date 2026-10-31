@@ -29,7 +29,6 @@
             }
           ],
           "prominence": "compact",
-          "imagePosition": "50% 50%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "stay"
@@ -51,7 +50,6 @@
           "short": "Sukhumvit’s restaurant-lined lanes and elevated trains frame the Bangkok beginning. Nearby Asok is the junction where BTS meets MRT beside Terminal 21; the evening’s own photographs stay closer to the table and the shop displays.",
           "prominence": "standard",
           "headerPhoto": "/thailand/assets/reference-asok-2019.webp",
-          "imagePosition": "50% 50%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "food",
@@ -116,7 +114,6 @@
           "short": "Six traditional teak houses became one remarkable Bangkok home. Reassembled in 1958–59 beside the Ban Krua weaving community, the compound joins Thai timber architecture, a tropical garden and Jim Thompson’s collection of Asian art.",
           "prominence": "primary",
           "headerPhoto": "photo_014",
-          "imagePosition": "50% 52%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "sight",
@@ -148,7 +145,6 @@
             }
           ],
           "prominence": "compact",
-          "imagePosition": "50% 50%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "stay"
@@ -186,7 +182,6 @@
               "url": "https://www.loveramics.co.uk/blogs/news/world-latte-art-championships-2017-32f6aa"
             }
           ],
-          "imagePosition": "50% 50%",
           "short": "ROAST8RY’s Nimman flagship connects the coffee bar to a wider roasting practice. Opened in 2022, it brings carefully sourced beans, espresso technique and latte-art expertise into a spare, contemporary space on Soi 17.",
           "prominence": "compact",
           "headerRatio": 1.5,
@@ -204,7 +199,6 @@
             "photo_037"
           ],
           "headerPhoto": "/thailand/assets/reference-huay-kaew.jpg",
-          "imagePosition": "50% 52%",
           "short": "At the foot of Doi Suthep, Huay Kaew marks the shift from Chiang Mai’s streets to forest. The roughly ten-metre cascade, rocky pools and shaded surroundings make it a small natural retreat close to the city.",
           "paragraphs": [
             "Your photographs remember the waterfall stop through its food stalls: preparation at a chopping block and a sleeping dog in the lane. Separately credited reference photographs add the cascade, footbridge and stream among the boulders.",
@@ -246,7 +240,6 @@
           "note": "High-confidence identification from your attached-shop description, the original lunch recommendation, address and photographed timing. No exact dish name is inferred.",
           "prominence": "compact",
           "headerPhoto": "photo_043",
-          "imagePosition": "50% 57%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "venue": "villa-nard",
@@ -309,7 +302,6 @@
           "short": "Nine buildings, two shared courtyards and a material palette of dark brick and reclaimed teak: Kalm makes architecture part of its craft programme. MOM, its Museum of Makers, houses textile collections and changing exhibitions.",
           "prominence": "primary",
           "headerPhoto": "photo_046",
-          "imagePosition": "50% 46%",
           "headerRatio": 1.15,
           "mobileHeaderRatio": 1.1,
           "category": "sight",
@@ -337,7 +329,6 @@
               "url": "https://www.tourismthailand.org/Restaurant/kao-soy-nimman"
             }
           ],
-          "imagePosition": "50% 32%",
           "short": "Khao soi is the centre of this Nimman Soi 7 restaurant, with several versions of the northern curry-noodle dish and a kitchen visible through a large window. The next day’s verdict: “I loved kao soy.”",
           "prominence": "primary",
           "headerPhoto": "photo_087",
@@ -366,7 +357,6 @@
             "photo_095",
             "photo_097"
           ],
-          "imagePosition": "50% 40%",
           "paragraphs": [
             "The evening browsing is small and tactile: a pastel mug, ceramic animals and the dinosaur plushie you singled out. The lit shopfront closes the sequence and supplies the name.",
             "Baan Crafts Nimman is a craft and gift shop on Nimmanhaemin Road, with smaller handmade objects that can be used or carried every day. Cloth accessories, soft figures and stationery put texture and handwork at a different scale from the furniture workshops south of the city.",
@@ -431,7 +421,6 @@
           "short": "Wat Pha Lat belongs to the old pilgrimage route up Doi Suthep. Its Burmese-style chedi stands in humid forest, where moss and ferns soften the masonry and a waterfall runs beside the temple.",
           "prominence": "primary",
           "headerPhoto": "photo_110",
-          "imagePosition": "50% 0%",
           "headerRatio": 1,
           "mobileHeaderRatio": 0.85,
           "category": "sight",
@@ -463,7 +452,6 @@
           "short": "A golden relic chedi crowns Chiang Mai’s mountain temple, reached by a ceremonial stairway guarded by naga. The shrine dates to 1383; its modern road is the legacy of Kruba Srivichai’s followers in 1935.",
           "prominence": "standard",
           "headerPhoto": "/thailand/assets/reference-doi-suthep.jpg",
-          "imagePosition": "50% 52%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "sight",
@@ -527,7 +515,6 @@
             }
           ],
           "headerRatio": 1.5,
-          "imagePosition": "50% 50%",
           "category": "food",
           "layout": "landscape-led"
         },
@@ -555,7 +542,6 @@
               "url": "https://www.facebook.com/profile.php?id=100089227944249"
             }
           ],
-          "imagePosition": "50% 48%",
           "note": "Photographed stop; no meal or drink is assigned to this venue.",
           "short": "A former sawmill turned northern Thai restaurant and music venue. Rong Leuy keeps traces of its working past in the décor, while the narrow Tha Phae frontage opens into a larger outdoor space behind.",
           "prominence": "compact",
@@ -658,7 +644,6 @@
           "short": "Baan Tawai is a working craft village, not a single showroom. In Hang Dong, south of Chiang Mai, furniture makers and woodcarvers turn timber into everyday tables, intricate reliefs, religious figures and mythical animals.",
           "prominence": "primary",
           "headerPhoto": "photo_184",
-          "imagePosition": "50% 34%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "note": "The village entry spans several workshops. Raintree and Dao are separately identified stops within that same visit; the carving clips are not assigned to Thipmanee House.",
@@ -697,7 +682,6 @@
           "short": "Raintree represents the practical furniture-making side of Baan Tawai: broad wood surfaces, iron bases and pieces made to fit a home. Its acacia-table catalogue turns natural grain and irregular edges into the main design features.",
           "prominence": "compact",
           "headerPhoto": "photo_193",
-          "imagePosition": "50% 51%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "shop"
@@ -767,7 +751,6 @@
               "url": "/thailand/assets/photo_228.webp"
             }
           ],
-          "imagePosition": "50% 49%",
           "note": "History above is paraphrased from the museum’s own photographed visitor display, with collection context from its official website. Open the gallery to read the display. The 13:22 sculpture-garden film is a probable match to this venue, based on the same garden details, carved posts and location as the entrance photographs.",
           "videos": [
             {
@@ -818,7 +801,6 @@
               "url": "https://fleetcnx.com/pages/about"
             }
           ],
-          "imagePosition": "50% 39%",
           "prominence": "compact",
           "headerPhoto": "photo_238",
           "headerRatio": 1.5,
@@ -851,7 +833,6 @@
               "url": "https://th.trip.com/moments/detail/chiang-mai-209-153897613/"
             }
           ],
-          "imagePosition": "50% 48%",
           "short": "Holy basil, chilli and a hot wok are the focus at KaPaO, a Soi 17 specialist serving stir-fries over rice or as fuller sets. Its open kitchen puts the cooking at the centre of the room.",
           "prominence": "compact",
           "headerPhoto": "photo_247",
@@ -889,7 +870,6 @@
           "short": "A northern Thai kitchen in Nimman, with regional curries, khao soi and chilli dips. The final dinner’s photographs focus on filled rolls, sliced pork and the little bowls of condiments alongside.",
           "prominence": "compact",
           "headerPhoto": "photo_263",
-          "imagePosition": null,
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "food",
@@ -919,7 +899,6 @@
             }
           ],
           "prominence": "compact",
-          "imagePosition": "50% 50%",
           "headerRatio": 1.5,
           "mobileHeaderRatio": 1.1,
           "category": "stay"
@@ -938,7 +917,13 @@
       "alt": "A whole fish topped with vegetables, served beside rice on a wooden table.",
       "date": "25 Oct · 19:06",
       "captured": "2026-10-25T19:06:41",
-      "time": "19:06"
+      "time": "19:06",
+      "crop": {
+        "focus": [
+          53,
+          63
+        ]
+      }
     },
     {
       "id": "photo_002",
@@ -950,7 +935,13 @@
       "alt": "Colourful cork handbags and purses displayed beneath a UNI CORK sign.",
       "date": "25 Oct · 20:06",
       "captured": "2026-10-25T20:06:52",
-      "time": "20:06"
+      "time": "20:06",
+      "crop": {
+        "focus": [
+          52,
+          60
+        ]
+      }
     },
     {
       "id": "photo_245",
@@ -962,7 +953,13 @@
       "alt": "A plated dish topped with crisp lotus-root slices and fresh herbs.",
       "date": "29 Oct · 15:47",
       "captured": "2026-10-29T15:47:35",
-      "time": "15:47"
+      "time": "15:47",
+      "crop": {
+        "focus": [
+          54,
+          64
+        ]
+      }
     },
     {
       "id": "photo_048",
@@ -975,7 +972,17 @@
       "date": "27 Oct · 16:04",
       "href": "https://www.kalmvillage.com/visit",
       "captured": "2026-10-27T16:04:25",
-      "time": "16:04"
+      "time": "16:04",
+      "crop": {
+        "focus": [
+          52,
+          49
+        ],
+        "mobileFocus": [
+          51,
+          56
+        ]
+      }
     },
     {
       "id": "photo_076",
@@ -988,7 +995,13 @@
       "date": "27 Oct · 10:25",
       "href": "https://roast8rycoffee.com/",
       "captured": "2026-10-27T10:25:14",
-      "time": "10:25"
+      "time": "10:25",
+      "crop": {
+        "focus": [
+          55,
+          37
+        ]
+      }
     },
     {
       "id": "photo_095",
@@ -1000,7 +1013,13 @@
       "alt": "Stuffed animals and textiles arranged on wooden shelves in a Nimman shop.",
       "date": "27 Oct · 20:08",
       "captured": "2026-10-27T20:08:27",
-      "time": "20:08"
+      "time": "20:08",
+      "crop": {
+        "focus": [
+          60,
+          47
+        ]
+      }
     },
     {
       "id": "photo_154",
@@ -1012,7 +1031,13 @@
       "alt": "A small wooden console table outside a leafy shop.",
       "date": "28 Oct · 13:19",
       "captured": "2026-10-28T13:19:14",
-      "time": "13:19"
+      "time": "13:19",
+      "crop": {
+        "focus": [
+          48,
+          46
+        ]
+      }
     },
     {
       "id": "photo_059",
@@ -1024,7 +1049,14 @@
       "alt": "A tall, curving sculptural form on a plinth between two garden-facing windows at Kalm Village.",
       "date": "27 Oct · 16:11",
       "captured": "2026-10-27T16:11:59",
-      "time": "16:11"
+      "time": "16:11",
+      "crop": {
+        "focus": [
+          53,
+          43
+        ],
+        "fit": "contain"
+      }
     },
     {
       "id": "photo_261",
@@ -1036,7 +1068,13 @@
       "alt": "An irregular stone supporting a flat metal surface beside larger rocks and concrete ledges in Nimman.",
       "date": "29 Oct · 16:44",
       "captured": "2026-10-29T16:44:15",
-      "time": "16:44"
+      "time": "16:44",
+      "crop": {
+        "focus": [
+          47,
+          61
+        ]
+      }
     },
     {
       "id": "photo_169",
@@ -1049,7 +1087,13 @@
       "date": "28 Oct · 20:25",
       "href": "https://www.google.com/maps/search/?api=1&query=Rong%20Leuy%20Thapae%20Chiang%20Mai",
       "captured": "2026-10-28T20:25:18",
-      "time": "20:25"
+      "time": "20:25",
+      "crop": {
+        "focus": [
+          53,
+          32
+        ]
+      }
     },
     {
       "id": "photo_087",
@@ -1061,7 +1105,17 @@
       "alt": "The carved KAO SOY NIMMAN sign above its dining courtyard.",
       "date": "27 Oct · 19:41",
       "captured": "2026-10-27T19:41:06",
-      "time": "19:41"
+      "time": "19:41",
+      "crop": {
+        "focus": [
+          52,
+          23
+        ],
+        "mobileFocus": [
+          52,
+          36
+        ]
+      }
     },
     {
       "id": "photo_088",
@@ -1073,7 +1127,17 @@
       "alt": "The illuminated dining courtyard at Kao Soy Nimman.",
       "date": "27 Oct · 19:41",
       "captured": "2026-10-27T19:41:15",
-      "time": "19:41"
+      "time": "19:41",
+      "crop": {
+        "focus": [
+          48,
+          42
+        ],
+        "mobileFocus": [
+          44,
+          48
+        ]
+      }
     },
     {
       "id": "photo_043",
@@ -1085,7 +1149,17 @@
       "alt": "Shrimp, noodles, avocado and vegetables arranged beside a bowl of sauce and an orange drink.",
       "date": "27 Oct · 13:05",
       "captured": "2026-10-27T13:05:40",
-      "time": "13:05"
+      "time": "13:05",
+      "crop": {
+        "focus": [
+          50,
+          57
+        ],
+        "mobileFocus": [
+          49,
+          58
+        ]
+      }
     },
     {
       "id": "photo_037",
@@ -1097,7 +1171,17 @@
       "alt": "Food being prepared with skewers at a small market stall.",
       "date": "27 Oct · 12:18",
       "captured": "2026-10-27T12:18:34",
-      "time": "12:18"
+      "time": "12:18",
+      "crop": {
+        "focus": [
+          51,
+          44
+        ],
+        "mobileFocus": [
+          45,
+          49
+        ]
+      }
     },
     {
       "id": "photo_039",
@@ -1109,7 +1193,17 @@
       "alt": "A food-stall lane near Huay Kaew Waterfall, with a fluffy dog asleep on the pavement.",
       "date": "27 Oct · 12:26",
       "captured": "2026-10-27T12:26:10",
-      "time": "12:26"
+      "time": "12:26",
+      "crop": {
+        "focus": [
+          52,
+          65
+        ],
+        "mobileFocus": [
+          51,
+          58
+        ]
+      }
     },
     {
       "id": "photo_159",
@@ -1121,7 +1215,13 @@
       "alt": "A clay bowl of richly coloured curry topped with fried shallots.",
       "date": "28 Oct · 19:09",
       "captured": "2026-10-28T19:09:18",
-      "time": "19:09"
+      "time": "19:09",
+      "crop": {
+        "focus": [
+          50,
+          57
+        ]
+      }
     },
     {
       "id": "photo_160",
@@ -1133,7 +1233,13 @@
       "alt": "A plate of stir-fried greens and egg on a dark wooden table.",
       "date": "28 Oct · 19:10",
       "captured": "2026-10-28T19:10:45",
-      "time": "19:10"
+      "time": "19:10",
+      "crop": {
+        "focus": [
+          51,
+          55
+        ]
+      }
     },
     {
       "id": "photo_168",
@@ -1145,7 +1251,13 @@
       "alt": "A wood-lined restaurant space with warm lights and red hanging decoration.",
       "date": "28 Oct · 20:25",
       "captured": "2026-10-28T20:25:06",
-      "time": "20:25"
+      "time": "20:25",
+      "crop": {
+        "focus": [
+          63,
+          46
+        ]
+      }
     },
     {
       "id": "photo_242",
@@ -1157,7 +1269,17 @@
       "alt": "A fried egg with a crisp edge over rice and a stir-fried dish.",
       "date": "29 Oct · 15:44",
       "captured": "2026-10-29T15:44:48",
-      "time": "15:44"
+      "time": "15:44",
+      "crop": {
+        "focus": [
+          53,
+          66
+        ],
+        "mobileFocus": [
+          50,
+          68
+        ]
+      }
     },
     {
       "id": "photo_247",
@@ -1169,7 +1291,13 @@
       "alt": "The KaPaO Thai Basil Stir-Fried sign above a small wooden restaurant in Nimman.",
       "date": "29 Oct · 16:01",
       "captured": "2026-10-29T16:01:32",
-      "time": "16:01"
+      "time": "16:01",
+      "crop": {
+        "focus": [
+          51,
+          53
+        ]
+      }
     },
     {
       "id": "photo_262",
@@ -1181,7 +1309,17 @@
       "alt": "Filled rolls arranged on lettuce with a small dipping bowl at Huen Ui Phat.",
       "date": "29 Oct · 20:09",
       "captured": "2026-10-29T20:09:09",
-      "time": "20:09"
+      "time": "20:09",
+      "crop": {
+        "focus": [
+          49,
+          57
+        ],
+        "mobileFocus": [
+          49,
+          56
+        ]
+      }
     },
     {
       "id": "photo_263",
@@ -1193,7 +1331,13 @@
       "alt": "Sliced pork on a banana-leaf-lined platter with two black spoon-shaped condiment bowls at Huen Ui Phat.",
       "date": "29 Oct · 20:09",
       "captured": "2026-10-29T20:09:11",
-      "time": "20:09"
+      "time": "20:09",
+      "crop": {
+        "focus": [
+          50,
+          60
+        ]
+      }
     },
     {
       "id": "photo_111",
@@ -1205,7 +1349,17 @@
       "alt": "Tiled temple roofs, hanging lanterns and lush plants beneath the forest canopy at Wat Pha Lat.",
       "date": "28 Oct · 09:37",
       "captured": "2026-10-28T09:37:33",
-      "time": "09:37"
+      "time": "09:37",
+      "crop": {
+        "focus": [
+          52,
+          61
+        ],
+        "mobileFocus": [
+          58,
+          61
+        ]
+      }
     },
     {
       "id": "photo_145",
@@ -1218,7 +1372,17 @@
       "date": "28 Oct · 10:51",
       "href": "https://www.google.com/maps/search/?api=1&query=Wat%20Phra%20That%20Doi%20Suthep",
       "captured": "2026-10-28T10:51:41",
-      "time": "10:51"
+      "time": "10:51",
+      "crop": {
+        "focus": [
+          61,
+          55
+        ],
+        "mobileFocus": [
+          60,
+          47
+        ]
+      }
     },
     {
       "id": "photo_147",
@@ -1230,7 +1394,13 @@
       "alt": "A market display of small wooden animal figures on blue cloth in the Doi Suthep area.",
       "date": "28 Oct · 11:52",
       "captured": "2026-10-28T11:52:48",
-      "time": "11:52"
+      "time": "11:52",
+      "crop": {
+        "focus": [
+          54,
+          54
+        ]
+      }
     },
     {
       "id": "photo_137",
@@ -1242,7 +1412,17 @@
       "alt": "Green branches above a weathered stone arch at Wat Pha Lat.",
       "date": "28 Oct · 10:01",
       "captured": "2026-10-28T10:01:01",
-      "time": "10:01"
+      "time": "10:01",
+      "crop": {
+        "focus": [
+          53,
+          72
+        ],
+        "mobileFocus": [
+          47,
+          66
+        ]
+      }
     },
     {
       "id": "photo_103",
@@ -1254,7 +1434,17 @@
       "alt": "A pale stone guardian figure beneath trees at Wat Pha Lat.",
       "date": "28 Oct · 09:10",
       "captured": "2026-10-28T09:10:37",
-      "time": "09:10"
+      "time": "09:10",
+      "crop": {
+        "focus": [
+          52,
+          20
+        ],
+        "mobileFocus": [
+          48,
+          42
+        ]
+      }
     },
     {
       "id": "photo_108",
@@ -1266,7 +1456,17 @@
       "alt": "A white seated Buddha in a warm timber-lined hall at Wat Pha Lat.",
       "date": "28 Oct · 09:36",
       "captured": "2026-10-28T09:36:09",
-      "time": "09:36"
+      "time": "09:36",
+      "crop": {
+        "focus": [
+          52,
+          32
+        ],
+        "mobileFocus": [
+          50,
+          45
+        ]
+      }
     },
     {
       "id": "photo_118",
@@ -1278,7 +1478,17 @@
       "alt": "A pale standing Buddha beside a brick shrine at Wat Pha Lat.",
       "date": "28 Oct · 09:40",
       "captured": "2026-10-28T09:40:38",
-      "time": "09:40"
+      "time": "09:40",
+      "crop": {
+        "focus": [
+          57,
+          25
+        ],
+        "mobileFocus": [
+          58,
+          45
+        ]
+      }
     },
     {
       "id": "photo_127",
@@ -1290,7 +1500,17 @@
       "alt": "A small ornate shrine with seated Buddha figures amid green foliage at Wat Pha Lat.",
       "date": "28 Oct · 09:45",
       "captured": "2026-10-28T09:45:25",
-      "time": "09:45"
+      "time": "09:45",
+      "crop": {
+        "focus": [
+          52,
+          61
+        ],
+        "mobileFocus": [
+          50,
+          52
+        ]
+      }
     },
     {
       "id": "photo_193",
@@ -1302,7 +1522,17 @@
       "alt": "A solid wooden dining table and chairs in a Baan Tawai furniture showroom.",
       "date": "29 Oct · 12:39",
       "captured": "2026-10-29T12:39:22",
-      "time": "12:39"
+      "time": "12:39",
+      "crop": {
+        "focus": [
+          53,
+          62
+        ],
+        "mobileFocus": [
+          49,
+          60
+        ]
+      }
     },
     {
       "id": "photo_174",
@@ -1314,7 +1544,17 @@
       "alt": "A small wooden turtle sculpture on a polished wooden table.",
       "date": "29 Oct · 11:36",
       "captured": "2026-10-29T11:36:16",
-      "time": "11:36"
+      "time": "11:36",
+      "crop": {
+        "focus": [
+          53,
+          32
+        ],
+        "mobileFocus": [
+          51,
+          39
+        ]
+      }
     },
     {
       "id": "photo_179",
@@ -1326,7 +1566,17 @@
       "alt": "A small round wooden side table with an angular cantilevered base.",
       "date": "29 Oct · 11:38",
       "captured": "2026-10-29T11:38:48",
-      "time": "11:38"
+      "time": "11:38",
+      "crop": {
+        "focus": [
+          48,
+          33
+        ],
+        "mobileFocus": [
+          48,
+          44
+        ]
+      }
     },
     {
       "id": "photo_216",
@@ -1338,7 +1588,13 @@
       "alt": "A carved wooden winged horse, or Pegasus, displayed in a Baan Tawai shop.",
       "date": "29 Oct · 13:10",
       "captured": "2026-10-29T13:10:36",
-      "time": "13:10"
+      "time": "13:10",
+      "crop": {
+        "focus": [
+          43,
+          42
+        ]
+      }
     },
     {
       "id": "photo_233",
@@ -1350,7 +1606,13 @@
       "alt": "A carved golden gateway beneath trees at Thipmanee House, with part of the venue name above the entrance.",
       "date": "29 Oct · 14:03",
       "captured": "2026-10-29T14:03:09",
-      "time": "14:03"
+      "time": "14:03",
+      "crop": {
+        "focus": [
+          52,
+          65
+        ]
+      }
     },
     {
       "id": "photo_237",
@@ -1362,7 +1624,17 @@
       "alt": "Lush plants and tall carved wooden figures at the entrance to Thipmanee House.",
       "date": "29 Oct · 14:10",
       "captured": "2026-10-29T14:10:36",
-      "time": "14:10"
+      "time": "14:10",
+      "crop": {
+        "focus": [
+          50,
+          43
+        ],
+        "mobileFocus": [
+          49,
+          43
+        ]
+      }
     },
     {
       "id": "photo_236",
@@ -1374,7 +1646,14 @@
       "alt": "A bilingual sign identifying Thipmanee House and the Ganesha Wood Carving Museum.",
       "date": "29 Oct · 14:10",
       "captured": "2026-10-29T14:10:30",
-      "time": "14:10"
+      "time": "14:10",
+      "crop": {
+        "focus": [
+          50,
+          50
+        ],
+        "fit": "contain"
+      }
     },
     {
       "id": "photo_009",
@@ -1386,7 +1665,17 @@
       "alt": "An ornate antique cabinet with glazed doors and carved floral decoration.",
       "date": "26 Oct · 13:51",
       "captured": "2026-10-26T13:51:58",
-      "time": "13:51"
+      "time": "13:51",
+      "crop": {
+        "focus": [
+          50,
+          38
+        ],
+        "mobileFocus": [
+          50,
+          44
+        ]
+      }
     },
     {
       "id": "photo_003",
@@ -1398,7 +1687,17 @@
       "alt": "Decorative green ceramic bowls and a lidded vessel in a display cabinet.",
       "date": "26 Oct · 13:42",
       "captured": "2026-10-26T13:42:21",
-      "time": "13:42"
+      "time": "13:42",
+      "crop": {
+        "focus": [
+          52,
+          40
+        ],
+        "mobileFocus": [
+          54,
+          45
+        ]
+      }
     },
     {
       "id": "photo_022",
@@ -1410,7 +1709,13 @@
       "alt": "A small framed drawing on softly coloured paper in an exhibition.",
       "date": "26 Oct · 14:07",
       "captured": "2026-10-26T14:07:13",
-      "time": "14:07"
+      "time": "14:07",
+      "crop": {
+        "focus": [
+          51,
+          50
+        ]
+      }
     },
     {
       "id": "photo_033",
@@ -1422,7 +1727,17 @@
       "alt": "A plush elephant with a raised trunk and a readable Jim Thompson label.",
       "date": "26 Oct · 14:10",
       "captured": "2026-10-26T14:10:04",
-      "time": "14:10"
+      "time": "14:10",
+      "crop": {
+        "focus": [
+          50,
+          32
+        ],
+        "mobileFocus": [
+          49,
+          46
+        ]
+      }
     },
     {
       "id": "photo_199",
@@ -1434,7 +1749,14 @@
       "alt": "A Rain Tree Furniture catalogue showing table designs, dimensions, acacia wood tops and iron legs.",
       "captured": "2026-10-29T12:40:59",
       "time": "12:40",
-      "date": "29 Oct · 12:40"
+      "date": "29 Oct · 12:40",
+      "crop": {
+        "focus": [
+          50,
+          50
+        ],
+        "fit": "contain"
+      }
     },
     {
       "id": "photo_209",
@@ -1446,7 +1768,17 @@
       "alt": "An open-front woodcarving stall with large relief panels, carved figures, tools and wood shavings.",
       "date": "29 Oct · 12:52",
       "captured": "2026-10-29T12:52:59",
-      "time": "12:52"
+      "time": "12:52",
+      "crop": {
+        "focus": [
+          42,
+          37
+        ],
+        "mobileFocus": [
+          45,
+          45
+        ]
+      }
     },
     {
       "id": "photo_238",
@@ -1458,7 +1790,13 @@
       "alt": "A blue scooter parked in front of the clearly named Fleet Motorbike rental storefront.",
       "date": "29 Oct · 15:35",
       "captured": "2026-10-29T15:35:28",
-      "time": "15:35"
+      "time": "15:35",
+      "crop": {
+        "focus": [
+          50,
+          45
+        ]
+      }
     },
     {
       "id": "photo_241",
@@ -1470,7 +1808,13 @@
       "alt": "The circular Fleet Motorbike sign outside its Nimman shop.",
       "date": "29 Oct · 15:36",
       "captured": "2026-10-29T15:36:11",
-      "time": "15:36"
+      "time": "15:36",
+      "crop": {
+        "focus": [
+          39,
+          39
+        ]
+      }
     },
     {
       "id": "photo_014",
@@ -1482,7 +1826,13 @@
       "caption": "A pendant light above the red veranda · Jim Thompson.",
       "date": "26 Oct · 14:00",
       "captured": "2026-10-26T14:00:53",
-      "time": "14:00"
+      "time": "14:00",
+      "crop": {
+        "focus": [
+          54,
+          34
+        ]
+      }
     },
     {
       "id": "photo_016",
@@ -1494,7 +1844,17 @@
       "caption": "Teak walls and a ceramic jar.",
       "date": "26 Oct · 14:01",
       "captured": "2026-10-26T14:01:23",
-      "time": "14:01"
+      "time": "14:01",
+      "crop": {
+        "focus": [
+          55,
+          63
+        ],
+        "mobileFocus": [
+          56,
+          59
+        ]
+      }
     },
     {
       "id": "photo_018",
@@ -1506,7 +1866,13 @@
       "caption": "Orchids at the garden’s edge.",
       "date": "26 Oct · 14:01",
       "captured": "2026-10-26T14:01:56",
-      "time": "14:01"
+      "time": "14:01",
+      "crop": {
+        "focus": [
+          58,
+          39
+        ]
+      }
     },
     {
       "id": "photo_029",
@@ -1518,7 +1884,17 @@
       "caption": "A wall of silk colours.",
       "date": "26 Oct · 14:08",
       "captured": "2026-10-26T14:08:47",
-      "time": "14:08"
+      "time": "14:08",
+      "crop": {
+        "focus": [
+          50,
+          38
+        ],
+        "mobileFocus": [
+          52,
+          42
+        ]
+      }
     },
     {
       "id": "photo_046",
@@ -1530,7 +1906,13 @@
       "caption": "MOM · Museum of Makers.",
       "date": "27 Oct · 15:53",
       "captured": "2026-10-27T15:53:42",
-      "time": "15:53"
+      "time": "15:53",
+      "crop": {
+        "focus": [
+          50,
+          47
+        ]
+      }
     },
     {
       "id": "photo_049",
@@ -1542,7 +1924,13 @@
       "caption": "Layers of timber and light.",
       "date": "27 Oct · 16:07",
       "captured": "2026-10-27T16:07:23",
-      "time": "16:07"
+      "time": "16:07",
+      "crop": {
+        "focus": [
+          56,
+          40
+        ]
+      }
     },
     {
       "id": "photo_052",
@@ -1554,7 +1942,13 @@
       "caption": "A loom and the tools of weaving.",
       "date": "27 Oct · 16:09",
       "captured": "2026-10-27T16:09:30",
-      "time": "16:09"
+      "time": "16:09",
+      "crop": {
+        "focus": [
+          43,
+          46
+        ]
+      }
     },
     {
       "id": "photo_110",
@@ -1566,7 +1960,13 @@
       "caption": "A stupa in the forest.",
       "date": "28 Oct · 09:37",
       "captured": "2026-10-28T09:37:10",
-      "time": "09:37"
+      "time": "09:37",
+      "crop": {
+        "focus": [
+          41,
+          44
+        ]
+      }
     },
     {
       "id": "photo_114",
@@ -1578,7 +1978,17 @@
       "caption": "A quiet figure under the trees.",
       "date": "28 Oct · 09:39",
       "captured": "2026-10-28T09:39:09",
-      "time": "09:39"
+      "time": "09:39",
+      "crop": {
+        "focus": [
+          51,
+          34
+        ],
+        "mobileFocus": [
+          51,
+          47
+        ]
+      }
     },
     {
       "id": "photo_126",
@@ -1590,7 +2000,17 @@
       "caption": "Rooflines in the green.",
       "date": "28 Oct · 09:44",
       "captured": "2026-10-28T09:44:55",
-      "time": "09:44"
+      "time": "09:44",
+      "crop": {
+        "focus": [
+          50,
+          57
+        ],
+        "mobileFocus": [
+          51,
+          56
+        ]
+      }
     },
     {
       "id": "photo_131",
@@ -1602,7 +2022,17 @@
       "caption": "A little bridge into the forest.",
       "date": "28 Oct · 09:56",
       "captured": "2026-10-28T09:56:21",
-      "time": "09:56"
+      "time": "09:56",
+      "crop": {
+        "focus": [
+          52,
+          58
+        ],
+        "mobileFocus": [
+          50,
+          55
+        ]
+      }
     },
     {
       "id": "photo_205",
@@ -1614,7 +2044,13 @@
       "caption": "Dao Handmade · the name on the wall.",
       "captured": "2026-10-29T12:50:06",
       "date": "29 Oct · 12:50",
-      "time": "12:50"
+      "time": "12:50",
+      "crop": {
+        "focus": [
+          48,
+          55
+        ]
+      }
     },
     {
       "id": "photo_206",
@@ -1626,7 +2062,14 @@
       "caption": "Dao · vessels and textures.",
       "captured": "2026-10-29T12:50:32",
       "date": "29 Oct · 12:50",
-      "time": "12:50"
+      "time": "12:50",
+      "crop": {
+        "focus": [
+          50,
+          47
+        ],
+        "fit": "contain"
+      }
     },
     {
       "id": "photo_171",
@@ -1638,7 +2081,13 @@
       "caption": "Along the village workshops.",
       "captured": "2026-10-29T11:33:01",
       "date": "29 Oct · 11:33",
-      "time": "11:33"
+      "time": "11:33",
+      "crop": {
+        "focus": [
+          58,
+          47
+        ]
+      }
     },
     {
       "id": "photo_184",
@@ -1650,7 +2099,17 @@
       "caption": "A roadside workshop · the making behind the objects.",
       "captured": "2026-10-29T12:06:41",
       "date": "29 Oct · 12:06",
-      "time": "12:06"
+      "time": "12:06",
+      "crop": {
+        "focus": [
+          44,
+          48
+        ],
+        "mobileFocus": [
+          47,
+          48
+        ]
+      }
     },
     {
       "id": "photo_208",
@@ -1662,7 +2121,13 @@
       "caption": "Salu Carving Pavilion · the village’s own story.",
       "captured": "2026-10-29T12:52:47",
       "date": "29 Oct · 12:52",
-      "time": "12:52"
+      "time": "12:52",
+      "crop": {
+        "focus": [
+          49,
+          52
+        ]
+      }
     },
     {
       "id": "photo_212",
@@ -1674,7 +2139,13 @@
       "caption": "Baan Tawai · village information and work in progress.",
       "captured": "2026-10-29T12:53:40",
       "date": "29 Oct · 12:53",
-      "time": "12:53"
+      "time": "12:53",
+      "crop": {
+        "focus": [
+          35,
+          44
+        ]
+      }
     },
     {
       "id": "photo_228",
@@ -1686,7 +2157,14 @@
       "caption": "The museum’s visitor brochure and location map.",
       "captured": "2026-10-29T13:58:57",
       "date": "29 Oct · 13:58",
-      "time": "13:58"
+      "time": "13:58",
+      "crop": {
+        "focus": [
+          50,
+          42
+        ],
+        "fit": "contain"
+      }
     },
     {
       "id": "photo_234",
@@ -1698,7 +2176,17 @@
       "caption": "A moment at the museum gate.",
       "captured": "2026-10-29T14:08:48",
       "date": "29 Oct · 14:08",
-      "time": "14:08"
+      "time": "14:08",
+      "crop": {
+        "focus": [
+          54,
+          51
+        ],
+        "mobileFocus": [
+          53,
+          60
+        ]
+      }
     },
     {
       "id": "photo_102",
@@ -1710,7 +2198,13 @@
       "caption": "Baan Crafts Nimman · the shopfront.",
       "captured": "2026-10-27T20:27:57",
       "date": "27 Oct · 20:27",
-      "time": "20:27"
+      "time": "20:27",
+      "crop": {
+        "focus": [
+          55,
+          46
+        ]
+      }
     },
     {
       "id": "photo_094",
@@ -1722,7 +2216,14 @@
       "caption": "Glazed colour and a handmade handle.",
       "captured": "2026-10-27T19:59:44",
       "date": "27 Oct · 19:59",
-      "time": "19:59"
+      "time": "19:59",
+      "crop": {
+        "focus": [
+          61,
+          46
+        ],
+        "fit": "contain"
+      }
     },
     {
       "id": "photo_097",
@@ -1734,7 +2235,13 @@
       "caption": "Ceramic animals, cups and small objects.",
       "captured": "2026-10-27T20:08:46",
       "date": "27 Oct · 20:08",
-      "time": "20:08"
+      "time": "20:08",
+      "crop": {
+        "focus": [
+          35,
+          58
+        ]
+      }
     },
     {
       "id": "photo_155",
@@ -1746,7 +2253,13 @@
       "caption": "The bench · top and edge.",
       "captured": "2026-10-28T13:19:18",
       "date": "28 Oct · 13:19",
-      "time": "13:19"
+      "time": "13:19",
+      "crop": {
+        "focus": [
+          52,
+          45
+        ]
+      }
     },
     {
       "id": "photo_156",
@@ -1758,7 +2271,13 @@
       "caption": "The bench · legs and joinery.",
       "captured": "2026-10-28T13:19:27",
       "date": "28 Oct · 13:19",
-      "time": "13:19"
+      "time": "13:19",
+      "crop": {
+        "focus": [
+          48,
+          49
+        ]
+      }
     },
     {
       "id": "photo_073",
@@ -1770,7 +2289,17 @@
       "caption": "Suspended cords beneath the timber ceiling · Kalm.",
       "captured": "2026-10-27T16:26:26",
       "time": "16:26",
-      "date": "27 Oct · 16:26"
+      "date": "27 Oct · 16:26",
+      "crop": {
+        "focus": [
+          50,
+          35
+        ],
+        "mobileFocus": [
+          50,
+          45
+        ]
+      }
     }
   ],
   "unplaced": [],
@@ -1849,7 +2378,13 @@
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
           "rights": null,
           "width": 2000,
-          "height": 1125
+          "height": 1125,
+          "crop": {
+            "focus": [
+              47,
+              57
+            ]
+          }
         }
       ]
     },
@@ -1871,7 +2406,13 @@
           "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
           "rights": null,
           "width": 2000,
-          "height": 1125
+          "height": 1125,
+          "crop": {
+            "focus": [
+              53,
+              59
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-wat-pha-lat-chedi.webp",
@@ -1884,7 +2425,17 @@
           "source": "https://commons.wikimedia.org/wiki/File:Chiang_Mai_-_Wat_Palad_(23869618024).jpg",
           "license": "CC BY 2.0",
           "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
-          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop. "
+          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop. ",
+          "crop": {
+            "focus": [
+              39,
+              57
+            ],
+            "mobileFocus": [
+              35,
+              50
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-wat-pha-lat-city-view.webp",
@@ -1897,7 +2448,17 @@
           "source": "https://commons.wikimedia.org/wiki/File:Chiang_Mai_-_Wat_Palad_(24130015719).jpg",
           "license": "CC BY 2.0",
           "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
-          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop. "
+          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop. ",
+          "crop": {
+            "focus": [
+              35,
+              59
+            ],
+            "mobileFocus": [
+              28,
+              54
+            ]
+          }
         }
       ]
     },
@@ -1919,7 +2480,17 @@
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
           "rights": null,
           "width": 2000,
-          "height": 1333
+          "height": 1333,
+          "crop": {
+            "focus": [
+              42,
+              67
+            ],
+            "mobileFocus": [
+              42,
+              66
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-doi-suthep-naga-stairs.webp",
@@ -1932,7 +2503,14 @@
           "source": "https://commons.wikimedia.org/wiki/File:Escalier_monumental_aux_nagas_2.jpg",
           "license": "CC BY-SA 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence.",
+          "crop": {
+            "focus": [
+              53,
+              42
+            ],
+            "fit": "contain"
+          }
         }
       ]
     },
@@ -1976,7 +2554,13 @@
           "author": "Don Ramey Logan",
           "source": "https://commons.wikimedia.org/wiki/File:Building_at_Jim_Thompson_House_photo_Don_Ramey_Logan.jpg",
           "license": "CC BY-SA 3.0",
-          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "crop": {
+            "focus": [
+              60,
+              51
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-jim-thompson-sitting-room.webp",
@@ -1989,7 +2573,17 @@
           "source": "https://commons.wikimedia.org/wiki/File:Jim_Thompson_House_interiors-001.jpg",
           "license": "CC BY 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop. "
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop. ",
+          "crop": {
+            "focus": [
+              48,
+              51
+            ],
+            "mobileFocus": [
+              49,
+              54
+            ]
+          }
         }
       ]
     },
@@ -2057,7 +2651,13 @@
           "rights": "CC BY-SA 3.0. Resized/recompressed; display may crop.",
           "width": 1800,
           "height": 1087,
-          "src": "/thailand/assets/reference-huay-kaew.jpg"
+          "src": "/thailand/assets/reference-huay-kaew.jpg",
+          "crop": {
+            "focus": [
+              53,
+              43
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-huay-kaew-upper-cascade.webp",
@@ -2070,7 +2670,17 @@
           "source": "https://commons.wikimedia.org/wiki/File:Huay_Kaew_Waterval_bovenloop_afkomstig_van_Wang_Bua_Ban_Pha_Ngoep_december_2023_IMG20231231103839.jpg",
           "license": "CC BY-SA 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence.",
+          "crop": {
+            "focus": [
+              53,
+              28
+            ],
+            "mobileFocus": [
+              50,
+              40
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-huay-kaew-bridge-overlook.webp",
@@ -2083,7 +2693,17 @@
           "source": "https://commons.wikimedia.org/wiki/File:Huay_Kaew_Waterval_bovenloop_gezien_over_het_bruggetje_september_2025_IMG20250920103530.jpg",
           "license": "CC BY-SA 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence.",
+          "crop": {
+            "focus": [
+              56,
+              70
+            ],
+            "mobileFocus": [
+              55,
+              55
+            ]
+          }
         },
         {
           "src": "/thailand/assets/reference-huay-kaew-stream-boulders.webp",
@@ -2096,7 +2716,17 @@
           "source": "https://commons.wikimedia.org/wiki/File:Nam_tok_huai_kaeo_04_lower_reaches_rainy_season.JPG",
           "license": "CC BY-SA 3.0",
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-          "rights": "CC BY-SA 3.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
+          "rights": "CC BY-SA 3.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence.",
+          "crop": {
+            "focus": [
+              49,
+              62
+            ],
+            "mobileFocus": [
+              57,
+              56
+            ]
+          }
         }
       ]
     },
@@ -2163,7 +2793,13 @@
           "source": "https://commons.wikimedia.org/wiki/File:Sukhumwit_Road_with_BTS_Asok_and_Asok_Montri_Rd.jpg",
           "license": "CC BY-SA 4.0",
           "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-          "rights": "CC BY-SA 4.0. Image resized and converted to WebP; display may crop. This image derivative remains CC BY-SA 4.0."
+          "rights": "CC BY-SA 4.0. Image resized and converted to WebP; display may crop. This image derivative remains CC BY-SA 4.0.",
+          "crop": {
+            "focus": [
+              43,
+              60
+            ]
+          }
         }
       ]
     },
@@ -2183,7 +2819,17 @@
       "author": "Slyronit",
       "source": "https://commons.wikimedia.org/wiki/File:Panorama_of_Chao_Phraya_River_from_Iconsiam,_Bangkok.jpg",
       "license": "CC BY-SA 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "crop": {
+        "focus": [
+          35,
+          49
+        ],
+        "mobileFocus": [
+          32,
+          50
+        ]
+      }
     },
     {
       "src": "/thailand/assets/context-chiang-mai.jpg",
@@ -2192,7 +2838,13 @@
       "author": "Supanut Arunoprayote",
       "source": "https://commons.wikimedia.org/wiki/File:View_of_CMX_(I).jpg",
       "license": "CC BY 4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "crop": {
+        "focus": [
+          51,
+          44
+        ]
+      }
     }
   ],
   "cover": {
