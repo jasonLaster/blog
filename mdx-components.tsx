@@ -1,6 +1,6 @@
 import React, { ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
-import { Tweet } from "react-tweet";
+import { ResilientTweet as Tweet } from "./app/components/ResilientTweet";
 import { Code } from "bright";
 import { Mermaid } from "./app/components/mermaid";
 
