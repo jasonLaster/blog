@@ -283,7 +283,7 @@
             "photo_073"
           ],
           "paragraphs": [
-            "The visit moves from MOM’s signed entrance to timber screens, a loom, a tall sculpture beside the windows and suspended cords beneath the timber ceiling.",
+            "The visit moves from MOM’s signed entrance to timber screens, a loom, a tall sculpture beside the windows and suspended cords beneath the timber ceiling. The accompanying pottery references come from Korrawit Kanjanakuha’s 2024 exhibition, The Weight of the World.",
             "Kalm Village reinterprets the shared spaces of a traditional Thai home: separate buildings serve different purposes but meet around communal courtyards. Old teak houses supplied reclaimed timber for the complex, paired with dark grey brick and contemporary Asian design.",
             "The Museum of Makers is part of Kalm, presenting traditional and contemporary makers across disciplines. Its textile archive sits alongside rotating exhibitions, while the wider village supports workshops, residencies, a library and places to eat and gather."
           ],
@@ -1813,7 +1813,23 @@
       "region": "Old City · Phra Pok Klao Soi 4",
       "map": "https://www.google.com/maps/search/?api=1&query=Kalm%20Village%20Chiang%20Mai",
       "official": "https://www.kalmvillage.com/about-us",
-      "references": []
+      "references": [],
+      "embeds": [
+        {
+          "embedUrl": "https://www.instagram.com/p/C73Xv9JvtYj/embed/",
+          "source": "https://www.instagram.com/p/C73XwChvD1C/?img_index=2",
+          "caption": "Stacked handled vessels · Korrawit Kanjanakuha · 2024 exhibition archive",
+          "author": "Kalm Village · @kalm_village",
+          "rights": "Original public Instagram photograph displayed through its provider embed. Copyright remains with the creator and artist."
+        },
+        {
+          "embedUrl": "https://www.instagram.com/p/C73Xv9JvgKS/embed/",
+          "source": "https://www.instagram.com/p/C73XwChvD1C/?img_index=5",
+          "caption": "A ceramic fish form taking shape · Korrawit Kanjanakuha · 2024 exhibition archive",
+          "author": "Kalm Village · @kalm_village",
+          "rights": "Original public Instagram photograph displayed through its provider embed. Copyright remains with the creator and artist."
+        }
+      ]
     },
     "baan-tawai": {
       "id": "baan-tawai",
