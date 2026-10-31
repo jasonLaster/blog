@@ -7,6 +7,8 @@ export type Metadata = {
   categories?: string[];
   draft?: boolean;
   note?: boolean;
+  standalone?: boolean;
+  canonical?: string;
   description?: string;
   ogImage?: string;
   openGraph?: {

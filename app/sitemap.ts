@@ -14,7 +14,7 @@ const otherUrls = [
 export default async function sitemap() {
   const posts = await getBlogPosts();
   const postUrls = posts.map((post) => ({
-    url: `https://jasonlaster.com/posts/${post.slug}`,
+    url: post.metadata.canonical || `https://jasonlaster.com/posts/${post.slug}`,
     lastModified: new Date(post.metadata.publishedAt).toISOString(),
   }));
   const projectUrls = isProjectsPageEnabled()

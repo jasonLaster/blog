@@ -1,0 +1,2082 @@
+{
+  "timezone": "Asia/Bangkok",
+  "dateNote": "25–29 October 2026 · Thailand time (UTC+7).",
+  "days": [
+    {
+      "id": "day-25",
+      "date": "2026-10-25",
+      "day": 25,
+      "title": "The first evening.",
+      "region": "Bangkok",
+      "lede": "Dinner and a little browsing in Bangkok.",
+      "stops": [
+        {
+          "id": "nh-bangkok-sukhumvit-boulevard",
+          "title": "NH Bangkok Sukhumvit Boulevard",
+          "venue": "nh-bangkok-sukhumvit-boulevard",
+          "time": "25–26 Oct · Bangkok base",
+          "short": "An overnight base in Bangkok’s Nana district, just off Sukhumvit Road. NH Bangkok Sukhumvit Boulevard pairs contemporary rooms with a rooftop pool and nearby Skytrain access—a city-hotel beginning before the journey moves north.",
+          "photoIds": [],
+          "paragraphs": [
+            "NH Bangkok Sukhumvit Boulevard stands on Sukhumvit Soi 5, close to Nana BTS. Its location belongs to Bangkok's busy modern shopping and restaurant corridor, rather than the older riverside quarters.",
+            "The hotel combines contemporary interiors with an outdoor rooftop pool, a gym and Tropicana, its all-day restaurant. The Bangkok booking covers 25–26 October, before the Chiang Mai chapter."
+          ],
+          "note": "Confirmed booking dates. Booking dates are not exact check-in or check-out times.",
+          "sources": [
+            {
+              "label": "NH Bangkok Sukhumvit Boulevard · official overview",
+              "url": "https://www.minorhotels.com/en/destinations/thailand/bangkok/nh-bangkok-sukhumvit-boulevard"
+            }
+          ],
+          "prominence": "compact",
+          "imagePosition": "50% 50%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "stay"
+        },
+        {
+          "id": "bangkok-evening",
+          "title": "Sukhumvit · dinner and city browsing",
+          "time": "19:06–20:06",
+          "photoIds": [
+            "img_20261025_190640549_ae",
+            "photo_002"
+          ],
+          "paragraphs": [
+            "The first dinner photograph records a whole fish topped with vegetables and cashews, with rice alongside. Later, cork handbags and purses beneath a UNI CORK sign turn the camera toward materials and small useful objects—a thread that continues in Chiang Mai.",
+            "The hotel base is Nana, on Sukhumvit Soi 5. Asok is the nearby shopping-and-transit junction farther along Sukhumvit, where the elevated BTS and underground MRT meet beside Terminal 21. The layered cityscape—rail lines above traffic, shops and restaurants below—gives this first evening its wider Bangkok setting.",
+            "The Asok photograph is a credited 2019 neighbourhood reference, not a scene captured on the trip. The dinner restaurant remains unnamed: the meal image has no readable venue sign, and its coarse location record is not precise enough to identify a particular kitchen."
+          ],
+          "note": "Asok is neighbourhood context, not a reconstructed walking route or a claim of a Terminal 21 visit. Nearby recommendations have not been turned into a restaurant identification.",
+          "short": "Sukhumvit’s restaurant-lined lanes and elevated trains frame the Bangkok beginning. Nearby Asok is the junction where BTS meets MRT beside Terminal 21; the evening’s own photographs stay closer to the table and the shop displays.",
+          "prominence": "standard",
+          "headerPhoto": "/thailand/assets/reference-asok-2019.webp",
+          "imagePosition": "50% 50%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "food",
+          "venue": "sukhumvit-asok",
+          "mosaicLead": [
+            "img_20261025_190640549_ae",
+            "photo_002"
+          ],
+          "layout": "landscape-led",
+          "sources": [
+            {
+              "label": "Terminal 21 Asok · official neighbourhood and transit location",
+              "url": "https://www.terminal21.co.th/asok/howtogo/th"
+            },
+            {
+              "label": "NH Bangkok · official Nana/Sukhumvit location",
+              "url": "https://world.nh-hotels.com/en/nh-bangkok-sukhumvit-boulevard/contact"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "day-26",
+      "date": "2026-10-26",
+      "day": 26,
+      "title": "Teak houses, then north.",
+      "region": "Bangkok → Chiang Mai",
+      "lede": "Jim Thompson in Bangkok, then BED Nimman in Chiang Mai.",
+      "stops": [
+        {
+          "id": "jim-thompson",
+          "title": "Jim Thompson House Museum",
+          "time": "13:42–14:10",
+          "photoIds": [
+            "photo_009",
+            "photo_003",
+            "photo_022",
+            "photo_033",
+            "photo_014",
+            "photo_016",
+            "photo_018",
+            "photo_029"
+          ],
+          "paragraphs": [
+            "The afternoon follows red teak verandas, courtyard umbrellas, orchids and collected objects, ending with a wall of silk colours. The architectural drawing and Jim Thompson merchandise help connect these photographs to the house and its heritage quarter.",
+            "Jim Thompson assembled this home from six old teak houses, including buildings brought from the Ayutthaya area and a house from the Cham weaving community of Ban Krua. Carpenters from Ayutthaya reassembled the structures in 1958–59; their raised floors, timber frames and garden setting remain central to its character.",
+            "The canal links the house to the weavers who worked with Thompson. His home was also a setting for his Asian art and antiques, so the museum brings two interests together: the reuse of traditional architecture and the collecting of objects across cultures."
+          ],
+          "venue": "jim-thompson",
+          "note": "The drawing and Jim Thompson label establish a high-confidence match to the museum complex; the venue is also named in your later request. The four photographs are dated 26 October, with no usable GPS.",
+          "sources": [
+            {
+              "label": "Jim Thompson House Museum · The Thai House",
+              "url": "https://jimthompsonhouse.org/the-thai-house/"
+            },
+            {
+              "label": "Jim Thompson Heritage Quarter · House Museum",
+              "url": "https://jimthompsonheritagequarter.com/service/jim-thompson-house-museum/"
+            }
+          ],
+          "short": "Six traditional teak houses became one remarkable Bangkok home. Reassembled in 1958–59 beside the Ban Krua weaving community, the compound joins Thai timber architecture, a tropical garden and Jim Thompson’s collection of Asian art.",
+          "prominence": "primary",
+          "headerPhoto": "photo_014",
+          "imagePosition": "50% 52%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "sight",
+          "mosaicLead": [
+            "/thailand/assets/reference-jim-thompson.webp",
+            "photo_018"
+          ]
+        },
+        {
+          "id": "bed-nimman",
+          "title": "BED Nimman",
+          "venue": "bed-nimman",
+          "time": "From 26 Oct · Chiang Mai base",
+          "short": "Opened in 2016, BED Nimman offers a pared-back base among the neighbourhood’s cafés and small shops. Modern rooms, a tree-shaded pool and the hotel’s BED Deli breakfast give it a simple, informal character.",
+          "photoIds": [],
+          "paragraphs": [
+            "BED Nimman opened in 2016 in Chiang Mai's Nimman Haemin district. Its straightforward modern design places the emphasis on shared hospitality and easy access to the surrounding cafés, restaurants and shops.",
+            "The property has a swimming pool shaded by trees and serves its BED Deli breakfast. It was the first Chiang Mai base from 26 October; later trip receipts also place the traveller here on the 28th."
+          ],
+          "note": "The located booking is for 26–27 October. Airport-transfer and later trip receipts establish BED as a base on 26 and 28 October; the exact extension and checkout date remain unverified.",
+          "sources": [
+            {
+              "label": "BED Nimman · official property page",
+              "url": "https://bed.co.th/bed-nimman-hotel/"
+            },
+            {
+              "label": "BED Hotels · official site",
+              "url": "https://bed.co.th/"
+            }
+          ],
+          "prominence": "compact",
+          "imagePosition": "50% 50%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "stay"
+        }
+      ]
+    },
+    {
+      "id": "day-27",
+      "date": "2026-10-27",
+      "day": 27,
+      "title": "Coffee, craft, and Kao Soy.",
+      "region": "Chiang Mai · Nimman & the Old City",
+      "lede": "Coffee, the waterfall’s edge, craft and a favourite bowl of noodles.",
+      "stops": [
+        {
+          "id": "roast8ry",
+          "title": "ROAST8RY Flagship",
+          "time": "10:25",
+          "photoIds": [
+            "photo_076"
+          ],
+          "paragraphs": [
+            "The photographed sign identifies the Nimman flagship. No drink order is inferred.",
+            "ROAST8RY's flagship opened in 2022 on Nimman Soi 17. The brand's work extends beyond the café counter: it sources coffee internationally and roasts beans for its own drinks and retail coffee range.",
+            "Its founder, Arnon Thitiprasert, won the 2017 World Latte Art Championship in Budapest. That competition background helps explain the attention to milk texture and presentation that accompanies the shop's specialty-coffee focus."
+          ],
+          "venue": "roast8ry",
+          "sources": [
+            {
+              "label": "ROAST8RY · official story and coffee",
+              "url": "https://roast8rycoffee.com/"
+            },
+            {
+              "label": "Loveramics · 2017 World Latte Art Championships",
+              "url": "https://www.loveramics.co.uk/blogs/news/world-latte-art-championships-2017-32f6aa"
+            }
+          ],
+          "imagePosition": "50% 50%",
+          "short": "ROAST8RY’s Nimman flagship connects the coffee bar to a wider roasting practice. Opened in 2022, it brings carefully sourced beans, espresso technique and latte-art expertise into a spare, contemporary space on Soi 17.",
+          "prominence": "compact",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "food"
+        },
+        {
+          "id": "huay-kaew",
+          "title": "Huay Kaew Waterfall",
+          "venue": "huay-kaew",
+          "time": "12:18–12:26",
+          "prominence": "standard",
+          "photoIds": [
+            "photo_039",
+            "photo_037"
+          ],
+          "headerPhoto": "/thailand/assets/reference-huay-kaew.jpg",
+          "imagePosition": "50% 52%",
+          "short": "At the foot of Doi Suthep, Huay Kaew marks the shift from Chiang Mai’s streets to forest. The roughly ten-metre cascade, rocky pools and shaded surroundings make it a small natural retreat close to the city.",
+          "paragraphs": [
+            "Your photographs remember the waterfall stop through its food stalls: preparation at a chopping block and a sleeping dog in the lane. The cascade view is a separately credited reference photograph.",
+            "Huay Kaew lies within Doi Suthep–Pui National Park, close to Chiang Mai Zoo and the start of the mountain road. The national tourism directory describes a waterfall about ten metres high, surrounded by shade and woodland.",
+            "Rather than a remote expedition, this is a city-edge landscape of flowing water, rocks and forest. Its scale is intimate: cascades lead into lower pools, with places to pause beside the stream."
+          ],
+          "note": "Location supplied by you; date and times come from the matching original album photos. No swim, specific walking route or view of the cascade is inferred.",
+          "sources": [
+            {
+              "label": "Thailand tourism directory · Huay Kaew Waterfall",
+              "url": "https://www.thailandtourismdirectory.go.th/en/attraction/2184"
+            },
+            {
+              "label": "Tourism Authority of Thailand · Namtok Huai Kaeo, p14",
+              "url": "https://api.tat.or.th/upload/live/multimedia/9369/Chiang_Mai_Lampang_Lamphun_Mae_Hong_Son.pdf"
+            },
+            {
+              "label": "Takeaway · Huai Kaeo landscape photograph and location",
+              "url": "https://commons.wikimedia.org/wiki/File:Nam_tok_huai_kaeo_03_lower_reaches_rainy_season.JPG"
+            }
+          ],
+          "headerRatio": 1.5,
+          "category": "nature",
+          "layout": "landscape-led"
+        },
+        {
+          "id": "salad-lunch",
+          "title": "Villa Nard · a salad lunch",
+          "time": "13:05 · Tuesday",
+          "short": "Australian-style brunch meets a Korean-influenced café in Santitham: coffee, salads, pancakes and pasta downstairs, with Fimue’s vintage and secondhand finds upstairs. It brings the food and browsing threads of the trip into one stop.",
+          "photoIds": [
+            "photo_043"
+          ],
+          "paragraphs": [
+            "Shrimp, noodles, avocado and greens are the lunch recorded here. Your memory of the attached thrift and antique shop, together with the original recommendation, identifies Villa Nard.",
+            "Villa Nard is a brunch café on Morakot Road in Santitham. Its menu spans salads, pancakes, pasta and homemade sandwiches, with coffee and other drinks. Large windows, pale surfaces and vintage furnishings give the interior a light, domestic scale.",
+            "The upstairs Fimue shop adds vintage, secondhand and small craft objects to the visit. That combination distinguishes Villa Nard from a straightforward lunch stop: a café below, with another room of objects to explore above."
+          ],
+          "note": "High-confidence identification from your attached-shop description, the original lunch recommendation, address and photographed timing. No exact dish name is inferred.",
+          "prominence": "compact",
+          "headerPhoto": "photo_043",
+          "imagePosition": "50% 57%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "venue": "villa-nard",
+          "sources": [
+            {
+              "label": "May’s Journey · Villa Nard café and menu",
+              "url": "https://www.lemon8-app.com/@immayreview/7551344426841309713?region=th"
+            },
+            {
+              "label": "suti · Villa Nard and Fimue upstairs",
+              "url": "https://notes.tiktok.com/@suti_sfk/7694534396650144257?region=th"
+            },
+            {
+              "label": "am.pm2024 · Fimue on the second floor",
+              "url": "https://www.lemon8-app.com/@am.pm2024/7657946490720616980?region=th"
+            },
+            {
+              "label": "Villa Nard · location listing",
+              "url": "https://restaurantguru.com/Villa-Nard-Chiang-Mai"
+            }
+          ],
+          "category": "food"
+        },
+        {
+          "id": "kalm-village",
+          "title": "Kalm Village / MOM",
+          "time": "15:53–16:26",
+          "photoIds": [
+            "photo_048",
+            "photo_046",
+            "photo_049",
+            "photo_052",
+            "photo_059"
+          ],
+          "paragraphs": [
+            "The visit moves from MOM’s signed entrance to timber screens, a loom and a tall sculpture beside the windows. The ceramic images below come from Kalm’s 2024 exhibition archive; they extend the craft context without implying that those particular works were on view during this trip.",
+            "Kalm Village reinterprets the shared spaces of a traditional Thai home: separate buildings serve different purposes but meet around communal courtyards. Old teak houses supplied reclaimed timber for the complex, paired with dark grey brick and contemporary Asian design.",
+            "The Museum of Makers is part of Kalm, presenting traditional and contemporary makers across disciplines. Its textile archive sits alongside rotating exhibitions, while the wider village supports workshops, residencies, a library and places to eat and gather."
+          ],
+          "venue": "kalm-village",
+          "sources": [
+            {
+              "label": "Kalm Village · About",
+              "url": "https://www.kalmvillage.com/about-us"
+            },
+            {
+              "label": "Museum of Makers · official Kalm page",
+              "url": "https://www.kalmvillage.com/mom"
+            },
+            {
+              "label": "Kalm Village · Visit",
+              "url": "https://www.kalmvillage.com/visit"
+            },
+            {
+              "label": "The Weight of the World · 2024 archive",
+              "url": "https://www.kalmvillage.com/the-weight-of-the-world"
+            }
+          ],
+          "short": "Nine buildings, two shared courtyards and a material palette of dark brick and reclaimed teak: Kalm makes architecture part of its craft programme. MOM, its Museum of Makers, houses textile collections and changing exhibitions.",
+          "prominence": "primary",
+          "headerPhoto": "photo_046",
+          "imagePosition": "50% 46%",
+          "headerRatio": 1.15,
+          "mobileHeaderRatio": 1.1,
+          "category": "sight",
+          "mosaicLead": [
+            "photo_049"
+          ]
+        },
+        {
+          "id": "kao-soy-nimman",
+          "title": "Kao Soy Nimman",
+          "time": "19:36–19:41",
+          "photoIds": [
+            "photo_087",
+            "photo_088"
+          ],
+          "paragraphs": [
+            "The carved restaurant sign and illuminated courtyard record the evening stop. The next day you wrote, “I loved kao soy.” The shared album’s meal frame was already partly eaten, so the signed frontage leads this entry.",
+            "Kao Soy Nimman specialises in variations of khao soi on Nimman Soi 7. Alongside its curry-noodle bowls, the restaurant serves other northern local specialities and seasonal dishes, keeping the menu rooted in the region rather than only its best-known soup.",
+            "A large window looks into the kitchen, so preparing the bowls becomes part of the dining-room experience. The Tourism Authority of Thailand also highlights butterfly-pea tea among its drinks—a quieter detail beside the rich, warming noodle dishes."
+          ],
+          "venue": "kao-soy-nimman",
+          "sources": [
+            {
+              "label": "Tourism Authority of Thailand · Kao Soy Nimman",
+              "url": "https://www.tourismthailand.org/Restaurant/kao-soy-nimman"
+            }
+          ],
+          "imagePosition": "50% 32%",
+          "short": "Khao soi is the centre of this Nimman Soi 7 restaurant, with several versions of the northern curry-noodle dish and a kitchen visible through a large window. The next day’s verdict: “I loved kao soy.”",
+          "prominence": "primary",
+          "headerPhoto": "photo_087",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "food",
+          "mosaicLead": [
+            "photo_088"
+          ],
+          "layout": "landscape-led"
+        },
+        {
+          "id": "baan-crafts-nimman",
+          "title": "Baan Crafts Nimman",
+          "venue": "baan-crafts-nimman",
+          "time": "19:59–20:27",
+          "prominence": "standard",
+          "photoIds": [
+            "photo_102",
+            "photo_094",
+            "photo_095",
+            "photo_097"
+          ],
+          "headerPhoto": "photo_102",
+          "mosaicLead": [
+            "photo_095",
+            "photo_097"
+          ],
+          "imagePosition": "50% 40%",
+          "paragraphs": [
+            "The evening browsing is small and tactile: a pastel mug, ceramic animals and the dinosaur plushie you singled out. The lit shopfront closes the sequence and supplies the name.",
+            "Baan Crafts Nimman is a craft and gift shop on Nimmanhaemin Road, with smaller handmade objects that can be used or carried every day. Cloth accessories, soft figures and stationery put texture and handwork at a different scale from the furniture workshops south of the city.",
+            "Kamlor Handmade’s published stockist lists name Baan Crafts in Nimman Soi 5. The maker’s notebooks use fabric covers, stitching and wood, providing a concrete link between this retail stop and Chiang Mai’s independent makers. The shop belongs to a wider Nimman district known for design-led shops and galleries."
+          ],
+          "sources": [
+            {
+              "label": "Kamlor Handmade · maker’s stockist posts reproduced by Glartent",
+              "url": "https://www.glartent.com/TH/Changwat-Chiang-Mai/152549978226174/Kamlor-Handmade---Handmade-notebook"
+            },
+            {
+              "label": "Tourism Authority of Thailand · Nimmanhemin Road, p12",
+              "url": "https://api.tat.or.th/upload/live/multimedia/9369/Chiang_Mai_Lampang_Lamphun_Mae_Hong_Son.pdf"
+            }
+          ],
+          "note": "The named storefront and the adjacent evening sequence ground this stop. You also identified the dinosaur plushie photograph with Baan Crafts; it is dated 27 October, not 29 October.",
+          "short": "Baan Crafts brings small-scale making into Nimman’s shopping streets: fabric accessories, soft toy animals and handmade stationery rather than large furniture. Chiang Mai notebook maker Kamlor lists the Nimman shop among its stockists.",
+          "category": "shop"
+        }
+      ]
+    },
+    {
+      "id": "day-28",
+      "date": "2026-10-28",
+      "day": 28,
+      "title": "The forest and the mountain.",
+      "region": "Chiang Mai · Doi Suthep & Tha Phae",
+      "lede": "Forest temples, an amazing drive, a furniture study and dinner in an old mansion.",
+      "stops": [
+        {
+          "id": "wat-pha-lat",
+          "title": "Wat Pha Lat",
+          "time": "09:10–10:01",
+          "photoIds": [
+            "photo_111",
+            "photo_103",
+            "photo_108",
+            "photo_118",
+            "photo_127",
+            "photo_137",
+            "photo_110",
+            "photo_114",
+            "photo_126",
+            "photo_131"
+          ],
+          "paragraphs": [
+            "The morning photographs linger on the moss-covered stupa, white Buddha figures, the temple rooflines and a small forest bridge. Later that day, you called the drive “amazing”; no precise driving route is reconstructed beyond the photographed stops.",
+            "Before a road climbed Doi Suthep, monks and worshippers used the forest route through Wat Pha Lat on their way to the mountain’s relic shrine. The temple is therefore part of the pilgrimage landscape, not simply a secluded garden stop.",
+            "Chiang Mai University’s Doi Suthep Nature Center identifies the chedi as Burmese in style and places its construction in the era of Kruba Srivichai. The damp setting encourages moss and ferns, especially in the rainy season; beside the temple, the waterfall and a viewpoint connect the buildings to the forest and the city below."
+          ],
+          "venue": "wat-pha-lat",
+          "sources": [
+            {
+              "label": "Chiang Mai University · Wat Pha Lat nature trail",
+              "url": "https://doisuthep.science.cmu.ac.th/trail-detail/3"
+            },
+            {
+              "label": "Tourism Authority of Thailand · Wat Pha Lat",
+              "url": "https://www.thailandtravel.or.jp/wat-pha-lat/"
+            }
+          ],
+          "short": "Wat Pha Lat belongs to the old pilgrimage route up Doi Suthep. Its Burmese-style chedi stands in humid forest, where moss and ferns soften the masonry and a waterfall runs beside the temple.",
+          "prominence": "primary",
+          "headerPhoto": "photo_110",
+          "imagePosition": "50% 0%",
+          "headerRatio": 1.0,
+          "mobileHeaderRatio": 0.85,
+          "category": "sight",
+          "mosaicLead": [
+            "photo_111",
+            "photo_131"
+          ]
+        },
+        {
+          "id": "doi-suthep",
+          "title": "Wat Phra That Doi Suthep",
+          "time": "10:51–11:52",
+          "photoIds": [
+            "photo_145",
+            "photo_147"
+          ],
+          "paragraphs": [
+            "The photographed naga stairway and nearby temple details place this stop on the mountain after Wat Pha Lat. The broader golden-chedi image is a reference photograph, not a claim about the light or conditions during the visit.",
+            "Wat Phra That Doi Suthep is a mountain shrine above Chiang Mai, with a golden chedi containing Buddha relics at its heart. The Tourism Authority of Thailand dates the temple to 1383. Its naga-flanked stairway makes the ascent part of the approach to the sacred precinct.",
+            "The mountain road is a much later layer of the story. Followers of the monk Kruba Srivichai built the first paved route in 1935, opening an easier connection between the city and the temple. The elevated setting also explains its role as a landmark visible across Chiang Mai."
+          ],
+          "venue": "doi-suthep",
+          "sources": [
+            {
+              "label": "Tourism Authority of Thailand · Chiang Mai guide, pp14–15",
+              "url": "https://api.tat.or.th/upload/live/multimedia/9369/Chiang_Mai_Lampang_Lamphun_Mae_Hong_Son.pdf"
+            }
+          ],
+          "short": "A golden relic chedi crowns Chiang Mai’s mountain temple, reached by a ceremonial stairway guarded by naga. The shrine dates to 1383; its modern road is the legacy of Kruba Srivichai’s followers in 1935.",
+          "prominence": "standard",
+          "headerPhoto": "/thailand/assets/reference-doi-suthep.jpg",
+          "imagePosition": "50% 52%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "sight",
+          "layout": "landscape-led"
+        },
+        {
+          "id": "teakfurewood",
+          "title": "A live-edge bench · Teakfurewood Studio?",
+          "venue": "teakfurewood",
+          "time": "13:19",
+          "prominence": "compact",
+          "photoIds": [
+            "photo_154",
+            "photo_155",
+            "photo_156"
+          ],
+          "headerPhoto": "photo_154",
+          "short": "A narrow, live-edge seat, splayed legs and a low stretcher: three angles of the same bench. The likely shop is Teakfurewood Studio, whose Nimman furniture favours the shape and texture of solid timber.",
+          "paragraphs": [
+            "The three photographs turn one bench into a small design study. The overhead view follows the uneven edge of the seat; the lower angle reveals the splayed legs and end stretcher. These are different views of the same photographed object, not catalogue substitutes.",
+            "Teakfurewood Studio is the likely location. Its official listing places it on Sirimangkalajarn Soi 13, and a branded public storefront photograph shows a closely related narrow live-edge bench. That supports the identification, but the original images do not show a readable shop sign and their coarse location fix does not establish the store by itself."
+          ],
+          "note": "Probable store identification, not a verified product match. No catalogue model is presented as the exact bench.",
+          "sources": [
+            {
+              "label": "Teakfurewood · official links and location",
+              "url": "https://linktr.ee/Teakfurewood"
+            },
+            {
+              "label": "Teakfurewood Studio · public storefront reference",
+              "url": "https://www.lemon8-app.com/@byjunekwan/7258136869542642177?region=th"
+            }
+          ],
+          "category": "shop"
+        },
+        {
+          "id": "kiti-panit",
+          "title": "Kiti Panit · dinner in the old mansion",
+          "venue": "kiti-panit",
+          "time": "19:09–19:10",
+          "prominence": "standard",
+          "photoIds": [
+            "photo_159",
+            "photo_160"
+          ],
+          "short": "Northern Thai cooking in an 1888 teak mansion on Tha Phae Road. Once a general store, Kiti Panit preserves the founding family’s furniture and restored woodwork, giving dinner the scale and texture of an old house.",
+          "paragraphs": [
+            "The documented dinner is northern pork curry with greens and egg in the old mansion. You remembered it as a delicious meal and clarified that the chocolate shop across the street was not a visit.",
+            "Kiti Panit occupies an 1888 teak mansion that began as a general store. The restaurant's history describes its continued connection to the founders' fifth-generation descendants and the restoration of the house by local artists and craftspeople.",
+            "Original furniture sits among renewed timber ceilings, floors, panels and stairs. The northern menu includes khao soi, hang le pork curry, sai oua and relishes—regional cooking presented in a building whose commercial history is part of the experience."
+          ],
+          "note": "High-confidence venue match from your old-mansion/across-the-street description, meal images, location and official restaurant context.",
+          "sources": [
+            {
+              "label": "Kiti Panit · official history and menu",
+              "url": "https://www.kitipanit.com/menu"
+            },
+            {
+              "label": "Kiti Panit · official venue",
+              "url": "https://www.kitipanit.com/"
+            }
+          ],
+          "headerRatio": 1.5,
+          "imagePosition": "50% 50%",
+          "category": "food",
+          "layout": "landscape-led"
+        },
+        {
+          "id": "rong-leuy-thapae",
+          "title": "Rong Leuy Thapae",
+          "time": "20:25",
+          "photoIds": [
+            "photo_169",
+            "photo_168"
+          ],
+          "paragraphs": [
+            "The photographs move from the named entrance to a candlelit interior, where towers of red wax stand against old timber and shelves. They record the atmosphere without supplying a particular meal, drink or performance.",
+            "Rong Leuy Thapae takes its name from the sawmill that previously occupied the site. The renovated building retains that history through tools and workshop objects used as decoration, rather than replacing it with an anonymous bar interior.",
+            "The venue combines northern Thai food, drinks and live music. Behind its compact street entrance is an outdoor seating area, part of the contrast between Tha Phae's close-packed shopfronts and the deeper spaces they conceal."
+          ],
+          "venue": "rong-leuy-thapae",
+          "sources": [
+            {
+              "label": "Weekend Magazine · Tha Phae neighbourhood feature",
+              "url": "https://weekendmedia.co/a/weekend-walk-thapae-chiang-mai"
+            },
+            {
+              "label": "Rong Leuy Thapae · official venue",
+              "url": "https://www.facebook.com/profile.php?id=100089227944249"
+            }
+          ],
+          "imagePosition": "50% 48%",
+          "note": "Photographed stop; no meal or drink is assigned to this venue.",
+          "short": "A former sawmill turned northern Thai restaurant and music venue. Rong Leuy keeps traces of its working past in the décor, while the narrow Tha Phae frontage opens into a larger outdoor space behind.",
+          "prominence": "compact",
+          "headerPhoto": "photo_169",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "food"
+        }
+      ]
+    },
+    {
+      "id": "day-29",
+      "date": "2026-10-29",
+      "day": 29,
+      "title": "A day in wood.",
+      "region": "Baan Tawai → Nimman",
+      "lede": "A day with wood: village workshops, furniture makers and the carving museum.",
+      "stops": [
+        {
+          "id": "baan-tawai",
+          "title": "Baan Tawai",
+          "time": "11:33–13:14 · around the village",
+          "photoIds": [
+            "photo_179",
+            "photo_174",
+            "photo_209",
+            "photo_216",
+            "photo_171",
+            "photo_184",
+            "photo_208",
+            "photo_212"
+          ],
+          "paragraphs": [
+            "The village visit moves from small furniture and roadside workshops to carving benches. Four films keep the making visible: rough-cut forms, mallet and chisel work, and a longer look at hand-finishing a small wooden chair or stool.",
+            "Baan Tawai’s identity rests on woodcarving, furniture and Lanna handicrafts made by local artisans. The Chiang Mai provincial government identifies the Hang Dong village as a craft centre; its workshops and retail spaces put production and display close together.",
+            "The range runs from useful household furniture to deeply ornamented sculpture. The nearby Thipmanee collection makes those carving traditions especially legible, with relief panels and freestanding figures rooted in Buddhist and literary subjects. Seen together, the village’s makers show wood as both a construction material and a medium for storytelling.",
+            "The photographed Salu Carving Pavilion board honours Baan Tawai’s master woodcarvers. It describes skills passed through generations, a space for live demonstrations and direct purchases from artisans, and encouragement for younger people to learn the craft. The nearby village board names Baan Tawai in Khun Khong, Hang Dong; these are village displays, separate from the museum’s history sign."
+          ],
+          "venue": "baan-tawai",
+          "sources": [
+            {
+              "label": "Chiang Mai Provincial Administrative Organization · Baan Tawai",
+              "url": "https://www.chiangmaipao.go.th/view_tourist?id=14"
+            },
+            {
+              "label": "Baan Tipmanee · local carving traditions",
+              "url": "https://www.baantipmanee.com/"
+            },
+            {
+              "label": "Salu Carving Pavilion · photographed visitor board",
+              "url": "/thailand/assets/photo_208.webp"
+            }
+          ],
+          "videos": [
+            {
+              "id": "video_20261029_120654",
+              "src": "/thailand/assets/video_20261029_120654.mp4",
+              "poster": "/thailand/assets/video_20261029_120654-poster.webp",
+              "duration": 8.965,
+              "width": 720,
+              "height": 1280,
+              "caption": "A roadside woodcarver in Baan Tawai",
+              "time": "29 Oct · 12:06",
+              "durationLabel": "0:09"
+            },
+            {
+              "id": "vid_20261029_130757376",
+              "src": "/thailand/assets/vid_20261029_130757376.mp4",
+              "poster": "/thailand/assets/vid_20261029_130757376-poster.webp",
+              "duration": 14.741667,
+              "width": 720,
+              "height": 1280,
+              "caption": "Outlined forms and rough-cut wood on the carving bench",
+              "time": "29 Oct · 13:08",
+              "durationLabel": "0:15"
+            },
+            {
+              "id": "vid_20261029_130855554",
+              "src": "/thailand/assets/vid_20261029_130855554.mp4",
+              "poster": "/thailand/assets/vid_20261029_130855554-poster.webp",
+              "duration": 15.961,
+              "width": 720,
+              "height": 1280,
+              "caption": "A carver working with mallet and chisel",
+              "time": "29 Oct · 13:09",
+              "durationLabel": "0:16"
+            },
+            {
+              "id": "vid_20261029_131201244",
+              "src": "/thailand/assets/vid_20261029_131201244.mp4",
+              "poster": "/thailand/assets/vid_20261029_131201244-poster.webp",
+              "duration": 176.132333,
+              "width": 720,
+              "height": 1280,
+              "caption": "Hand-finishing a small wooden chair or stool",
+              "time": "29 Oct · 13:14",
+              "durationLabel": "2:56"
+            }
+          ],
+          "short": "Baan Tawai is a working craft village, not a single showroom. In Hang Dong, south of Chiang Mai, furniture makers and woodcarvers turn timber into everyday tables, intricate reliefs, religious figures and mythical animals.",
+          "prominence": "primary",
+          "headerPhoto": "photo_184",
+          "imagePosition": "50% 34%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "note": "The village entry spans several workshops. Raintree and Dao are separately identified stops within that same visit; the carving clips are not assigned to Thipmanee House.",
+          "mosaicLead": [
+            "photo_171",
+            "photo_209"
+          ],
+          "category": "shop",
+          "layout": "landscape-led"
+        },
+        {
+          "id": "raintree-furniture",
+          "title": "Raintree Furniture",
+          "time": "12:39–12:40",
+          "photoIds": [
+            "photo_193",
+            "photo_199"
+          ],
+          "paragraphs": [
+            "The photographed showroom and RAIN TREE FURNITURE catalogue put broad timber surfaces and table construction in focus. The illustrated designs make this a furniture stop within the wider carving village.",
+            "Raintree describes itself as a furniture factory with a shop and showroom, offering both its own designs and work made to customers’ dimensions. Its published business posts include dining tables, cabinets, television units and installation projects—a focus on furnishing rooms rather than producing decorative carvings.",
+            "The acacia-and-iron table range gives that approach a clear material language. Wide timber tops show off the grain and natural edge; the metal bases provide a contrasting structure. The result is furniture whose visual interest comes from the wood itself as much as from added ornament."
+          ],
+          "venue": "raintree-furniture",
+          "note": "Name directly read from the photographed catalogue; showroom association is supported by the adjoining images and timestamps.",
+          "sources": [
+            {
+              "label": "Raintree · published business posts, reproduced by FindGlocal",
+              "url": "https://www.findglocal.com/TH/Chiang-Mai/1439863942986823/เฟอร์นิเจอร์ไม้-By-Raintree-Furniture"
+            },
+            {
+              "label": "RAIN TREE FURNITURE catalogue photographed on the trip",
+              "url": "/thailand/assets/photo_199.webp"
+            }
+          ],
+          "short": "Raintree represents the practical furniture-making side of Baan Tawai: broad wood surfaces, iron bases and pieces made to fit a home. Its acacia-table catalogue turns natural grain and irregular edges into the main design features.",
+          "prominence": "compact",
+          "headerPhoto": "photo_193",
+          "imagePosition": "50% 51%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "shop"
+        },
+        {
+          "id": "dao-handmade",
+          "title": "Dao Handmade",
+          "venue": "dao-handmade",
+          "time": "12:50",
+          "prominence": "compact",
+          "photoIds": [
+            "photo_205",
+            "photo_206"
+          ],
+          "headerPhoto": "photo_205",
+          "short": "Dao Handmade combines teak furniture with ceramics, linen and smaller home objects. Its Baan Tawai range favours useful forms—storage, tables and seating—with woven panels and natural textures bringing detail to otherwise simple woodwork.",
+          "paragraphs": [
+            "The DAO HANDMADE sign appears beside teak furniture; the next photograph moves closer to a tall two-tone ceramic vase. These are the Baan Tawai shop and its display, rather than a different branch in the city.",
+            "Dao Handmade’s Baan Tawai business offers wooden furniture, custom design and installation. Its range includes teak shelving, cabinets, consoles, beds and chairs, alongside ceramics, linen and smaller home décor objects.",
+            "Woven backs and headboards recur alongside timber frames, giving the furniture a lighter visual texture than solid carved panels. This is another expression of the village’s craft economy: objects designed around daily use, storage and the proportions of a room."
+          ],
+          "note": "Direct sign identification; no Chang Moi branch is substituted.",
+          "sources": [
+            {
+              "label": "Dao Handmade · official Baan Tawai page supplied by you",
+              "url": "https://www.facebook.com/Daohandmade.banntawai"
+            },
+            {
+              "label": "Dao Handmade · public business posts reproduced by FindGlocal",
+              "url": "https://www.findglocal.com/TH/Chiang-Mai/1627498023989595/Daohandmade"
+            },
+            {
+              "label": "Dao Handmade shop sign",
+              "url": "/thailand/assets/photo_205.webp"
+            }
+          ],
+          "category": "shop"
+        },
+        {
+          "id": "thipmanee-house",
+          "title": "Thipmanee House · Baan Tipmanee",
+          "time": "13:58–14:10 · museum photographs",
+          "photoIds": [
+            "photo_233",
+            "photo_237",
+            "photo_236",
+            "photo_228",
+            "photo_234"
+          ],
+          "paragraphs": [
+            "The carved gateway opens onto a sculpture garden, followed by the museum’s own bilingual visitor display and map brochure. These exterior views, the garden film and the display tell the story here; interiors with a posted no-photography notice are not included.",
+            "The museum’s visitor display traces Thipmanee House to a small family-run shop established in Baan Tawai in 1994, followed by the museum in 2006. It presents the collection as a way to preserve the knowledge and patience of master woodcarvers; some works, the display says, took up to six years to complete.",
+            "Its carvings draw on Lanna, Khmer, Chinese and Hindu traditions. Ganesha gives the museum its name, while Buddhist subjects and animals from literature extend the range. Low relief, high relief and freestanding sculpture show different ways of turning the same material into narrative and ornament."
+          ],
+          "venue": "thipmanee-house",
+          "sources": [
+            {
+              "label": "Thipmanee House · official museum website",
+              "url": "https://www.baantipmanee.com/"
+            },
+            {
+              "label": "Thipmanee visitor display photographed on the trip",
+              "url": "/thailand/assets/photo_236.webp"
+            },
+            {
+              "label": "Baan Tipmanee · photographed visitor map",
+              "url": "/thailand/assets/photo_228.webp"
+            }
+          ],
+          "imagePosition": "50% 49%",
+          "note": "History above is paraphrased from the museum’s own photographed visitor display, with collection context from its official website. Open the gallery to read the display. The 13:22 sculpture-garden film is a probable match to this venue, based on the same garden details, carved posts and location as the entrance photographs.",
+          "videos": [
+            {
+              "id": "vid_20261029_132212008",
+              "src": "/thailand/assets/vid_20261029_132212008.mp4",
+              "poster": "/thailand/assets/vid_20261029_132212008-poster.webp",
+              "duration": 20.248333,
+              "width": 720,
+              "height": 1280,
+              "caption": "Through a carved-wood sculpture garden · probably Thipmanee",
+              "time": "29 Oct · 13:22",
+              "durationLabel": "0:20"
+            }
+          ],
+          "short": "From a family shop founded in 1994 to a museum opened in 2006, Thipmanee preserves Baan Tawai’s carving tradition. Buddhist figures, mythical creatures and Ganesha appear in relief panels and fully sculpted wood.",
+          "prominence": "primary",
+          "headerPhoto": "photo_237",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "mosaicLead": [
+            "photo_233",
+            "photo_234"
+          ],
+          "category": "sight"
+        },
+        {
+          "id": "fleet-cnx",
+          "title": "Fleet Motorbike · Fleet CNX",
+          "venue": "fleet-cnx",
+          "time": "15:35–15:36",
+          "short": "Fleet’s scooter shop on Nimman Soi 17 supplied the Yamaha Fazzio for the Chiang Mai days. The rental began on 27 October and ended with the scooter’s return on the 29th, back in the same neighbourhood.",
+          "photoIds": [
+            "photo_238",
+            "photo_241"
+          ],
+          "paragraphs": [
+            "Fleet CNX is a Nimman-based scooter and motorbike rental business. Its range runs from smaller city scooters to larger bikes, with shop pickup and delivery options around Chiang Mai.",
+            "The rental record identifies a Yamaha Fazzio 125 cc, activated on 27 October. The scooter was returned on 29 October, closing the two-wheeled part of this trip before the final hotel change."
+          ],
+          "note": "The photographs directly confirm the Fleet storefront on 29 October. They do not establish the exact minute of the scooter return.",
+          "sources": [
+            {
+              "label": "Fleet CNX · official shop and fleet",
+              "url": "https://fleetcnx.com/"
+            },
+            {
+              "label": "Fleet CNX · about",
+              "url": "https://fleetcnx.com/pages/about"
+            }
+          ],
+          "imagePosition": "50% 39%",
+          "prominence": "compact",
+          "headerPhoto": "photo_238",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "ride"
+        },
+        {
+          "id": "kapao",
+          "title": "Back in Nimman · KaPaO",
+          "time": "15:44–16:01",
+          "photoIds": [
+            "photo_247",
+            "photo_242",
+            "photo_245"
+          ],
+          "paragraphs": [
+            "The photographed KaPaO frontage follows the late lunch of egg-topped food at the table. Its sign and the tightly grouped sequence support placing the meal here; the specific menu variant is not assumed.",
+            "KaPaO specialises in Thai holy-basil stir-fries on Nimman Soi 17. The menu offers versions with minced pork, chicken, crispy pork and beef, alongside fried rice. An open kitchen anchors the timber-framed, air-conditioned dining room.",
+            "Set meals expand the familiar rice-and-egg format with soup, papaya salad and pickled vegetables. The restaurant's emphasis is on wok cooking and chilli heat rather than a broad, all-purpose Thai menu."
+          ],
+          "venue": "kapao",
+          "note": "Storefront directly confirmed. Meal attribution is inferred from the adjoining sequence, matching dish imagery and approximate location—not GPS alone.",
+          "sources": [
+            {
+              "label": "Chiang Mai Local · KaPaO",
+              "url": "https://chiangmailocal.org/listing/kapao/"
+            },
+            {
+              "label": "PLANS WITH PAN · KaPaO visit",
+              "url": "https://th.trip.com/moments/detail/chiang-mai-209-153897613/"
+            }
+          ],
+          "imagePosition": "50% 48%",
+          "short": "Holy basil, chilli and a hot wok are the focus at KaPaO, a Soi 17 specialist serving stir-fries over rice or as fuller sets. Its open kitchen puts the cooking at the centre of the room.",
+          "prominence": "compact",
+          "headerPhoto": "photo_247",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "food"
+        },
+        {
+          "id": "huen-ui-phat",
+          "title": "Huen Ui Phat · the last dinner",
+          "time": "20:09",
+          "photoIds": [
+            "photo_263",
+            "photo_262"
+          ],
+          "paragraphs": [
+            "The previously unnamed dinner is Huen Ui Phat, as you identified it. The two photographs were taken at 20:09 on 29 October: filled rolls with lettuce and a dipping sauce, then sliced pork with two spoon-shaped condiment bowls.",
+            "Huen Ui Phat focuses on northern Thai dishes, including hang lay pork curry, khao soi, jackfruit salad and chilli dips. The Nimman dining room combines a traditional wooden-house setting with indoor and outdoor seating; these are venue details, not extra dishes claimed for this meal.",
+            "“Scooter returned. Sandals procured.” With the practical loose ends finished, the evening stayed around Nimman. The recorded market journey later places you at Kad Na Mor, leaving there at 21:26 before the final hotel night."
+          ],
+          "sources": [
+            {
+              "label": "Huen Ui Phat · cuisine and location",
+              "url": "https://chiangmailocal.org/listing/huen-ui-phat/"
+            },
+            {
+              "label": "Huen Ui Phat · dining-room context",
+              "url": "https://docentpro.com/places/huen-ui-phat-chiangmai_NTEwMzMw"
+            },
+            {
+              "label": "Kad Na Mor · map",
+              "url": "https://www.google.com/maps/search/?api=1&query=Kad+Na+Mor+Chiang+Mai"
+            }
+          ],
+          "short": "A northern Thai kitchen in Nimman, with regional curries, khao soi and chilli dips. The final dinner’s photographs focus on filled rolls, sliced pork and the little bowls of condiments alongside.",
+          "prominence": "compact",
+          "headerPhoto": "photo_263",
+          "imagePosition": null,
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "food",
+          "venue": "huen-ui-phat",
+          "note": "Restaurant identification supplied by you. This entry covers the 20:09 dinner photographs; the separately photographed KaPaO meal and frontage at 15:44–16:01 remain their own stop."
+        },
+        {
+          "id": "stay-with-nimman",
+          "title": "Stay with Nimman Chiang Mai",
+          "venue": "stay-with-nimman",
+          "time": "29–30 Oct · final night",
+          "short": "The final Chiang Mai base stays close to Nimman’s cafés and restaurants. Stay with Nimman combines contemporary interiors with two rooftop pools, on Siri Mangkalajarn Road at the edge of the neighbourhood’s busy lanes.",
+          "photoIds": [],
+          "paragraphs": [
+            "Stay with Nimman is on Siri Mangkalajarn Road, in the café-and-restaurant district west of Chiang Mai's Old City. Its interiors use contemporary furnishings and warm wood finishes, with several different room layouts across the property.",
+            "Two rooftop pools are a distinctive part of the hotel's facilities. The final booking runs from 29 to 30 October, keeping the last night in Nimman after the day's craft shops and scooter return."
+          ],
+          "note": "Confirmed booking dates; arrival-area evidence on 29 October. Booking dates are not exact check-in or check-out times.",
+          "sources": [
+            {
+              "label": "Stay with Nimman · official hotel site",
+              "url": "https://www.staywithnimman.com/"
+            },
+            {
+              "label": "Stay with Nimman · location",
+              "url": "https://www.staywithnimman.com/contact-us.html"
+            }
+          ],
+          "prominence": "compact",
+          "imagePosition": "50% 50%",
+          "headerRatio": 1.5,
+          "mobileHeaderRatio": 1.1,
+          "category": "stay"
+        }
+      ]
+    }
+  ],
+  "photos": [
+    {
+      "id": "img_20261025_190640549_ae",
+      "src": "/thailand/assets/img_20261025_190640549_ae.webp",
+      "thumb": "/thailand/assets/img_20261025_190640549_ae-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "The first evening.",
+      "alt": "A whole fish topped with vegetables, served beside rice on a wooden table.",
+      "date": "25 Oct · 19:06",
+      "captured": "2026-10-25T19:06:41",
+      "time": "19:06"
+    },
+    {
+      "id": "photo_002",
+      "src": "/thailand/assets/photo_002.webp",
+      "thumb": "/thailand/assets/photo_002-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Cork, colour, and woven bags.",
+      "alt": "Colourful cork handbags and purses displayed beneath a UNI CORK sign.",
+      "date": "25 Oct · 20:06",
+      "captured": "2026-10-25T20:06:52",
+      "time": "20:06"
+    },
+    {
+      "id": "photo_245",
+      "src": "/thailand/assets/photo_245.webp",
+      "thumb": "/thailand/assets/photo_245-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Late lunch in Nimman · likely KaPaO.",
+      "alt": "A plated dish topped with crisp lotus-root slices and fresh herbs.",
+      "date": "29 Oct · 15:47",
+      "captured": "2026-10-29T15:47:35",
+      "time": "15:47"
+    },
+    {
+      "id": "photo_048",
+      "src": "/thailand/assets/photo_048.webp",
+      "thumb": "/thailand/assets/photo_048-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Linear lighting, timber rafters and painted birds · Kalm.",
+      "alt": "Bird murals and a circular blue motif beneath the high timber ceiling at Kalm Village.",
+      "date": "27 Oct · 16:04",
+      "href": "https://www.kalmvillage.com/visit",
+      "captured": "2026-10-27T16:04:25",
+      "time": "16:04"
+    },
+    {
+      "id": "photo_076",
+      "src": "/thailand/assets/photo_076.webp",
+      "thumb": "/thailand/assets/photo_076-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "ROAST8RY.",
+      "alt": "The ROAST8RY specialty coffee sign on a textured concrete wall.",
+      "date": "27 Oct · 10:25",
+      "href": "https://roast8rycoffee.com/",
+      "captured": "2026-10-27T10:25:14",
+      "time": "10:25"
+    },
+    {
+      "id": "photo_095",
+      "src": "/thailand/assets/photo_095.webp",
+      "thumb": "/thailand/assets/photo_095-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Soft things, warm light.",
+      "alt": "Stuffed animals and textiles arranged on wooden shelves in a Nimman shop.",
+      "date": "27 Oct · 20:08",
+      "captured": "2026-10-27T20:08:27",
+      "time": "20:08"
+    },
+    {
+      "id": "photo_154",
+      "src": "/thailand/assets/photo_154.webp",
+      "thumb": "/thailand/assets/photo_154-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "A study in wood.",
+      "alt": "A small wooden console table outside a leafy shop.",
+      "date": "28 Oct · 13:19",
+      "captured": "2026-10-28T13:19:14",
+      "time": "13:19"
+    },
+    {
+      "id": "photo_059",
+      "src": "/thailand/assets/photo_059.webp",
+      "thumb": "/thailand/assets/photo_059-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "A sculptural form between the windows · Kalm.",
+      "alt": "A tall, curving sculptural form on a plinth between two garden-facing windows at Kalm Village.",
+      "date": "27 Oct · 16:11",
+      "captured": "2026-10-27T16:11:59",
+      "time": "16:11"
+    },
+    {
+      "id": "photo_261",
+      "src": "/thailand/assets/photo_261.webp",
+      "thumb": "/thailand/assets/photo_261-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Stone, steel and balance · Nimman.",
+      "alt": "An irregular stone supporting a flat metal surface beside larger rocks and concrete ledges in Nimman.",
+      "date": "29 Oct · 16:44",
+      "captured": "2026-10-29T16:44:15",
+      "time": "16:44"
+    },
+    {
+      "id": "photo_169",
+      "src": "/thailand/assets/photo_169.webp",
+      "thumb": "/thailand/assets/photo_169-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Rong Leuy Thapae.",
+      "alt": "The illuminated Thai sign for Rong Leuy Thapae above a warm-lit doorway.",
+      "date": "28 Oct · 20:25",
+      "href": "https://www.google.com/maps/search/?api=1&query=Rong%20Leuy%20Thapae%20Chiang%20Mai",
+      "captured": "2026-10-28T20:25:18",
+      "time": "20:25"
+    },
+    {
+      "id": "photo_087",
+      "src": "/thailand/assets/photo_087.webp",
+      "thumb": "/thailand/assets/photo_087-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Kao Soy Nimman · the sign.",
+      "alt": "The carved KAO SOY NIMMAN sign above its dining courtyard.",
+      "date": "27 Oct · 19:41",
+      "captured": "2026-10-27T19:41:06",
+      "time": "19:41"
+    },
+    {
+      "id": "photo_088",
+      "src": "/thailand/assets/photo_088.webp",
+      "thumb": "/thailand/assets/photo_088-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Kao Soy Nimman · an evening table.",
+      "alt": "The illuminated dining courtyard at Kao Soy Nimman.",
+      "date": "27 Oct · 19:41",
+      "captured": "2026-10-27T19:41:15",
+      "time": "19:41"
+    },
+    {
+      "id": "photo_043",
+      "src": "/thailand/assets/photo_043.webp",
+      "thumb": "/thailand/assets/photo_043-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Villa Nard · the salad lunch.",
+      "alt": "Shrimp, noodles, avocado and vegetables arranged beside a bowl of sauce and an orange drink.",
+      "date": "27 Oct · 13:05",
+      "captured": "2026-10-27T13:05:40",
+      "time": "13:05"
+    },
+    {
+      "id": "photo_037",
+      "src": "/thailand/assets/photo_037.webp",
+      "thumb": "/thailand/assets/photo_037-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "At the food stall · something freshly cooked.",
+      "alt": "Food being prepared with skewers at a small market stall.",
+      "date": "27 Oct · 12:18",
+      "captured": "2026-10-27T12:18:34",
+      "time": "12:18"
+    },
+    {
+      "id": "photo_039",
+      "src": "/thailand/assets/photo_039.webp",
+      "thumb": "/thailand/assets/photo_039-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Food stalls around the waterfall · a sleeping dog.",
+      "alt": "A food-stall lane near Huay Kaew Waterfall, with a fluffy dog asleep on the pavement.",
+      "date": "27 Oct · 12:26",
+      "captured": "2026-10-27T12:26:10",
+      "time": "12:26"
+    },
+    {
+      "id": "photo_159",
+      "src": "/thailand/assets/photo_159.webp",
+      "thumb": "/thailand/assets/photo_159-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Kiti Panit · northern pork curry.",
+      "alt": "A clay bowl of richly coloured curry topped with fried shallots.",
+      "date": "28 Oct · 19:09",
+      "captured": "2026-10-28T19:09:18",
+      "time": "19:09"
+    },
+    {
+      "id": "photo_160",
+      "src": "/thailand/assets/photo_160.webp",
+      "thumb": "/thailand/assets/photo_160-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Kiti Panit · greens and egg.",
+      "alt": "A plate of stir-fried greens and egg on a dark wooden table.",
+      "date": "28 Oct · 19:10",
+      "captured": "2026-10-28T19:10:45",
+      "time": "19:10"
+    },
+    {
+      "id": "photo_168",
+      "src": "/thailand/assets/photo_168.webp",
+      "thumb": "/thailand/assets/photo_168-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Rong Leuy Thapae · warm light.",
+      "alt": "A wood-lined restaurant space with warm lights and red hanging decoration.",
+      "date": "28 Oct · 20:25",
+      "captured": "2026-10-28T20:25:06",
+      "time": "20:25"
+    },
+    {
+      "id": "photo_242",
+      "src": "/thailand/assets/photo_242.webp",
+      "thumb": "/thailand/assets/photo_242-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Late lunch in Nimman · likely KaPaO.",
+      "alt": "A fried egg with a crisp edge over rice and a stir-fried dish.",
+      "date": "29 Oct · 15:44",
+      "captured": "2026-10-29T15:44:48",
+      "time": "15:44"
+    },
+    {
+      "id": "photo_247",
+      "src": "/thailand/assets/photo_247.webp",
+      "thumb": "/thailand/assets/photo_247-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "KaPaO · the storefront.",
+      "alt": "The KaPaO Thai Basil Stir-Fried sign above a small wooden restaurant in Nimman.",
+      "date": "29 Oct · 16:01",
+      "captured": "2026-10-29T16:01:32",
+      "time": "16:01"
+    },
+    {
+      "id": "photo_262",
+      "src": "/thailand/assets/photo_262.webp",
+      "thumb": "/thailand/assets/photo_262-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Huen Ui Phat · filled rolls and greens.",
+      "alt": "Filled rolls arranged on lettuce with a small dipping bowl at Huen Ui Phat.",
+      "date": "29 Oct · 20:09",
+      "captured": "2026-10-29T20:09:09",
+      "time": "20:09"
+    },
+    {
+      "id": "photo_263",
+      "src": "/thailand/assets/photo_263.webp",
+      "thumb": "/thailand/assets/photo_263-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Huen Ui Phat · sliced pork and condiments.",
+      "alt": "Sliced pork on a banana-leaf-lined platter with two black spoon-shaped condiment bowls at Huen Ui Phat.",
+      "date": "29 Oct · 20:09",
+      "captured": "2026-10-29T20:09:11",
+      "time": "20:09"
+    },
+    {
+      "id": "photo_111",
+      "src": "/thailand/assets/photo_111.webp",
+      "thumb": "/thailand/assets/photo_111-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Wat Pha Lat · under the trees.",
+      "alt": "Tiled temple roofs, hanging lanterns and lush plants beneath the forest canopy at Wat Pha Lat.",
+      "date": "28 Oct · 09:37",
+      "captured": "2026-10-28T09:37:33",
+      "time": "09:37"
+    },
+    {
+      "id": "photo_145",
+      "src": "/thailand/assets/photo_145.webp",
+      "thumb": "/thailand/assets/photo_145-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Doi Suthep · the naga stairway.",
+      "alt": "The colourful mosaic scales of a naga railing beside red temple steps at Doi Suthep.",
+      "date": "28 Oct · 10:51",
+      "href": "https://www.google.com/maps/search/?api=1&query=Wat%20Phra%20That%20Doi%20Suthep",
+      "captured": "2026-10-28T10:51:41",
+      "time": "10:51"
+    },
+    {
+      "id": "photo_147",
+      "src": "/thailand/assets/photo_147.webp",
+      "thumb": "/thailand/assets/photo_147-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Small carvings on the hillside.",
+      "alt": "A market display of small wooden animal figures on blue cloth in the Doi Suthep area.",
+      "date": "28 Oct · 11:52",
+      "captured": "2026-10-28T11:52:48",
+      "time": "11:52"
+    },
+    {
+      "id": "photo_137",
+      "src": "/thailand/assets/photo_137.webp",
+      "thumb": "/thailand/assets/photo_137-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Wat Pha Lat · looking up.",
+      "alt": "Green branches above a weathered stone arch at Wat Pha Lat.",
+      "date": "28 Oct · 10:01",
+      "captured": "2026-10-28T10:01:01",
+      "time": "10:01"
+    },
+    {
+      "id": "photo_103",
+      "src": "/thailand/assets/photo_103.webp",
+      "thumb": "/thailand/assets/photo_103-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Wat Pha Lat · a guardian.",
+      "alt": "A pale stone guardian figure beneath trees at Wat Pha Lat.",
+      "date": "28 Oct · 09:10",
+      "captured": "2026-10-28T09:10:37",
+      "time": "09:10"
+    },
+    {
+      "id": "photo_108",
+      "src": "/thailand/assets/photo_108.webp",
+      "thumb": "/thailand/assets/photo_108-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Wat Pha Lat · quiet light.",
+      "alt": "A white seated Buddha in a warm timber-lined hall at Wat Pha Lat.",
+      "date": "28 Oct · 09:36",
+      "captured": "2026-10-28T09:36:09",
+      "time": "09:36"
+    },
+    {
+      "id": "photo_118",
+      "src": "/thailand/assets/photo_118.webp",
+      "thumb": "/thailand/assets/photo_118-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Wat Pha Lat · stillness.",
+      "alt": "A pale standing Buddha beside a brick shrine at Wat Pha Lat.",
+      "date": "28 Oct · 09:40",
+      "captured": "2026-10-28T09:40:38",
+      "time": "09:40"
+    },
+    {
+      "id": "photo_127",
+      "src": "/thailand/assets/photo_127.webp",
+      "thumb": "/thailand/assets/photo_127-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Wat Pha Lat · a forest shrine.",
+      "alt": "A small ornate shrine with seated Buddha figures amid green foliage at Wat Pha Lat.",
+      "date": "28 Oct · 09:45",
+      "captured": "2026-10-28T09:45:25",
+      "time": "09:45"
+    },
+    {
+      "id": "photo_193",
+      "src": "/thailand/assets/photo_193.webp",
+      "thumb": "/thailand/assets/photo_193-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Tables, chairs, and beautiful grain.",
+      "alt": "A solid wooden dining table and chairs in a Baan Tawai furniture showroom.",
+      "date": "29 Oct · 12:39",
+      "captured": "2026-10-29T12:39:22",
+      "time": "12:39"
+    },
+    {
+      "id": "photo_174",
+      "src": "/thailand/assets/photo_174.webp",
+      "thumb": "/thailand/assets/photo_174-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "One small turtle.",
+      "alt": "A small wooden turtle sculpture on a polished wooden table.",
+      "date": "29 Oct · 11:36",
+      "captured": "2026-10-29T11:36:16",
+      "time": "11:36"
+    },
+    {
+      "id": "photo_179",
+      "src": "/thailand/assets/photo_179.webp",
+      "thumb": "/thailand/assets/photo_179-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "A lighter line.",
+      "alt": "A small round wooden side table with an angular cantilevered base.",
+      "date": "29 Oct · 11:38",
+      "captured": "2026-10-29T11:38:48",
+      "time": "11:38"
+    },
+    {
+      "id": "photo_216",
+      "src": "/thailand/assets/photo_216.webp",
+      "thumb": "/thailand/assets/photo_216-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Baan Tawai · a carved Pegasus.",
+      "alt": "A carved wooden winged horse, or Pegasus, displayed in a Baan Tawai shop.",
+      "date": "29 Oct · 13:10",
+      "captured": "2026-10-29T13:10:36",
+      "time": "13:10"
+    },
+    {
+      "id": "photo_233",
+      "src": "/thailand/assets/photo_233.webp",
+      "thumb": "/thailand/assets/photo_233-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "Thipmanee House · the carved gateway.",
+      "alt": "A carved golden gateway beneath trees at Thipmanee House, with part of the venue name above the entrance.",
+      "date": "29 Oct · 14:03",
+      "captured": "2026-10-29T14:03:09",
+      "time": "14:03"
+    },
+    {
+      "id": "photo_237",
+      "src": "/thailand/assets/photo_237.webp",
+      "thumb": "/thailand/assets/photo_237-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Thipmanee House · the entrance.",
+      "alt": "Lush plants and tall carved wooden figures at the entrance to Thipmanee House.",
+      "date": "29 Oct · 14:10",
+      "captured": "2026-10-29T14:10:36",
+      "time": "14:10"
+    },
+    {
+      "id": "photo_236",
+      "src": "/thailand/assets/photo_236.webp",
+      "thumb": "/thailand/assets/photo_236-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Thipmanee House · the museum sign.",
+      "alt": "A bilingual sign identifying Thipmanee House and the Ganesha Wood Carving Museum.",
+      "date": "29 Oct · 14:10",
+      "captured": "2026-10-29T14:10:30",
+      "time": "14:10"
+    },
+    {
+      "id": "photo_009",
+      "src": "/thailand/assets/photo_009.webp",
+      "thumb": "/thailand/assets/photo_009-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Carved doors.",
+      "alt": "An ornate antique cabinet with glazed doors and carved floral decoration.",
+      "date": "26 Oct · 13:51",
+      "captured": "2026-10-26T13:51:58",
+      "time": "13:51"
+    },
+    {
+      "id": "photo_003",
+      "src": "/thailand/assets/photo_003.webp",
+      "thumb": "/thailand/assets/photo_003-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Glazed ceramics.",
+      "alt": "Decorative green ceramic bowls and a lidded vessel in a display cabinet.",
+      "date": "26 Oct · 13:42",
+      "captured": "2026-10-26T13:42:21",
+      "time": "13:42"
+    },
+    {
+      "id": "photo_022",
+      "src": "/thailand/assets/photo_022.webp",
+      "thumb": "/thailand/assets/photo_022-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "caption": "A framed detail.",
+      "alt": "A small framed drawing on softly coloured paper in an exhibition.",
+      "date": "26 Oct · 14:07",
+      "captured": "2026-10-26T14:07:13",
+      "time": "14:07"
+    },
+    {
+      "id": "photo_033",
+      "src": "/thailand/assets/photo_033.webp",
+      "thumb": "/thailand/assets/photo_033-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "caption": "Jim Thompson · an elephant in the shop.",
+      "alt": "A plush elephant with a raised trunk and a readable Jim Thompson label.",
+      "date": "26 Oct · 14:10",
+      "captured": "2026-10-26T14:10:04",
+      "time": "14:10"
+    },
+    {
+      "id": "photo_199",
+      "src": "/thailand/assets/photo_199.webp",
+      "thumb": "/thailand/assets/photo_199-thumb.webp",
+      "width": 1800,
+      "height": 1350,
+      "caption": "RAIN TREE FURNITURE · the photographed catalogue.",
+      "alt": "A Rain Tree Furniture catalogue showing table designs, dimensions, acacia wood tops and iron legs.",
+      "captured": "2026-10-29T12:40:59",
+      "time": "12:40",
+      "date": "29 Oct · 12:40"
+    },
+    {
+      "id": "photo_209",
+      "src": "/thailand/assets/photo_209.webp",
+      "thumb": "/thailand/assets/photo_209-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Baan Tawai · the working space.",
+      "alt": "An open-front woodcarving stall with large relief panels, carved figures, tools and wood shavings.",
+      "date": "29 Oct · 12:52",
+      "captured": "2026-10-29T12:52:59",
+      "time": "12:52"
+    },
+    {
+      "id": "photo_238",
+      "src": "/thailand/assets/photo_238.webp",
+      "thumb": "/thailand/assets/photo_238-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Fleet Motorbike · the shopfront.",
+      "alt": "A blue scooter parked in front of the clearly named Fleet Motorbike rental storefront.",
+      "date": "29 Oct · 15:35",
+      "captured": "2026-10-29T15:35:28",
+      "time": "15:35"
+    },
+    {
+      "id": "photo_241",
+      "src": "/thailand/assets/photo_241.webp",
+      "thumb": "/thailand/assets/photo_241-thumb.webp",
+      "width": 1350,
+      "height": 1800,
+      "caption": "Fleet Motorbike · the sign.",
+      "alt": "The circular Fleet Motorbike sign outside its Nimman shop.",
+      "date": "29 Oct · 15:36",
+      "captured": "2026-10-29T15:36:11",
+      "time": "15:36"
+    },
+    {
+      "id": "photo_014",
+      "src": "/thailand/assets/photo_014.webp",
+      "thumb": "/thailand/assets/photo_014-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A red teak veranda opening toward courtyard umbrellas and tropical plants at Jim Thompson House.",
+      "caption": "A pendant light above the red veranda · Jim Thompson.",
+      "date": "26 Oct · 14:00",
+      "captured": "2026-10-26T14:00:53",
+      "time": "14:00"
+    },
+    {
+      "id": "photo_016",
+      "src": "/thailand/assets/photo_016.webp",
+      "thumb": "/thailand/assets/photo_016-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "Red timber walls and balustrades framing a large ceramic jar at Jim Thompson House.",
+      "caption": "Teak walls and a ceramic jar.",
+      "date": "26 Oct · 14:01",
+      "captured": "2026-10-26T14:01:23",
+      "time": "14:01"
+    },
+    {
+      "id": "photo_018",
+      "src": "/thailand/assets/photo_018.webp",
+      "thumb": "/thailand/assets/photo_018-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "Pink orchids in a blue-and-white pot beside a shaded, garden-facing hall.",
+      "caption": "Orchids at the garden’s edge.",
+      "date": "26 Oct · 14:01",
+      "captured": "2026-10-26T14:01:56",
+      "time": "14:01"
+    },
+    {
+      "id": "photo_029",
+      "src": "/thailand/assets/photo_029.webp",
+      "thumb": "/thailand/assets/photo_029-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A wall display of vividly coloured silk skeins at the Jim Thompson complex.",
+      "caption": "A wall of silk colours.",
+      "date": "26 Oct · 14:08",
+      "captured": "2026-10-26T14:08:47",
+      "time": "14:08"
+    },
+    {
+      "id": "photo_046",
+      "src": "/thailand/assets/photo_046.webp",
+      "thumb": "/thailand/assets/photo_046-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "The MOM Museum of Makers entrance at Kalm Village, framed by tall timber columns and a hanging installation.",
+      "caption": "MOM · Museum of Makers.",
+      "date": "27 Oct · 15:53",
+      "captured": "2026-10-27T15:53:42",
+      "time": "15:53"
+    },
+    {
+      "id": "photo_049",
+      "src": "/thailand/assets/photo_049.webp",
+      "thumb": "/thailand/assets/photo_049-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "Sculptural wooden screens projecting from the facade at Kalm Village.",
+      "caption": "Layers of timber and light.",
+      "date": "27 Oct · 16:07",
+      "captured": "2026-10-27T16:07:23",
+      "time": "16:07"
+    },
+    {
+      "id": "photo_052",
+      "src": "/thailand/assets/photo_052.webp",
+      "thumb": "/thailand/assets/photo_052-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A timber loom with threads and weaving tools above a patterned rug at Kalm Village.",
+      "caption": "A loom and the tools of weaving.",
+      "date": "27 Oct · 16:09",
+      "captured": "2026-10-27T16:09:30",
+      "time": "16:09"
+    },
+    {
+      "id": "photo_110",
+      "src": "/thailand/assets/photo_110.webp",
+      "thumb": "/thailand/assets/photo_110-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A moss-covered tiered stupa standing among the trees at Wat Pha Lat.",
+      "caption": "A stupa in the forest.",
+      "date": "28 Oct · 09:37",
+      "captured": "2026-10-28T09:37:10",
+      "time": "09:37"
+    },
+    {
+      "id": "photo_114",
+      "src": "/thailand/assets/photo_114.webp",
+      "thumb": "/thailand/assets/photo_114-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A standing white Buddha beneath dense green trees at Wat Pha Lat.",
+      "caption": "A quiet figure under the trees.",
+      "date": "28 Oct · 09:39",
+      "captured": "2026-10-28T09:39:09",
+      "time": "09:39"
+    },
+    {
+      "id": "photo_126",
+      "src": "/thailand/assets/photo_126.webp",
+      "thumb": "/thailand/assets/photo_126-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A red and gold temple gable above a mossy tiled roof at Wat Pha Lat.",
+      "caption": "Rooflines in the green.",
+      "date": "28 Oct · 09:44",
+      "captured": "2026-10-28T09:44:55",
+      "time": "09:44"
+    },
+    {
+      "id": "photo_131",
+      "src": "/thailand/assets/photo_131.webp",
+      "thumb": "/thailand/assets/photo_131-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A pale curved footbridge leading into dense tropical foliage and stone steps.",
+      "caption": "A little bridge into the forest.",
+      "date": "28 Oct · 09:56",
+      "captured": "2026-10-28T09:56:21",
+      "time": "09:56"
+    },
+    {
+      "id": "photo_205",
+      "src": "/thailand/assets/photo_205.webp",
+      "thumb": "/thailand/assets/photo_205-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A DAO HANDMADE Chiang Mai sign listing furniture, ceramic, linen, home decor and lifestyle.",
+      "caption": "Dao Handmade · the name on the wall.",
+      "captured": "2026-10-29T12:50:06",
+      "date": "29 Oct · 12:50",
+      "time": "12:50"
+    },
+    {
+      "id": "photo_206",
+      "src": "/thailand/assets/photo_206.webp",
+      "thumb": "/thailand/assets/photo_206-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A group of ceramic vessels and natural-toned decorative pieces at Dao Handmade.",
+      "caption": "Dao · vessels and textures.",
+      "captured": "2026-10-29T12:50:32",
+      "date": "29 Oct · 12:50",
+      "time": "12:50"
+    },
+    {
+      "id": "photo_171",
+      "src": "/thailand/assets/photo_171.webp",
+      "thumb": "/thailand/assets/photo_171-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A Baan Tawai village street lined with open-front workshops, wood offcuts and a parked scooter.",
+      "caption": "Along the village workshops.",
+      "captured": "2026-10-29T11:33:01",
+      "date": "29 Oct · 11:33",
+      "time": "11:33"
+    },
+    {
+      "id": "photo_184",
+      "src": "/thailand/assets/photo_184.webp",
+      "thumb": "/thailand/assets/photo_184-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A woodcarver working with tools and timber at a shaded roadside workshop in Baan Tawai.",
+      "caption": "A roadside workshop · the making behind the objects.",
+      "captured": "2026-10-29T12:06:41",
+      "date": "29 Oct · 12:06",
+      "time": "12:06"
+    },
+    {
+      "id": "photo_208",
+      "src": "/thailand/assets/photo_208.webp",
+      "thumb": "/thailand/assets/photo_208-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A public Salu Carving Pavilion board honoring the master woodcarvers of Baan Tawai.",
+      "caption": "Salu Carving Pavilion · the village’s own story.",
+      "captured": "2026-10-29T12:52:47",
+      "date": "29 Oct · 12:52",
+      "time": "12:52"
+    },
+    {
+      "id": "photo_212",
+      "src": "/thailand/assets/photo_212.webp",
+      "thumb": "/thailand/assets/photo_212-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A Baan Tawai village information board beside unfinished wooden sculptures.",
+      "caption": "Baan Tawai · village information and work in progress.",
+      "captured": "2026-10-29T12:53:40",
+      "date": "29 Oct · 12:53",
+      "time": "12:53"
+    },
+    {
+      "id": "photo_228",
+      "src": "/thailand/assets/photo_228.webp",
+      "thumb": "/thailand/assets/photo_228-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "The public Baan Tipmanee visitor brochure with a map of its location in the craft village.",
+      "caption": "The museum’s visitor brochure and location map.",
+      "captured": "2026-10-29T13:58:57",
+      "date": "29 Oct · 13:58",
+      "time": "13:58"
+    },
+    {
+      "id": "photo_234",
+      "src": "/thailand/assets/photo_234.webp",
+      "thumb": "/thailand/assets/photo_234-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "Two visitors posing beneath the richly carved and painted entrance at Thipmanee House.",
+      "caption": "A moment at the museum gate.",
+      "captured": "2026-10-29T14:08:48",
+      "date": "29 Oct · 14:08",
+      "time": "14:08"
+    },
+    {
+      "id": "photo_102",
+      "src": "/thailand/assets/photo_102.webp",
+      "thumb": "/thailand/assets/photo_102-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "alt": "The illuminated Baan Crafts Nimman entrance, with the shop’s name above the doorway and handmade goods inside.",
+      "caption": "Baan Crafts Nimman · the shopfront.",
+      "captured": "2026-10-27T20:27:57",
+      "date": "27 Oct · 20:27",
+      "time": "20:27"
+    },
+    {
+      "id": "photo_094",
+      "src": "/thailand/assets/photo_094.webp",
+      "thumb": "/thailand/assets/photo_094-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A handmade ceramic mug with soft pastel horizontal bands and a warm yellow handle.",
+      "caption": "Glazed colour and a handmade handle.",
+      "captured": "2026-10-27T19:59:44",
+      "date": "27 Oct · 19:59",
+      "time": "19:59"
+    },
+    {
+      "id": "photo_097",
+      "src": "/thailand/assets/photo_097.webp",
+      "thumb": "/thailand/assets/photo_097-thumb.webp",
+      "width": 2000,
+      "height": 1500,
+      "alt": "A display of ceramic animal cups and small sculptural objects at Baan Crafts Nimman.",
+      "caption": "Ceramic animals, cups and small objects.",
+      "captured": "2026-10-27T20:08:46",
+      "date": "27 Oct · 20:08",
+      "time": "20:08"
+    },
+    {
+      "id": "photo_155",
+      "src": "/thailand/assets/photo_155.webp",
+      "thumb": "/thailand/assets/photo_155-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "An overhead three-quarter view of the same live-edge wooden bench among herbs and ferns.",
+      "caption": "The bench · top and edge.",
+      "captured": "2026-10-28T13:19:18",
+      "date": "28 Oct · 13:19",
+      "time": "13:19"
+    },
+    {
+      "id": "photo_156",
+      "src": "/thailand/assets/photo_156.webp",
+      "thumb": "/thailand/assets/photo_156-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A low side view of the live-edge wooden bench, showing its splayed legs and end stretcher.",
+      "caption": "The bench · legs and joinery.",
+      "captured": "2026-10-28T13:19:27",
+      "date": "28 Oct · 13:19",
+      "time": "13:19"
+    },
+    {
+      "id": "photo_073",
+      "src": "/thailand/assets/photo_073.webp",
+      "thumb": "/thailand/assets/photo_073-thumb.webp",
+      "width": 1500,
+      "height": 2000,
+      "alt": "A suspended cage-like installation of pale and coloured cords beneath the timber ceiling at Kalm Village.",
+      "caption": "Suspended cords beneath the timber ceiling · Kalm.",
+      "captured": "2026-10-27T16:26:26",
+      "time": "16:26",
+      "date": "27 Oct · 16:26"
+    }
+  ],
+  "unplaced": [],
+  "venues": {
+    "rong-leuy-thapae": {
+      "id": "rong-leuy-thapae",
+      "title": "Rong Leuy Thapae",
+      "region": "Tha Phae · Chang Moi",
+      "map": "https://www.google.com/maps/search/?api=1&query=%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A5%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%97%E0%B9%88%E0%B8%B2%E0%B9%81%E0%B8%9E%20Rong%20Leuy%20Thapae%2063%20Tha%20Phae%20Road%20Chiang%20Mai",
+      "official": "https://www.facebook.com/profile.php?id=100089227944249",
+      "references": []
+    },
+    "thipmanee-house": {
+      "id": "thipmanee-house",
+      "title": "Thipmanee House",
+      "region": "Baan Tawai · Song Fang Klong",
+      "map": "https://www.google.com/maps/search/?api=1&query=Baan%20Tipmanee%20Wood%20Carving%20Museum%20Chiang%20Mai",
+      "official": "https://www.baantipmanee.com/",
+      "references": []
+    },
+    "kalm-village": {
+      "id": "kalm-village",
+      "title": "Kalm Village / MOM",
+      "region": "Old City · Phra Pok Klao Soi 4",
+      "map": "https://www.google.com/maps/search/?api=1&query=Kalm%20Village%20Chiang%20Mai",
+      "official": "https://www.kalmvillage.com/about-us",
+      "references": []
+    },
+    "baan-tawai": {
+      "id": "baan-tawai",
+      "title": "Baan Tawai",
+      "region": "Hang Dong · Khun Khong",
+      "map": "https://www.google.com/maps/search/?api=1&query=Baan%20Tawai%20Handicraft%20Village%20Chiang%20Mai",
+      "official": "https://www.thailandtourismdirectory.go.th/en/attraction/2377",
+      "references": [
+        {
+          "src": "/thailand/assets/reference-baan-tawai.jpg",
+          "thumb": "/thailand/assets/reference-baan-tawai-thumb.webp",
+          "caption": "Baan Tawai village",
+          "alt": "File:Baan Tawai.jpg — reference photograph, not from this trip.",
+          "author": "PA",
+          "source": "https://commons.wikimedia.org/wiki/File:Baan_Tawai.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": null,
+          "width": 2000,
+          "height": 1125
+        }
+      ]
+    },
+    "wat-pha-lat": {
+      "id": "wat-pha-lat",
+      "title": "Wat Pha Lat",
+      "region": "Doi Suthep foothills",
+      "map": "https://www.google.com/maps/search/?api=1&query=Wat%20Pha%20Lat%20Chiang%20Mai",
+      "official": "https://www.thailandtravel.or.jp/wat-pha-lat/",
+      "references": [
+        {
+          "src": "/thailand/assets/reference-wat-pha-lat.jpg",
+          "thumb": "/thailand/assets/reference-wat-pha-lat-thumb.webp",
+          "caption": "Main courtyard of Wat Pha Lat",
+          "alt": "File:Wat Pha Lat, Chiang Mai 20250116.jpg — reference photograph, not from this trip.",
+          "author": "Supanut Arunoprayote",
+          "source": "https://commons.wikimedia.org/wiki/File:Wat_Pha_Lat,_Chiang_Mai_20250116.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": null,
+          "width": 2000,
+          "height": 1125
+        }
+      ]
+    },
+    "doi-suthep": {
+      "id": "doi-suthep",
+      "title": "Wat Phra That Doi Suthep",
+      "region": "Doi Suthep",
+      "map": "https://www.google.com/maps/search/?api=1&query=Wat%20Phra%20That%20Doi%20Suthep%20Chiang%20Mai",
+      "official": "https://www.tourismthailand.org/Attraction/wat-phra-that-doi-suthep/",
+      "references": [
+        {
+          "src": "/thailand/assets/reference-doi-suthep.jpg",
+          "thumb": "/thailand/assets/reference-doi-suthep-thumb.webp",
+          "caption": "Doi Suthep above the city at dusk",
+          "alt": "File:Wat Phra That Doi Suthep.JPG — reference photograph, not from this trip.",
+          "author": "Somyot Sutprattanatawin",
+          "source": "https://commons.wikimedia.org/wiki/File:Wat_Phra_That_Doi_Suthep.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "rights": null,
+          "width": 2000,
+          "height": 1333
+        }
+      ]
+    },
+    "kapao": {
+      "id": "kapao",
+      "title": "KaPaO",
+      "region": "Nimman · Soi 17",
+      "map": "https://www.google.com/maps/search/?api=1&query=KaPaO%20Thai%20Kaprao%20Stir-fried%2027%201%20Nimmanhaemin%20Soi%2017%20Chiang%20Mai",
+      "references": []
+    },
+    "roast8ry": {
+      "id": "roast8ry",
+      "title": "ROAST8RY Flagship",
+      "region": "Nimman · Soi 17",
+      "official": "https://roast8rycoffee.com/",
+      "map": "https://www.google.com/maps/search/?api=1&query=Roast8ry%20Coffee%20Flagship%20Store%20Nimman%20Soi%2017%20Chiang%20Mai",
+      "references": []
+    },
+    "kao-soy-nimman": {
+      "id": "kao-soy-nimman",
+      "title": "Kao Soy Nimman",
+      "region": "Nimman · Soi 7",
+      "official": "https://www.facebook.com/KAOSOYNIMMANCNX/",
+      "map": "https://www.google.com/maps/search/?api=1&query=Kao%20Soy%20Nimman%20Chiang%20Mai",
+      "references": []
+    },
+    "jim-thompson": {
+      "id": "jim-thompson",
+      "title": "Jim Thompson House Museum",
+      "region": "Bangkok · Heritage Quarter",
+      "official": "https://jimthompsonhouse.org/",
+      "map": "https://www.google.com/maps/search/?api=1&query=Jim%20Thompson%20House%20Museum%20Bangkok",
+      "references": [
+        {
+          "src": "/thailand/assets/reference-jim-thompson.webp",
+          "thumb": "/thailand/assets/reference-jim-thompson-thumb.webp",
+          "width": 1600,
+          "height": 1067,
+          "caption": "Jim Thompson House in its tropical garden · reference photo, 2013",
+          "alt": "A red teak building at Jim Thompson House partly screened by palms and dense tropical foliage. Online reference, not a trip photo.",
+          "author": "Don Ramey Logan",
+          "source": "https://commons.wikimedia.org/wiki/File:Building_at_Jim_Thompson_House_photo_Don_Ramey_Logan.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+        }
+      ]
+    },
+    "raintree-furniture": {
+      "id": "raintree-furniture",
+      "title": "Raintree Furniture",
+      "region": "Baan Tawai · Hang Dong",
+      "map": "https://www.google.com/maps/search/?api=1&query=Raintree%20Furniture%20Khun%20Khong%20Hang%20Dong%20Chiang%20Mai",
+      "official": "https://www.facebook.com/1439863942986823/",
+      "references": []
+    },
+    "nh-bangkok-sukhumvit-boulevard": {
+      "id": "nh-bangkok-sukhumvit-boulevard",
+      "title": "NH Bangkok Sukhumvit Boulevard",
+      "region": "Sukhumvit · Nana",
+      "map": "https://www.google.com/maps/search/?api=1&query=NH+Bangkok+Sukhumvit+Boulevard",
+      "official": "https://www.minorhotels.com/en/destinations/thailand/bangkok/nh-bangkok-sukhumvit-boulevard",
+      "references": []
+    },
+    "bed-nimman": {
+      "id": "bed-nimman",
+      "title": "BED Nimman",
+      "region": "Nimman",
+      "map": "https://www.google.com/maps/search/?api=1&query=BED+Nimman+Chiang+Mai",
+      "official": "https://bed.co.th/bed-nimman-hotel/",
+      "references": []
+    },
+    "fleet-cnx": {
+      "id": "fleet-cnx",
+      "title": "Fleet Motorbike · Fleet CNX",
+      "region": "Nimman · Soi 17",
+      "map": "https://maps.app.goo.gl/95UVQemiVfFKcZ5e7",
+      "official": "https://fleetcnx.com/",
+      "references": []
+    },
+    "stay-with-nimman": {
+      "id": "stay-with-nimman",
+      "title": "Stay with Nimman Chiang Mai",
+      "region": "Nimman · Siri Mangkalajarn",
+      "map": "https://www.google.com/maps/search/?api=1&query=Stay+with+Nimman+Chiang+Mai",
+      "official": "https://www.staywithnimman.com/",
+      "references": []
+    },
+    "villa-nard": {
+      "id": "villa-nard",
+      "title": "Villa Nard",
+      "region": "Santitham · Morakot Road",
+      "map": "https://www.google.com/maps/search/?api=1&query=Villa+Nard+17+18+Morakot+Road+Chiang+Mai",
+      "references": []
+    },
+    "huay-kaew": {
+      "id": "huay-kaew",
+      "title": "Huay Kaew Waterfall",
+      "region": "Doi Suthep foothills",
+      "map": "https://www.google.com/maps/search/?api=1&query=Huay+Kaew+Waterfall+Chiang+Mai",
+      "official": "https://www.thailandtourismdirectory.go.th/en/attraction/2184",
+      "references": [
+        {
+          "caption": "Huay Kaew Waterfall, Chiang Mai · September 2010 reference",
+          "alt": "Huay Kaew’s lower pool and cascades in a green forested ravine at the foot of Doi Suthep, Chiang Mai; reference photograph from 2010, not from this trip.",
+          "author": "Takeaway",
+          "source": "https://commons.wikimedia.org/wiki/File:Nam_tok_huai_kaeo_03_lower_reaches_rainy_season.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "rights": "CC BY-SA 3.0. Resized/recompressed; display may crop.",
+          "width": 1800,
+          "height": 1087,
+          "src": "/thailand/assets/reference-huay-kaew.jpg"
+        }
+      ]
+    },
+    "kiti-panit": {
+      "id": "kiti-panit",
+      "title": "Kiti Panit",
+      "region": "Tha Phae · 1888 teak mansion",
+      "map": "https://www.google.com/maps/search/?api=1&query=Kiti+Panit+19+Tha+Phae+Road+Chiang+Mai",
+      "official": "https://www.kitipanit.com/",
+      "references": []
+    },
+    "dao-handmade": {
+      "id": "dao-handmade",
+      "title": "Dao Handmade",
+      "region": "Baan Tawai · Hang Dong",
+      "map": "https://www.google.com/maps/search/?api=1&query=Dao+Handmade+Baan+Tawai+Chiang+Mai",
+      "official": "https://www.facebook.com/Daohandmade.banntawai?mibextid=LQQJ4d",
+      "references": []
+    },
+    "baan-crafts-nimman": {
+      "id": "baan-crafts-nimman",
+      "title": "Baan Crafts Nimman",
+      "region": "Nimman · handmade objects",
+      "map": "https://www.google.com/maps/search/?api=1&query=Baan+Crafts+Nimman+Chiang+Mai",
+      "references": []
+    },
+    "teakfurewood": {
+      "id": "teakfurewood",
+      "title": "Teakfurewood Studio · probable match",
+      "region": "Nimman · furniture study",
+      "map": "https://maps.app.goo.gl/szQ8yAvLK3vrzxKy8?g_st=ic",
+      "official": "https://linktr.ee/Teakfurewood",
+      "references": []
+    },
+    "sukhumvit-asok": {
+      "id": "sukhumvit-asok",
+      "title": "Sukhumvit / Asok neighbourhood",
+      "region": "Sukhumvit · Nana / Asok",
+      "map": "https://www.google.com/maps/search/?api=1&query=Asok+Sukhumvit+Bangkok",
+      "references": [
+        {
+          "src": "/thailand/assets/reference-asok-2019.webp",
+          "width": 1800,
+          "height": 1350,
+          "caption": "Asok at dusk · neighbourhood reference, 2019 · not a trip photograph",
+          "alt": "Asok at dusk in 2019, with elevated BTS platforms, rain-bright traffic and Terminal 21; neighbourhood reference photograph, not from this trip.",
+          "author": "Chainwit. / Wikimedia Commons",
+          "source": "https://commons.wikimedia.org/wiki/File:Sukhumwit_Road_with_BTS_Asok_and_Asok_Montri_Rd.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "rights": "CC BY-SA 4.0. Image resized and converted to WebP; display may crop. This image derivative remains CC BY-SA 4.0."
+        }
+      ]
+    },
+    "huen-ui-phat": {
+      "id": "huen-ui-phat",
+      "title": "Huen Ui Phat",
+      "region": "Nimman · northern Thai cooking",
+      "map": "https://www.google.com/maps/search/?api=1&query=Huen+Ui+Phat+Chiang+Mai",
+      "references": []
+    }
+  },
+  "context": [
+    {
+      "src": "/thailand/assets/context-bangkok.jpg",
+      "alt": "Panorama from ICONSIAM; online context image, not a trip photograph or evidence of a visit.",
+      "caption": "Chao Phraya River, Bangkok",
+      "author": "Slyronit",
+      "source": "https://commons.wikimedia.org/wiki/File:Panorama_of_Chao_Phraya_River_from_Iconsiam,_Bangkok.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+    },
+    {
+      "src": "/thailand/assets/context-chiang-mai.jpg",
+      "alt": "City view from Doi Suthep; online context image, not a trip photograph or evidence of a visit.",
+      "caption": "Chiang Mai from Doi Suthep",
+      "author": "Supanut Arunoprayote",
+      "source": "https://commons.wikimedia.org/wiki/File:View_of_CMX_(I).jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "cover": {
+    "id": "photo_111",
+    "place": "Wat Pha Lat",
+    "caption": "Wat Pha Lat · Chiang Mai · 28 October"
+  },
+  "namedNote": null,
+  "illustratedMap": {
+    "src": "/thailand/assets/illustrated-trip-map.webp",
+    "caption": "AI-illustrated orientation map · approximate geography, not a route map"
+  },
+  "visualDetails": {
+    "title": "Visual details",
+    "description": "Forms, textures and small architectural ideas worth keeping: stone, timber, light and the spaces between.",
+    "photoIds": [
+      "photo_261",
+      "photo_073",
+      "photo_059",
+      "photo_048",
+      "photo_014",
+      "photo_009",
+      "photo_049",
+      "photo_126"
+    ]
+  }
+}

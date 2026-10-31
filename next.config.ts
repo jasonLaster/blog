@@ -4,6 +4,18 @@ import createMDX from '@next/mdx'
 const nextConfig = {
   pageExtensions: ["md", "mdx", "ts", "tsx"],
   experimental: {},
+  // Keep this custom visual post as a complete document while the MDX metadata
+  // makes it discoverable in the normal post index and sitemap.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/posts/2026-10-31-thailand-day-by-day',
+          destination: '/thailand/index.html',
+        },
+      ],
+    }
+  },
   async redirects() {
     return [
       {

@@ -28,6 +28,8 @@ export function standardizeMetadata(
     image: image,
     categories: categories,
     note: importedMetadata.note as boolean | undefined,
+    standalone: importedMetadata.standalone as boolean | undefined,
+    canonical: importedMetadata.canonical as string | undefined,
     draft: importedMetadata.draft as boolean | undefined,
   };
 }
