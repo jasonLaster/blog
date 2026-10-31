@@ -207,7 +207,7 @@
           "imagePosition": "50% 52%",
           "short": "At the foot of Doi Suthep, Huay Kaew marks the shift from Chiang Mai’s streets to forest. The roughly ten-metre cascade, rocky pools and shaded surroundings make it a small natural retreat close to the city.",
           "paragraphs": [
-            "Your photographs remember the waterfall stop through its food stalls: preparation at a chopping block and a sleeping dog in the lane. The cascade view is a separately credited reference photograph.",
+            "Your photographs remember the waterfall stop through its food stalls: preparation at a chopping block and a sleeping dog in the lane. Separately credited reference photographs add the cascade, footbridge and stream among the boulders.",
             "Huay Kaew lies within Doi Suthep–Pui National Park, close to Chiang Mai Zoo and the start of the mountain road. The national tourism directory describes a waterfall about ten metres high, surrounded by shade and woodland.",
             "Rather than a remote expedition, this is a city-edge landscape of flowing water, rocks and forest. Its scale is intimate: cascades lead into lower pools, with places to pause beside the stream."
           ],
@@ -2058,6 +2058,45 @@
           "width": 1800,
           "height": 1087,
           "src": "/thailand/assets/reference-huay-kaew.jpg"
+        },
+        {
+          "src": "/thailand/assets/reference-huay-kaew-upper-cascade.webp",
+          "thumb": "/thailand/assets/reference-huay-kaew-upper-cascade-thumb.webp",
+          "width": 1200,
+          "height": 1600,
+          "caption": "The upper cascade among rocks and trees · reference photograph, 2023",
+          "alt": "Water falling between large boulders in the wooded upper reaches of Huai Kaeo Waterfall, Chiang Mai. Reference photograph from 2023, not from this trip.",
+          "author": "FredTC",
+          "source": "https://commons.wikimedia.org/wiki/File:Huay_Kaew_Waterval_bovenloop_afkomstig_van_Wang_Bua_Ban_Pha_Ngoep_december_2023_IMG20231231103839.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
+        },
+        {
+          "src": "/thailand/assets/reference-huay-kaew-bridge-overlook.webp",
+          "thumb": "/thailand/assets/reference-huay-kaew-bridge-overlook-thumb.webp",
+          "width": 1200,
+          "height": 1600,
+          "caption": "The footbridge and wooded cascade · reference photograph, 2025",
+          "alt": "A wooden footbridge in front of a rocky cascade surrounded by forest at Huai Kaeo Waterfall, Chiang Mai. Reference photograph from 2025, not from this trip.",
+          "author": "FredTC",
+          "source": "https://commons.wikimedia.org/wiki/File:Huay_Kaew_Waterval_bovenloop_gezien_over_het_bruggetje_september_2025_IMG20250920103530.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
+        },
+        {
+          "src": "/thailand/assets/reference-huay-kaew-stream-boulders.webp",
+          "thumb": "/thailand/assets/reference-huay-kaew-stream-boulders-thumb.webp",
+          "width": 1600,
+          "height": 772,
+          "caption": "Water around the boulders · rainy-season reference, 2010",
+          "alt": "A rushing stream beneath a large boulder with a small bridge behind it at Huai Kaeo Waterfall, Chiang Mai. Reference photograph from 2010, not from this trip.",
+          "author": "Takeaway",
+          "source": "https://commons.wikimedia.org/wiki/File:Nam_tok_huai_kaeo_04_lower_reaches_rainy_season.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "rights": "CC BY-SA 3.0. Resized and converted to WebP; display may crop. This image derivative remains under that licence."
         }
       ]
     },
