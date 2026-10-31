@@ -44,7 +44,7 @@
           "paragraphs": [
             "The first dinner photograph records a whole fish topped with vegetables and cashews, with rice alongside. Later, cork handbags and purses beneath a UNI CORK sign turn the camera toward materials and small useful objects—a thread that continues in Chiang Mai.",
             "The hotel base is Nana, on Sukhumvit Soi 5. Asok is the nearby shopping-and-transit junction farther along Sukhumvit, where the elevated BTS and underground MRT meet beside Terminal 21. The layered cityscape—rail lines above traffic, shops and restaurants below—gives this first evening its wider Bangkok setting.",
-            "The Asok photograph is a credited 2019 neighbourhood reference, not a scene captured on the trip. The dinner restaurant remains unnamed: the meal image has no readable venue sign, and its coarse location record is not precise enough to identify a particular kitchen."
+            "Credited neighbourhood references show Sukhumvit at other dates: its street stalls, restaurant fronts, elevated rail line and the buildings around Asok. They give the evening a wider setting without tracing an exact route. The dinner restaurant remains unnamed: the meal image has no readable venue sign, and its coarse location record is not precise enough to identify a particular kitchen."
           ],
           "note": "Asok is neighbourhood context, not a reconstructed walking route or a claim of a Terminal 21 visit. Nearby recommendations have not been turned into a restaurant identification.",
           "short": "Sukhumvit’s restaurant-lined lanes and elevated trains frame the Bangkok beginning. Nearby Asok is the junction where BTS meets MRT beside Terminal 21; the evening’s own photographs stay closer to the table and the shop displays.",
@@ -2511,6 +2511,98 @@
             ],
             "fit": "contain"
           }
+        },
+        {
+          "src": "/thailand/assets/reference-doi-suthep-golden-chedi.webp",
+          "thumb": "/thailand/assets/reference-doi-suthep-golden-chedi-thumb.webp",
+          "width": 1280,
+          "height": 851,
+          "caption": "The golden chedi in daylight · reference, 2014",
+          "alt": "The golden chedi and ceremonial umbrella at Wat Phra That Doi Suthep against a blue sky. Reference photograph from 2014, not from this trip.",
+          "author": "Philip Nalangan",
+          "source": "https://commons.wikimedia.org/wiki/File:Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              45,
+              45
+            ],
+            "mobileFocus": [
+              44,
+              45
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-doi-suthep-umbrella.webp",
+          "thumb": "/thailand/assets/reference-doi-suthep-umbrella-thumb.webp",
+          "width": 1280,
+          "height": 719,
+          "caption": "Filigree beneath the ceremonial umbrella · reference, 2011",
+          "alt": "Looking upward beneath a filigree ceremonial umbrella beside the golden chedi at Wat Phra That Doi Suthep. Reference photograph from 2011, not from this trip.",
+          "author": "Philip Nalangan",
+          "source": "https://commons.wikimedia.org/wiki/File:Doi_Suthep_Temple_Chiang_Mai_Thailand_9.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              45,
+              34
+            ],
+            "mobileFocus": [
+              44,
+              41
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-doi-suthep-buddha-chedi.webp",
+          "thumb": "/thailand/assets/reference-doi-suthep-buddha-chedi-thumb.webp",
+          "width": 1280,
+          "height": 960,
+          "caption": "A golden Buddha beside the chedi · reference, 2011",
+          "alt": "A golden Buddha statue and decorated finials in front of the gilded chedi at Wat Phra That Doi Suthep. Reference photograph from 2011, not from this trip.",
+          "author": "Photo Dharma",
+          "source": "https://commons.wikimedia.org/wiki/File:038_Golden_Buddha_and_Chedi_(9207755618).jpg",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "rights": "CC BY 2.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              73,
+              51
+            ],
+            "mobileFocus": [
+              72,
+              51
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-doi-suthep-city-overlook.webp",
+          "thumb": "/thailand/assets/reference-doi-suthep-city-overlook-thumb.webp",
+          "width": 3200,
+          "height": 361,
+          "caption": "The city unfolding below Doi Suthep · panoramic reference, 2022",
+          "alt": "A panorama of Chiang Mai from Doi Suthep, with wooded slopes in the foreground and the city stretching across the plain. Reference photograph from 2022, not from this trip.",
+          "author": "Supanut Arunoprayote",
+          "source": "https://commons.wikimedia.org/wiki/File:Panoramic_view_of_CMX.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              52,
+              55
+            ],
+            "mobileFocus": [
+              45,
+              50
+            ]
+          }
         }
       ]
     },
@@ -2584,6 +2676,98 @@
               54
             ]
           }
+        },
+        {
+          "src": "/thailand/assets/reference-jim-thompson-teak-house.webp",
+          "thumb": "/thailand/assets/reference-jim-thompson-teak-house-thumb.webp",
+          "width": 1280,
+          "height": 960,
+          "caption": "Raised teak walls and a long tiled roof · reference, 2007",
+          "alt": "Raised red teak walls and the broad tiled roof of a traditional building at Jim Thompson House. Reference photograph from 2007, not from this trip.",
+          "author": "BrokenSphere",
+          "source": "https://commons.wikimedia.org/wiki/File:Jim_Thompson_House_complex_1.JPG",
+          "license": "CC BY 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+          "rights": "CC BY 3.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              58,
+              48
+            ],
+            "mobileFocus": [
+              58,
+              49
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-jim-thompson-silk-cocoons.webp",
+          "thumb": "/thailand/assets/reference-jim-thompson-silk-cocoons-thumb.webp",
+          "width": 1067,
+          "height": 1600,
+          "caption": "Cocoons and silk-reeling equipment · reference, 2013",
+          "alt": "Yellow silkworm cocoons and silk-reeling equipment at Jim Thompson House. Archive reference from 2013, not from this trip.",
+          "author": "Don Ramey Logan",
+          "source": "https://commons.wikimedia.org/wiki/File:Silk_Spool_Jim_Thompson_Photo_Don_Ramey_Logan.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+          "rights": "CC BY-SA 3.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              51,
+              63
+            ],
+            "mobileFocus": [
+              51,
+              59
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-jim-thompson-silk-making.webp",
+          "thumb": "/thailand/assets/reference-jim-thompson-silk-making-thumb.webp",
+          "width": 1106,
+          "height": 1474,
+          "caption": "Reeling silk from heated cocoons · reference, 2022",
+          "alt": "A silk-making demonstrator working above a pot of cocoons at Jim Thompson House. Archive reference from 2022, not from this trip.",
+          "author": "Kinitrupti",
+          "source": "https://commons.wikimedia.org/wiki/File:Traditional_Thai_silk_making.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              48,
+              37
+            ],
+            "mobileFocus": [
+              48,
+              40
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-jim-thompson-timber-corridor.webp",
+          "thumb": "/thailand/assets/reference-jim-thompson-timber-corridor-thumb.webp",
+          "width": 1200,
+          "height": 1600,
+          "caption": "The open timber corridor · reference, 2024",
+          "alt": "An open-sided timber corridor with roof beams, posts and polished floorboards at Jim Thompson House. Reference photograph from 2024, not from this trip.",
+          "author": "Abogomazova",
+          "source": "https://commons.wikimedia.org/wiki/File:Jim_Thompson_House_interiors-003.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              47,
+              43
+            ],
+            "mobileFocus": [
+              47,
+              48
+            ]
+          }
         }
       ]
     },
@@ -2609,7 +2793,54 @@
       "region": "Nimman",
       "map": "https://www.google.com/maps/search/?api=1&query=BED+Nimman+Chiang+Mai",
       "official": "https://bed.co.th/bed-nimman-hotel/",
-      "references": []
+      "references": [
+        {
+          "src": "/thailand/assets/reference-nimman-street-life.webp",
+          "thumb": "/thailand/assets/reference-nimman-street-life-thumb.webp",
+          "width": 1246,
+          "height": 1600,
+          "caption": "Brick arcades and street life in Nimman · neighbourhood reference, 2025",
+          "alt": "People, motorcycles and a brick clock tower on Nimmanhaeminda Road. A neighbourhood reference from 2025, not a photograph of BED Nimman or evidence of visiting One Nimman.",
+          "author": "Setawut",
+          "source": "https://commons.wikimedia.org/wiki/File:Nimmanhaeminda_Road_2025.jpg",
+          "license": "CC BY 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+          "rights": "CC BY 4.0. Resized and converted to WebP; display may crop.",
+          "crop": {
+            "focus": [
+              51,
+              50
+            ],
+            "mobileFocus": [
+              51,
+              48
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-nimman-mountain-road.webp",
+          "thumb": "/thailand/assets/reference-nimman-mountain-road-thumb.webp",
+          "width": 1280,
+          "height": 961,
+          "caption": "Nimman with the mountain beyond · neighbourhood reference, 2023",
+          "alt": "Nimmanhemin Road with shopfronts, trees and the mountain beyond. Neighbourhood reference from 2023, not a photograph of BED Nimman or from this trip.",
+          "author": "กสิณธร ราชโอรส",
+          "source": "https://commons.wikimedia.org/wiki/File:%E0%B8%96%E0%B8%99%E0%B8%99%E0%B8%99%E0%B8%B4%E0%B8%A1%E0%B8%A1%E0%B8%B2%E0%B8%99%E0%B9%80%E0%B8%AB%E0%B8%A1%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B9%8C_%E0%B8%AD.%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87_%E0%B8%88.%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88_(10).jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              52,
+              53
+            ],
+            "mobileFocus": [
+              52,
+              52
+            ]
+          }
+        }
+      ]
     },
     "fleet-cnx": {
       "id": "fleet-cnx",
@@ -2798,6 +3029,144 @@
             "focus": [
               43,
               60
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-sukhumvit-korea-town.webp",
+          "thumb": "/thailand/assets/reference-sukhumvit-korea-town-thumb.webp",
+          "width": 1600,
+          "height": 1200,
+          "caption": "Restaurant lights at Sukhumvit Plaza · neighbourhood reference, 2018",
+          "alt": "Restaurant fronts and overhead lanterns at Korea Town in Sukhumvit Plaza, Bangkok. A neighbourhood reference from 2018, not from this trip.",
+          "author": "Christophe95",
+          "source": "https://commons.wikimedia.org/wiki/File:Korea_Town_in_Bangkok.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              50,
+              48
+            ],
+            "mobileFocus": [
+              51,
+              50
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-sukhumvit-night-street.webp",
+          "thumb": "/thailand/assets/reference-sukhumvit-night-street-thumb.webp",
+          "width": 1600,
+          "height": 1200,
+          "caption": "Street level beneath the Skytrain · neighbourhood reference, 2014",
+          "alt": "A lit Sukhumvit pavement, traffic and shopfronts beneath the elevated Skytrain at night. Neighbourhood reference from 2014, not from this trip.",
+          "author": "Adam Jones",
+          "source": "https://commons.wikimedia.org/wiki/File:Night_Scene_along_Sukhumvit_Road.jpg",
+          "license": "CC BY-SA 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+          "rights": "CC BY-SA 2.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              54,
+              58
+            ],
+            "mobileFocus": [
+              54,
+              52
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-sukhumvit-market-umbrellas.webp",
+          "thumb": "/thailand/assets/reference-sukhumvit-market-umbrellas-thumb.webp",
+          "width": 1280,
+          "height": 853,
+          "caption": "Street stalls beneath bright umbrellas · reference, 2023",
+          "alt": "Colourful umbrellas shade street-food carts along a Sukhumvit lane. Neighbourhood reference from 2023, not from this trip.",
+          "author": "ProtoplasmaKid",
+          "source": "https://commons.wikimedia.org/wiki/File:Puestos_de_venta_en_Sukhumvit_Road_2.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              62,
+              52
+            ],
+            "mobileFocus": [
+              64,
+              51
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-sukhumvit-steamer.webp",
+          "thumb": "/thailand/assets/reference-sukhumvit-steamer-thumb.webp",
+          "width": 1280,
+          "height": 853,
+          "caption": "Corn, buns and a street-side steamer · reference, 2023",
+          "alt": "Corn, pale buns and peanuts fill a street-food steamer on Sukhumvit Road. Reference from 2023, not the dinner eaten on this trip.",
+          "author": "ProtoplasmaKid",
+          "source": "https://commons.wikimedia.org/wiki/File:Puestos_de_venta_en_Sukhumvit_Road_3.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              52,
+              64
+            ],
+            "mobileFocus": [
+              53,
+              57
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-sukhumvit-nana-tracks.webp",
+          "thumb": "/thailand/assets/reference-sukhumvit-nana-tracks-thumb.webp",
+          "width": 1280,
+          "height": 853,
+          "caption": "Skytrain tracks from Nana · reference, 2023",
+          "alt": "Elevated Skytrain tracks recede between tall buildings from Nana station on Sukhumvit Road. Neighbourhood reference from 2023, not from this trip.",
+          "author": "ProtoplasmaKid",
+          "source": "https://commons.wikimedia.org/wiki/File:Vista_desde_la_estaci%C3%B3n_Nana_del_Skytrain_BTS_de_Bangkok.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              54,
+              46
+            ],
+            "mobileFocus": [
+              54,
+              49
+            ]
+          }
+        },
+        {
+          "src": "/thailand/assets/reference-sukhumvit-terminal21-dusk.webp",
+          "thumb": "/thailand/assets/reference-sukhumvit-terminal21-dusk-thumb.webp",
+          "width": 1200,
+          "height": 1600,
+          "caption": "Terminal 21 after rain · Asok reference, 2019",
+          "alt": "Terminal 21 and the tower above it in the evening after rain at Asok, Bangkok. Neighbourhood reference from 2019, not from this trip.",
+          "author": "Chainwit.",
+          "source": "https://commons.wikimedia.org/wiki/File:Terminal21_after_a_rainy_day.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+          "rights": "CC BY-SA 4.0. Resized and converted to WebP; display may crop. This image derivative remains under the same licence.",
+          "crop": {
+            "focus": [
+              53,
+              56
+            ],
+            "mobileFocus": [
+              53,
+              54
             ]
           }
         }
