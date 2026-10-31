@@ -279,10 +279,11 @@
             "photo_046",
             "photo_049",
             "photo_052",
-            "photo_059"
+            "photo_059",
+            "photo_073"
           ],
           "paragraphs": [
-            "The visit moves from MOM’s signed entrance to timber screens, a loom and a tall sculpture beside the windows. The ceramic images below come from Kalm’s 2024 exhibition archive; they extend the craft context without implying that those particular works were on view during this trip.",
+            "The visit moves from MOM’s signed entrance to timber screens, a loom, a tall sculpture beside the windows and suspended cords beneath the timber ceiling.",
             "Kalm Village reinterprets the shared spaces of a traditional Thai home: separate buildings serve different purposes but meet around communal courtyards. Old teak houses supplied reclaimed timber for the complex, paired with dark grey brick and contemporary Asian design.",
             "The Museum of Makers is part of Kalm, presenting traditional and contemporary makers across disciplines. Its textile archive sits alongside rotating exhibitions, while the wider village supports workshops, residencies, a library and places to eat and gather."
           ],
@@ -2067,16 +2068,9 @@
   },
   "visualDetails": {
     "title": "Visual details",
-    "description": "Forms, textures and small architectural ideas worth keeping: stone, timber, light and the spaces between.",
+    "description": "Small architectural ideas without a confirmed venue: stone, steel and balance.",
     "photoIds": [
-      "photo_261",
-      "photo_073",
-      "photo_059",
-      "photo_048",
-      "photo_014",
-      "photo_009",
-      "photo_049",
-      "photo_126"
+      "photo_261"
     ]
   }
 }

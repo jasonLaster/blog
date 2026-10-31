@@ -22,3 +22,5 @@
 
 /* Navigation back to the blog from this standalone visual post. */
 .blog-nav{display:flex;align-items:center;gap:28px}.no-script{padding:30px 5.5%;line-height:1.8}.no-script h2{font-size:32px}.no-script a{text-decoration:underline}@media(max-width:600px){.blog-nav{gap:14px}.blog-nav .header-link{font-size:11px}.masthead .brand-detail{display:none}.masthead{gap:12px}}
+/* Let an unassigned detail stand on its own when only one photograph remains. */
+.detail-collection .gallery-grid:has(>figure:only-child){grid-template-columns:minmax(0,1fr);max-width:420px}
