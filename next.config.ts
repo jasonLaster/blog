@@ -13,6 +13,12 @@ const nextConfig = {
           source: '/posts/2026-10-31-thailand-day-by-day',
           destination: '/thailand/index.html',
         },
+        {
+          // chat.jlast.io serves the embedded Cal.com booking page (no redirect)
+          source: '/',
+          has: [{ type: 'host' as const, value: 'chat.jlast.io' }],
+          destination: '/chat',
+        },
       ],
     }
   },
