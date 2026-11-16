@@ -14,9 +14,9 @@ const nextConfig = {
           destination: '/thailand/index.html',
         },
         {
-          // chat.jlast.io serves the embedded Cal.com booking page (no redirect)
+          // cal.jlast.io serves the embedded Cal.com booking page (no redirect)
           source: '/',
-          has: [{ type: 'host' as const, value: 'chat.jlast.io' }],
+          has: [{ type: 'host' as const, value: 'cal.jlast.io' }],
           destination: '/chat',
         },
       ],

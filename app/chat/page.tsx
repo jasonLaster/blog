@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-// Served at https://chat.jlast.io via a host rewrite in next.config.ts.
-// The booking page is embedded (not redirected) so the URL stays chat.jlast.io.
+// Served at https://cal.jlast.io via a host rewrite in next.config.ts.
+// The booking page is embedded (not redirected) so the URL stays cal.jlast.io.
 const CAL_URL =
   "https://cal.com/jason-laster-zo91q9/calls?layout=mobile&overlayCalendar=true";
 
