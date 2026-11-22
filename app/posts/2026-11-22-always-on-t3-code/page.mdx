@@ -1,0 +1,74 @@
+import { postMetadata } from "../../utils/metadata";
+
+export const metadata = postMetadata({
+  title: "An always-on computer for my coding agents",
+  description:
+    "Setting up a small cloud VM for T3 Code, reaching it over Tailscale, and why I stopped depending on my laptop being awake.",
+  date: "2026-11-22",
+  categories: ["Agents"],
+});
+
+I've been using T3 Code more than I expected to in part because it's easy to reach my laptop from my phone.
+
+That works great until the laptop isn't there: I'm on a plane with it in my bag.
+
+So I gave my agents a second computer that never sleeps. I named it nova.
+
+## Why a cloud machine
+
+My laptop is a persistent environment, which is the whole appeal. Everything is already cloned, signed in and warm.
+
+But it's also the thing I carry around. Some days it's off. Some days I'm traveling and don't want to bring it. And it has a ceiling: it's one machine with the cores and memory it shipped with.
+
+A cloud VM fixes all three:
+
+- **It's always on.** Agents keep working after I close the lid.
+- **I don't carry it.** It lives in a data center, not in my bag.
+- **It can grow.** I can resize it, or add a second one, in a way a physical device can't.
+
+I'm not replacing the laptop. It's a second place to run the same work, and it's there when the first one isn't.
+
+## Why Lightsail
+
+I looked at a few options. Some small VPS providers are cheaper. I picked AWS Lightsail anyway, for boring reasons:
+
+- **I already have an AWS account.** No new billing, no new login.
+- **The price is flat.** Disk, a static IP and some transfer are included, so there's no bill to puzzle over later.
+- **The CLI is simple.** `aws lightsail` is small enough that an agent can drive it, and that's how most of the setup happened.
+
+nova is Ubuntu 24.04 with 4 GB of memory and 2 vCPUs. That's $24 a month. It runs Node, a headless browser for the agents, and the T3 Code server.
+
+## Connecting it
+
+T3 Code can add a remote machine over SSH. It installs its server on the VM and forwards a port back to my laptop, so nova's projects show up in the sidebar like any other.
+
+## Why Tailscale
+
+The decision that matters is how I reach it. A machine I can use from anywhere is no good if it only answers on my home Wi-Fi.
+
+Lightsail lets you lock SSH to a single IP address. That's fine at a desk. It breaks the first time I work from a café, tether to my phone, or my ISP changes my address. My options were:
+
+- **Open port 22 to the whole internet.** It works everywhere, and key-only SSH is strong. But it's a public service I don't need, and the logs fill up with bots.
+- **Script the allow-list.** Tighter, but I'd have to remember to run it, and I won't.
+- **Take it off the public internet.** Put nova and my devices on a private network.
+
+I chose Tailscale. It gives every device a stable private address, whatever network it's on. My laptop gets one, my phone gets one, nova gets one, and they can reach each other from a hotel or from home with nothing to update. It's free for personal use, and it takes about ten minutes.
+
+## The setup
+
+1. **On nova:** install with the official script, then run `sudo tailscale up --hostname=nova`. It prints a sign-in link. I opened it and approved the device.
+2. **On the laptop:** install the app and sign in with the same account. nova showed up in the device list with a `100.x` address.
+3. **Prove it before changing anything.** A plain connection test to nova's new address, from the laptop, had to succeed.
+4. **Switch the host.** In `~/.ssh/config`, I changed the `HostName` for nova to its Tailscale address. Anything that connects by name follows along.
+5. **Reconnect T3 Code.** The app keeps its existing connection until you disconnect and reconnect nova. After that it connects over Tailscale.
+6. **Pair the phone.** Install Tailscale on the phone, then run `t3 pair --tailscale` on nova. It publishes the server to my tailnet over HTTPS and prints a one-time pairing code. Two things tripped me up: HTTPS certificates have to be switched on in the Tailscale admin console first, and the `ubuntu` user needs `sudo tailscale set --operator=ubuntu` once. Pairing codes are single use, so use the link or the form, not both.
+7. **Close port 22 last.** Only after the laptop and the phone both worked did I remove the public rule. Nothing on the internet can reach nova's SSH now, and both devices still connect.
+
+## What I get now
+
+- **I can work from anywhere.** The laptop can be off, and nova keeps going.
+- **No firewall chores.** The next café doesn't break anything.
+- **A smaller attack surface.** There's no public SSH to probe.
+- **Room to grow.** If one box isn't enough, I can resize it or add another and join it to the same private network.
+
+That last one is the part I'm most curious about. A laptop has a fixed number of cores, and a VM is a setting I can change. If I start running a lot of agents at once, I'd rather turn a dial than buy a bigger laptop.
