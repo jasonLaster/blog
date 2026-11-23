@@ -64,6 +64,19 @@ I chose Tailscale. It gives every device a stable private address, whatever netw
 6. **Pair the phone.** Install Tailscale on the phone, then run `t3 pair --tailscale` on nova. It publishes the server to my tailnet over HTTPS and prints a one-time pairing code. Two things tripped me up: HTTPS certificates have to be switched on in the Tailscale admin console first, and the `ubuntu` user needs `sudo tailscale set --operator=ubuntu` once. Pairing codes are single use, so use the link or the form, not both.
 7. **Close port 22 last.** Only after the laptop and the phone both worked did I remove the public rule. Nothing on the internet can reach nova's SSH now, and both devices still connect.
 
+## Adding providers
+
+T3 Code's model picker is per environment. Having OpenAI and Antigravity signed in on my laptop doesn't bring them to nova. Each machine only offers the provider CLIs installed and signed in on that machine.
+
+Adding them to a headless VM means installing each CLI over SSH and using a sign-in flow that doesn't need a local browser:
+
+- **Claude Code:** install with `sudo npm i -g @anthropic-ai/claude-code@latest` and sign in with `claude auth login`.
+- **OpenAI Codex:** install with `sudo npm i -g @openai/codex@latest`, then run `codex login --device-auth`. It prints a URL and a short code you approve from your laptop or phone. The code expires after 15 minutes.
+- **Antigravity:** install `agy` with the official script at `https://antigravity.google/cli/install.sh`. One snag: it installs to `~/.local/bin`, which T3's background service doesn't have on its `PATH`, so symlink it with `sudo ln -sf ~/.local/bin/agy /usr/local/bin/agy`. Then run `agy`, pick Google OAuth, open the printed URL on another device, and paste the authorization code back into the terminal.
+- **Restart T3:** run `t3 service restart` on nova so the server picks up the new CLIs and credentials.
+
+After the restart, selecting nova on the laptop or phone lists all three providers in the model picker. If a provider doesn't show up right away on the phone, reopen the app or pull to refresh.
+
 ## What I get now
 
 - **I can work from anywhere.** The laptop can be off, and nova keeps going.
